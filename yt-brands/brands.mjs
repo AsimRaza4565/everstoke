@@ -12,6 +12,33 @@ export const COUNTRY = 'US';
 
 export const BRANDS = [
   {
+    slug: 'everstoke',
+    label: 'EVERSTOKE',
+    handle: '@everstoke-a5h',
+    niche: 'Daily motivation, discipline & stoic self-mastery',
+    cpmTier: 'motivational (broad reach)',
+    accent: '#FF6B1A', bg: '#0C0A08', ink: '#FFFFFF',
+    eyebrow: 'DAILY DISCIPLINE // EVERSTOKE',
+    tagline: 'Stoke the fire within.',
+    keyword: 'daily motivation', kwShort: 'daily motivation', theme: 'Motivation',
+    niches: [
+      'stoic discipline & marcus aurelius',
+      'morning discipline rituals',
+      'mental toughness & hard things',
+      'dopamine detox & deep focus',
+      'samurai & warrior ethos',
+      'rise after failure stories'
+    ],
+    authority: 'Discipline & Stoicism',
+    tags: ['motivation', 'discipline', 'stoicism', 'daily motivation', 'mindset', 'self improvement', 'mental toughness', 'consistency', 'habits', 'self mastery'],
+    musicFeels: ['epic', 'inspir', 'driving'],
+    voice: 'am_adam',
+    slots: ['22:35'], longSlot: '21:00', // longform off — enable via cadence docDays
+    active: true,
+    description: 'Daily motivation, stoic discipline and mental toughness in 60 seconds. Marcus Aurelius, Seneca, warrior ethos and modern mindset — one lesson every day to stoke the fire within. Subscribe and build unstoppable discipline.',
+    script: { targetSeconds: 32, points: 4, lineWords: '9-12', titleStyle: 'discipline imperative + stoic authority', titleExamples: '"The Stoic Rule Marcus Aurelius Lived By", "Do This Every Morning — No Excuses"' }
+  },
+  {
     slug: 'quotequarry',
     label: 'QUOTE QUARRY',
     handle: '@quotequarry302',
@@ -36,12 +63,12 @@ export const BRANDS = [
     // 10-05 CADENCE: 1 short/day (best ET-prime slot only) + 1 doc/week.
     // Sunday is the network break day. research/upload-cadence-research-2026-10-05.md
     slots: ['22:35'], longSlot: '14:30', docDay: 'Tue',
-    active: true,
+    active: false, // everstoke adoption: inherited channel dormant (no token in this repo)
   },
   {
     slug: 'investors-compass',
     label: "INVESTOR'S COMPASS",
-    handle: '@investorscompasshq', active: true,
+    handle: '@investorscompasshq', active: false,
     niche: 'Investing psychology & market wisdom',
     cpmTier: '$30-50 (finance #1 niche)',
     accent: '#E8C15A', bg: '#0A1128', ink: '#F2EEE3',
@@ -67,7 +94,7 @@ export const BRANDS = [
   {
     slug: 'money-rulebook',
     label: 'THE MONEY RULEBOOK',
-    handle: '@themoneyrulebook-p4y', active: true,
+    handle: '@themoneyrulebook-p4y', active: false,
     niche: 'Personal finance rules & money habits',
     cpmTier: '$25-45 (personal finance)',
     accent: '#3DDC97', bg: '#101314', ink: '#EAF6EF',
@@ -93,7 +120,7 @@ export const BRANDS = [
   {
     slug: 'debt-free-doctrine',
     label: 'OLD MONEY CODE',
-    handle: '@debtfreedoctrine', active: true, // rebranded 10-03: was DEBT-FREE DOCTRINE (0 subs — dead niche); identity = parked old-money-code
+    handle: '@debtfreedoctrine', active: false, // rebranded 10-03: was DEBT-FREE DOCTRINE (0 subs — dead niche); identity = parked old-money-code
     niche: 'Old money habits & quiet wealth',
     cpmTier: '$15-30 (finance-adjacent, huge reach)',
     accent: '#D9C7A7', bg: '#12100C', ink: '#F3EDE2',

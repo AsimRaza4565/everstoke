@@ -15,7 +15,7 @@
       "inspir",
       "heroic"
     ],
-    "active": true,
+    "active": false,
     "niches": [
       "human psychology & respect",
       "power of silence & solitude",
@@ -61,7 +61,7 @@
       "inspir",
       "mystical"
     ],
-    "active": true,
+    "active": false,
     "niches": [
       "warren buffett rules",
       "market crashes & history",
@@ -109,7 +109,7 @@
       "uplifting",
       "grooving"
     ],
-    "active": true,
+    "active": false,
     "niches": [
       "silent money habits",
       "frugal living rules",
@@ -156,7 +156,7 @@
       "calming",
       "bright"
     ],
-    "active": true,
+    "active": false,
     "niches": [
       "silent wealth standards",
       "stealth wealth etiquette",
@@ -534,5 +534,58 @@
       "night routine"
     ],
     "hashtags": null
+  },
+  "everstoke": {
+    "label": "EVERSTOKE",
+    "handle": "@everstoke-a5h",
+    "niche": "Daily motivation, discipline & stoic self-mastery",
+    "accent": "#FF6B1A",
+    "bg": "#0C0A08",
+    "voice": "am_adam",
+    "slots": [
+      "22:35"
+    ],
+    "longSlot": "21:00",
+    "musicFeels": [
+      "epic",
+      "inspir",
+      "driving"
+    ],
+    "active": true,
+    "niches": [
+      "stoic discipline & marcus aurelius",
+      "morning discipline rituals",
+      "mental toughness & hard things",
+      "dopamine detox & deep focus",
+      "samurai & warrior ethos",
+      "rise after failure stories"
+    ],
+    "tags": [
+      "motivation",
+      "discipline",
+      "stoicism",
+      "daily motivation",
+      "mindset",
+      "self improvement",
+      "mental toughness",
+      "consistency",
+      "habits",
+      "self mastery"
+    ],
+    "hashtags": [
+      "#motivation",
+      "#discipline",
+      "#stoicism",
+      "#mindset",
+      "#selfimprovement"
+    ],
+    "brollQueries": [
+      "stoic statue marble light",
+      "man running at dawn discipline",
+      "mountain summit sunrise climber",
+      "forge fire sparks dark",
+      "boxer training dark gym",
+      "storm ocean waves crashing"
+    ]
   }
 }

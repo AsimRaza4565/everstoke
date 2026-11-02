@@ -70,5 +70,20 @@
     "shortsSource": "clips",
     "updated": "2026-10-24T10:30:00.000Z",
     "updatedBy": "owner go — #101 flip completion (all 4 channels, 2 doc-days/week)"
+  },
+  "everstoke": {
+    "docDays": [],
+    "shortDays": [
+      "Mon",
+      "Tue",
+      "Wed",
+      "Thu",
+      "Fri",
+      "Sat",
+      "Sun"
+    ],
+    "shortsSource": "generated",
+    "updated": "2026-11-02T09:29:03.631Z",
+    "updatedBy": "everstoke adoption — daily generated Shorts; longform off initially"
   }
 }

@@ -23,33 +23,28 @@ function filterChannels(channels, { targetChannel = '', scheduleCron = '' } = {}
 
 test('filterChannels: preserves scheduled cron offsets for legacy channels', () => {
   const reg = JSON.parse(fs.readFileSync('yt-mcp/studio-channels.json', 'utf8'));
-  
-  const qq = filterChannels(reg.channels, { scheduleCron: '13 2 * * *' });
-  assert.equal(qq.length, 1);
-  assert.equal(qq[0].slug, 'quotequarry');
-  assert.equal(qq[0].envSlug, 'QUOTEQUARRY');
 
-  const ic = filterChannels(reg.channels, { scheduleCron: '47 2 * * *' });
-  assert.equal(ic.length, 1);
-  assert.equal(ic[0].slug, 'investors-compass');
-  assert.equal(ic[0].envSlug, 'INVESTORS_COMPASS');
+  // everstoke adoption: everstoke is the active channel; its cron window picks
+  // it up the moment tokenSecretSaved flips true (staged rollout switch).
+  const flipped = JSON.parse(JSON.stringify(reg));
+  flipped.channels.find(c => c.slug === 'everstoke').tokenSecretSaved = true;
+  const es = filterChannels(flipped.channels, { scheduleCron: '07 1 * * *' });
+  assert.equal(es.length, 1);
+  assert.equal(es[0].slug, 'everstoke');
+  assert.equal(es[0].envSlug, 'EVERSTOKE');
 
-  const mr = filterChannels(reg.channels, { scheduleCron: '21 3 * * *' });
-  assert.equal(mr.length, 1);
-  assert.equal(mr[0].slug, 'money-rulebook');
-  assert.equal(mr[0].envSlug, 'MONEY_RULEBOOK');
-
-  const dfd = filterChannels(reg.channels, { scheduleCron: '53 3 * * *' });
-  assert.equal(dfd.length, 1);
-  assert.equal(dfd[0].slug, 'debt-free-doctrine');
-  assert.equal(dfd[0].envSlug, 'DEBT_FREE_DOCTRINE');
+  // dormant inherited channels never run on schedule regardless of flag state
+  assert.equal(filterChannels(reg.channels, { scheduleCron: '13 2 * * *' }).length, 0);
+  assert.equal(filterChannels(reg.channels, { scheduleCron: '47 2 * * *' }).length, 0);
 });
 
 test('filterChannels: single slug override via workflow_dispatch input', () => {
   const reg = JSON.parse(fs.readFileSync('yt-mcp/studio-channels.json', 'utf8'));
-  const target = filterChannels(reg.channels, { targetChannel: 'money-rulebook' });
+  const flipped = JSON.parse(JSON.stringify(reg));
+  flipped.channels.find(c => c.slug === 'everstoke').tokenSecretSaved = true;
+  const target = filterChannels(flipped.channels, { targetChannel: 'everstoke' });
   assert.equal(target.length, 1);
-  assert.equal(target[0].slug, 'money-rulebook');
+  assert.equal(target[0].slug, 'everstoke');
 });
 
 test('composite actions exist and parse as valid YAML', () => {

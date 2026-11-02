@@ -12,6 +12,7 @@ name: 🏭 Channel Autopilot — all channels
 
 on:
   schedule:
+    - cron: '07 1 * * *' # everstoke (01:07)
     - cron: '13 2 * * *' # quotequarry (02:13)
     - cron: '47 2 * * *' # investors-compass (02:47)
     - cron: '21 3 * * *' # money-rulebook (03:21)

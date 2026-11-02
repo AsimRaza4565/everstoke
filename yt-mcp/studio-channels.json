@@ -1,14 +1,76 @@
 {
   "channels": [
     {
+      "slug": "everstoke",
+      "label": "Everstoke",
+      "handle": "@everstoke-a5h",
+      "cron": "07 1 * * *",
+      "active": true,
+      "autopilot": true,
+      "tokenSecretSaved": false,
+      "niche": "Daily motivation, discipline & stoic self-mastery",
+      "kit": {
+        "niches": [
+          "stoic discipline & marcus aurelius",
+          "morning discipline rituals",
+          "mental toughness & hard things",
+          "dopamine detox & deep focus",
+          "samurai & warrior ethos",
+          "rise after failure stories"
+        ],
+        "longSlot": "21:00",
+        "slots": [
+          "22:35"
+        ],
+        "bg": "#0C0A08",
+        "ink": "#FFFFFF",
+        "eyebrow": "DAILY DISCIPLINE // EVERSTOKE",
+        "tagline": "Stoke the fire within.",
+        "keyword": "daily motivation",
+        "kwShort": "daily motivation",
+        "theme": "Motivation",
+        "authority": "Discipline & Stoicism",
+        "tags": [
+          "motivation",
+          "discipline",
+          "stoicism",
+          "daily motivation",
+          "mindset",
+          "self improvement",
+          "mental toughness",
+          "consistency",
+          "habits",
+          "self mastery"
+        ],
+        "musicFeels": [
+          "epic",
+          "inspir",
+          "driving"
+        ],
+        "description": "Daily motivation, stoic discipline and mental toughness in 60 seconds. Marcus Aurelius, Seneca, warrior ethos and modern mindset — one lesson every day to stoke the fire within. Subscribe and build unstoppable discipline.",
+        "script": {
+          "targetSeconds": 32,
+          "points": 4,
+          "lineWords": "9-12",
+          "titleStyle": "discipline imperative + stoic authority",
+          "titleExamples": "\"The Stoic Rule Marcus Aurelius Lived By\", \"Do This Every Morning — No Excuses\""
+        }
+      },
+      "voice": "am_adam",
+      "accent": "#FF6B1A",
+      "slots": [
+        "22:35"
+      ]
+    },
+    {
       "slug": "quotequarry",
       "label": "Quote Quarry",
       "handle": "@quotequarry302",
       "cron": "13 2 * * *",
       "docDay": "Tue",
-      "active": true,
-      "autopilot": true,
-      "tokenSecretSaved": true,
+      "active": false,
+      "autopilot": false,
+      "tokenSecretSaved": false,
       "niche": "Timeless wisdom, self-mastery & human psychology",
       "kit": {
         "niches": [
@@ -32,9 +94,9 @@
       "handle": "@investorscompasshq",
       "cron": "47 2 * * *",
       "docDay": "Wed",
-      "active": true,
-      "autopilot": true,
-      "tokenSecretSaved": true,
+      "active": false,
+      "autopilot": false,
+      "tokenSecretSaved": false,
       "niche": "Investing psychology & market wisdom",
       "kit": {
         "niches": [
@@ -58,9 +120,9 @@
       "handle": "@moneyrulebook",
       "cron": "21 3 * * *",
       "docDay": "Thu",
-      "active": true,
-      "autopilot": true,
-      "tokenSecretSaved": true,
+      "active": false,
+      "autopilot": false,
+      "tokenSecretSaved": false,
       "niche": "Personal finance rules & money habits",
       "kit": {
         "niches": [
@@ -84,9 +146,9 @@
       "handle": "@debtfreedoctrine",
       "cron": "53 3 * * *",
       "docDay": "Fri",
-      "active": true,
-      "autopilot": true,
-      "tokenSecretSaved": true,
+      "active": false,
+      "autopilot": false,
+      "tokenSecretSaved": false,
       "niche": "Old money habits & quiet wealth",
       "kit": {
         "niches": [

@@ -37,16 +37,20 @@ test('listChannels filters by source (legacy / registry / merged)', () => {
 });
 
 test('getChannel returns the legacy kit for a known slug with destinations and ytAuth', () => {
+  // everstoke adoption: inherited channels stay resolvable (dormant) but have
+  // no FB destination in this repo; everstoke carries the live token wiring.
   const qq = getChannel('quotequarry');
   assert.ok(qq, 'quotequarry resolves');
   assert.ok(qq.slots, 'has slots');
   assert.ok(qq.niches, 'has niches');
-  assert.equal(qq.destinations.fbPageId, '114550268199751');
+  assert.equal(qq.destinations.fbPageId, undefined);
   assert.equal(qq.ytAuth.envName, 'YT_TOKEN_QUOTEQUARRY');
   assert.ok(qq.ytAuth.tokenFile.includes('quotequarry'));
 
-  const ic = getChannel('investors-compass');
-  assert.equal(ic.ytAuth.envName, 'YT_TOKEN_INVESTORS_COMPASS');
+  const es = getChannel('everstoke');
+  assert.ok(es, 'everstoke resolves');
+  assert.equal(es.ytAuth.envName, 'YT_TOKEN_EVERSTOKE');
+  assert.ok(es.ytAuth.tokenFile.includes('everstoke'));
 });
 
 test('getChannel returns undefined for an unknown slug (no silent fallback)', () => {
@@ -55,12 +59,14 @@ test('getChannel returns undefined for an unknown slug (no silent fallback)', ()
 
 // --- FB page destinations (regression: #38 yt-daily posted QQ frames to the retired page) ---
 
-test('fbPageId: canonical page ids for all four legacy channels (09-20 page swap)', () => {
-  // Reliq North replaced Strategic Silence as QQ's page on 09-20 — 114550268199751 is canonical.
-  assert.equal(fbPageId('quotequarry'), '114550268199751');
-  assert.equal(fbPageId('investors-compass'), '116157974886564');
-  assert.equal(fbPageId('money-rulebook'), '1077306835630491');
-  assert.equal(fbPageId('debt-free-doctrine'), '106473735839651');
+test('fbPageId: undefined for every channel until cross-post destinations are configured', () => {
+  // everstoke adoption: previous owner's page ids removed from lib/registry.mjs;
+  // fbPageId must return undefined for all slugs (FB lane stays paused).
+  assert.equal(fbPageId('quotequarry'), undefined);
+  assert.equal(fbPageId('investors-compass'), undefined);
+  assert.equal(fbPageId('money-rulebook'), undefined);
+  assert.equal(fbPageId('debt-free-doctrine'), undefined);
+  assert.equal(fbPageId('everstoke'), undefined);
 });
 
 test('fbPageId: wizard channel without a destination and unknown slugs return undefined', () => {
