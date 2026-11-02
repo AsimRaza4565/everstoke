@@ -1,0 +1,53 @@
+name: 🏥 CI Doctor — Health Check
+
+on:
+  schedule:
+    - cron: '5 12 * * *'
+    - cron: '5 20 * * *'
+    - cron: '5 3 * * *'
+  workflow_dispatch:
+
+concurrency:
+  group: ci-doctor
+  cancel-in-progress: false
+
+permissions:
+  contents: write
+  issues: write
+
+jobs:
+  doctor:
+    name: 🏥 Health Check — All Channels
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - name: 📥 Checkout
+        uses: actions/checkout@v4
+
+      - name: ⚙️ Setup Node.js 20
+        uses: actions/setup-node@v4
+        with:
+          node-version: 24
+
+      - name: 📦 Install Dependencies
+        run: npm install
+
+      - name: 🏥 Run Health Check
+        env:
+          YOUTUBE_CLIENT_ID: ${{ secrets.YOUTUBE_CLIENT_ID }}
+          YOUTUBE_CLIENT_SECRET: ${{ secrets.YOUTUBE_CLIENT_SECRET }}
+          NTFY_TOPIC: ${{ secrets.NTFY_TOPIC }}
+          YT_TOKEN_INVESTORS_COMPASS: ${{ secrets.YT_TOKEN_INVESTORS_COMPASS }}
+          YT_TOKEN_MONEY_RULEBOOK: ${{ secrets.YT_TOKEN_MONEY_RULEBOOK }}
+          YT_TOKEN_DEBT_FREE_DOCTRINE: ${{ secrets.YT_TOKEN_DEBT_FREE_DOCTRINE }}
+          YT_TOKEN_QUOTEQUARRY: ${{ secrets.YT_TOKEN_QUOTEQUARRY }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: node ci-doctor.mjs
+
+      - name: 💾 Commit report
+        run: |
+          git config user.name "ci-doctor"
+          git config user.email "doctor@quarrystudio"
+          git add ci-doctor-report.json || true
+          git diff --cached --quiet || git commit -m "ci-doctor report [skip ci]"
+          git push || true

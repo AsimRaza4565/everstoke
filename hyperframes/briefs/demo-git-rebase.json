@@ -1,0 +1,36 @@
+{
+  "slug": "demo-git-rebase",
+  "brand": "Byte Theory",
+  "subline": "Code, explained simply",
+  "kicker": "Byte Theory · Git",
+  "voice": "en-US-AndrewNeural",
+  "width": 1920,
+  "height": 1080,
+  "ambient": { "a": "#34d399", "b": "#fbbf24" },
+  "beats": [
+    { "text": "Two branches, one history. Which way do you combine them?", "em": "combine" },
+    { "text": "Merge says: keep both stories, add a snapshot of them together.", "em": "snapshot" },
+    { "text": "That snapshot is a merge commit. Honest, but noisy.", "em": "noisy" },
+    { "text": "Rebase says: replay your work on top, as if you started last.", "em": "replay" },
+    { "text": "Clean straight line. But rewriting shared history breaks your team.", "em": "breaks" },
+    { "text": "So: merge in public. Rebase in private.", "em": "private" }
+  ],
+  "scenes": [
+    { "type": "commits", "mode": "plain", "caption": "one main line · commits land one by one" },
+    { "type": "commits", "mode": "branch", "caption": "a feature branch grows out of main" },
+    { "type": "commits", "mode": "merge", "caption": "merge commit · two parents · honest but noisy" },
+    { "type": "commits", "mode": "rebase", "caption": "rebase · feature commits replay on top of main" },
+    { "type": "code", "title": "terminal — the danger",
+      "lines": [
+        [ { "t": "$ ", "c": "c" }, { "t": "git push --force", "c": "r" } ],
+        [ { "t": "# rewrites commits your teammates already have", "c": "c" } ]
+      ],
+      "tag": "shared history broken" },
+    { "type": "pills",
+      "items": [
+        { "icon": "link", "label": "MERGE · in public", "variant": "gold" },
+        { "icon": "lock", "label": "REBASE · in private", "variant": "emerald" }
+      ],
+      "caption": "the rule seniors actually follow" }
+  ]
+}

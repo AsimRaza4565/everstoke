@@ -1,0 +1,181 @@
+# 10-05 CHANNEL FACTORY — ONE workflow for every channel.
+# The registry (yt-mcp/studio-channels.json) is the source of truth: scheduled
+# cron offsets match each channel's cron window, and workflow_dispatch allows
+# single-channel runs or batch runs.
+#
+# Tokens: each channel stores its token in secret YT_TOKEN_<SLUG> where
+# <SLUG> = slug uppercased with dashes -> underscores (quote-quarry -> QUOTE_QUARRY).
+# Docs are produced by yt-deepdive on each channel's docDay INSIDE the pipeline
+# run (cadence: 1 short/day, weekly doc, Sunday break — enforced in the engine).
+
+name: 🏭 Channel Autopilot — all channels
+
+on:
+  schedule:
+    - cron: '13 2 * * *' # quotequarry (02:13)
+    - cron: '47 2 * * *' # investors-compass (02:47)
+    - cron: '21 3 * * *' # money-rulebook (03:21)
+    - cron: '53 3 * * *' # debt-free-doctrine (03:53)
+    - cron: '33 2 * * *' # wizard channels (02:33)
+  workflow_dispatch:
+    inputs:
+      channel:
+        description: "one slug (blank = all channels)"
+        required: false
+        default: ""
+      topup:
+        description: "heal N slots (blank = normal daily run)"
+        required: false
+        default: ""
+
+permissions:
+  contents: write
+  issues: write # verify-run second alert channel (#91)
+
+jobs:
+  discover:
+    runs-on: ubuntu-latest
+    outputs:
+      channels: ${{ steps.disc.outputs.channels }}
+    steps:
+      - name: 📥 Checkout
+        uses: actions/checkout@v4
+      - name: 🔎 Read the channel registry
+        id: disc
+        env:
+          EVENT_SCHEDULE: ${{ github.event.schedule }}
+          INPUT_CHANNEL: ${{ inputs.channel }}
+        run: |
+          node -e "
+            const fs = require('fs');
+            let chans = [];
+            try {
+              const reg = JSON.parse(fs.readFileSync('yt-mcp/studio-channels.json', 'utf8'));
+              const all = (reg.channels || [])
+                .filter(c => c.autopilot !== false && c.active !== false && c.tokenSecretSaved !== false)
+                .map(c => ({
+                  slug: c.slug,
+                  envSlug: c.slug.toUpperCase().replace(/-/g, '_'),
+                  cron: c.cron || '33 2 * * *'
+                }));
+              const target = (process.env.INPUT_CHANNEL || '').trim();
+              const sched = (process.env.EVENT_SCHEDULE || '').trim();
+              if (target) {
+                chans = all.filter(c => c.slug === target);
+              } else if (sched) {
+                chans = all.filter(c => c.cron === sched);
+              } else {
+                chans = all;
+              }
+            } catch (e) { console.log('registry unreadable:', e.message); }
+            console.log(JSON.stringify(chans));
+            fs.writeFileSync(process.env.GITHUB_OUTPUT, 'channels=' + JSON.stringify(chans));
+          "
+
+  produce:
+    needs: discover
+    if: ${{ needs.discover.outputs.channels != '[]' && needs.discover.outputs.channels != '' }}
+    strategy:
+      matrix:
+        slug: ${{ fromJSON(needs.discover.outputs.channels) }}
+      max-parallel: 3
+      fail-fast: false
+    concurrency:
+      group: channel-${{ matrix.slug.slug }}
+      cancel-in-progress: false
+    runs-on: ubuntu-latest
+    timeout-minutes: 90
+    env:
+      SLUG: ${{ matrix.slug.slug }}
+    steps:
+      - name: 📥 Checkout
+        uses: actions/checkout@v4
+
+      - name: 💾 Restore Pixabay 4K clip pool
+        uses: actions/cache@v4
+        with:
+          path: pixabay-pool
+          key: pixabay-pool-v1
+
+      - name: ⚙️ Setup Node.js 24
+        uses: actions/setup-node@v4
+        with:
+          node-version: 24
+
+      - name: 📦 Install Node Dependencies
+        run: npm install
+
+      - name: 🔊 Setup FFmpeg
+        uses: ./.github/actions/setup-ffmpeg
+
+      - name: 🎨 Setup Render Environment
+        uses: ./.github/actions/setup-render
+
+      - name: 🔑 Resolve this channel's token
+        env:
+          DYN_TOKEN: ${{ secrets[format('YT_TOKEN_{0}', matrix.slug.envSlug)] }}
+        run: |
+          ENV_NAME="YT_TOKEN_$(echo "$SLUG" | tr '[:lower:]' '[:upper:]' | tr '-' '_')"
+          if [ -z "$DYN_TOKEN" ]; then
+            echo "::error::secret ${ENV_NAME} is missing — connect the channel in Studio first"
+            exit 1
+          fi
+          echo "${ENV_NAME}=${DYN_TOKEN}" >> "$GITHUB_ENV"
+
+      - name: 🚀 Channel Pipeline — Shorts (+ weekly episode on docDay)
+        env:
+          GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
+          GROQ_API_KEY: ${{ secrets.GROQ_API_KEY }}
+          CEREBRAS_API_KEY: ${{ secrets.CEREBRAS_API_KEY }}
+          MISTRAL_API_KEY: ${{ secrets.MISTRAL_API_KEY }}
+          HF_TOKEN: ${{ secrets.HF_TOKEN }}
+          PIXABAY_API_KEY: ${{ secrets.PIXABAY_API_KEY }}
+          NTFY_TOPIC: ${{ secrets.NTFY_TOPIC }}
+          YOUTUBE_CLIENT_ID: ${{ secrets.YOUTUBE_CLIENT_ID }}
+          YOUTUBE_CLIENT_SECRET: ${{ secrets.YOUTUBE_CLIENT_SECRET }}
+          GH_TOKEN: ${{ github.token }}
+          GH_REPO: ${{ github.repository }}
+          # Template registry preflight (issue #102): unassigned channels keep the legacy
+          # path (preflight degrades to legacy+ntfy warning if the DB is unreachable).
+          DATABASE_URL: ${{ secrets.DATABASE_URL }}
+        run: node channel-pipeline.mjs "$SLUG" ${{ inputs.topup && format('--topup={0}', inputs.topup) || '' }}
+
+      - name: 📦 Keep reels for IG slot poster
+        if: ${{ hashFiles(format('fb-outbox/{0}/*.json*', matrix.slug.slug)) != '' }}
+        uses: actions/cache/save@v4
+        with:
+          path: fb-outbox/${{ matrix.slug.slug }}
+          key: ig-outbox-${{ matrix.slug.slug }}-${{ github.run_id }}
+
+      - name: ⬆️ Upload doc render artifact (docDay only)
+        if: ${{ hashFiles(format('tt-lf/lf-{0}.mp4', matrix.slug.slug)) != '' }}
+        uses: actions/upload-artifact@v4
+        with:
+          name: lf-${{ matrix.slug.slug }}
+          path: tt-lf/lf-${{ matrix.slug.slug }}.mp4
+          retention-days: 30
+
+      - name: ⬆️ Upload doc meta artifact
+        if: ${{ hashFiles(format('tt-lf/lf-meta-{0}.json', matrix.slug.slug)) != '' }}
+        uses: actions/upload-artifact@v4
+        with:
+          name: lf-meta-${{ matrix.slug.slug }}
+          path: tt-lf/lf-meta-${{ matrix.slug.slug }}.json
+          retention-days: 30
+
+      - name: ⬆️ Upload doc SRT artifact (#96 — clips lane supply)
+        if: ${{ hashFiles(format('tt-lf/lf-srt-{0}.srt', matrix.slug.slug)) != '' }}
+        uses: actions/upload-artifact@v4
+        with:
+          name: lf-srt-${{ matrix.slug.slug }}
+          path: tt-lf/lf-srt-${{ matrix.slug.slug }}.srt
+          retention-days: 30
+
+      - name: 💾 Commit publishing state
+        run: |
+          git config user.name "quarry-bot"
+          git config user.email "bot@quotequarry.local"
+          git add yt-mcp/state/ yt-mcp/schedule-state.json yt-mcp/studio-channels.json || true
+          git diff --cached --quiet || git commit -m "autopilot ${SLUG} daily state [skip ci]"
+          git pull --rebase --autostash origin main || true
+          git push || echo "::warning::state push failed for ${SLUG} — state stays local to this run"

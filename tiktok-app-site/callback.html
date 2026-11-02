@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="en">
+<head><meta charset="utf-8"><title>Connecting… — Quarry Studio</title>
+<style>body{font-family:Segoe UI,sans-serif;background:#0d1117;color:#e6edf3;display:flex;justify-content:center;padding-top:120px}main{max-width:520px;text-align:center}.ok{color:#3fb950}.err{color:#f85149}</style>
+</head>
+<body><main>
+<h1 style="color:#fff">Connecting your TikTok account…</h1>
+<p id="msg">Exchanging authorization with TikTok…</p>
+<p><a href="dashboard.html" style="color:#58a6ff">← back to dashboard</a></p>
+<script src="api-config.js"></script>
+<script>
+(async () => {
+  const p = new URLSearchParams(location.search);
+  const code = p.get('code');
+  const err = p.get('error');
+  const msg = document.getElementById('msg');
+  if (err) { msg.innerHTML = '<span class="err">Authorization declined: ' + err + '</span>'; return; }
+  if (!code) { msg.innerHTML = '<span class="err">No authorization code received.</span>'; return; }
+  try {
+    const r = await fetch(window.QS_API_BASE + '/api/token', {
+      method: 'POST', headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ code })
+    });
+    const d = await r.json();
+    if (d.connected) { msg.innerHTML = '<span class="ok">✅ TikTok connected! Redirecting to dashboard…</span>'; setTimeout(() => location.href = 'dashboard.html', 1500); }
+    else msg.innerHTML = '<span class="err">Token exchange failed: ' + (d.error || 'unknown') + '</span>';
+  } catch (e) { msg.innerHTML = '<span class="err">Backend unreachable — is the tunnel + server running?</span>'; }
+})();
+</script>
+</main></body>
+</html>

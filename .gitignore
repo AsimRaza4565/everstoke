@@ -1,0 +1,116 @@
+# Secrets — never commit
+.env
+*.env.local
+*.env.*
+.mcp.json
+youtube-oauth-tokens.json
+threads-oauth-tokens.json
+tiktok-oauth-tokens.json
+pinterest-oauth-tokens.json
+yt-mcp/channels/
+yt-mcp/client_secret.json
+
+# Dependencies
+node_modules/
+
+# Executables & Large Binaries
+cloudflared.exe
+*.exe
+
+# Databases & local sqlite
+*.sqlite
+*.sqlite3
+*.sqlite-journal
+n8n-db.sqlite
+
+# Postiz dynamic config
+dynamicconfig/
+
+# Local artifacts & rendered outputs
+*.log
+uploads/
+tmp/
+post-*.jpg
+reel-*.mp4
+scratch_*.png
+test_*.png
+inter_comparison.png
+scripts/scratch/
+
+# OS junk
+.DS_Store
+Thumbs.db
+
+# Local ffmpeg (portable) & Pixabay demo artifacts
+ffmpeg-bin/
+pixabay-*.mp4
+pixabay-*.jpg
+pixabay-bg*.mp4
+
+# Cinematic engine local artifacts
+pixabay-pool/
+flow-test-*.jpg
+flow-test-*.mp4
+qa-*.jpg
+
+# rotating music cache
+.music-cache/
+music-review/
+research/style-ref/
+studio/.studio-password.txt
+studio/login-payload.json
+studio/*.log
+
+# CloudXBerry audit downloads (copyrighted reference videos — local only)
+audit/
+frames-demo/
+z*.json
+*.tmp.*
+hf-proof/
+cloud-demos/
+
+# 10-17 cleanup audit (issue #86): never commit these
+proofs/
+shots-dreams/
+.playwright-mcp/
+__pycache__/
+*.pyc
+longvideo/lf-inbox/
+longvideo/out/
+fb-outbox/
+demos/agnes-thumbs/
+thumbnails/demos/
+tt-tmp/
+state/dup-cleanup-log*.json
+state/dup-plan.json
+or-models.json
+sn-models.json
+*.tsbuildinfo
+studio/login-payload.json
+
+# 10-17 repair: owner-WIP / local tooling swept by git add -A — untracked, kept local
+.agents/
+explainer/public/lf-audio/
+explainer/public/lf-photos/
+explainer/public/teacher-audio/
+explainer/public/tech-audio/
+explainer/public/vox-collage/
+explainer/public/tl/
+explainer/public/cap-voice.mp3
+explainer/public/cap-showcase.json
+explainer/public/psych-music.mp3
+explainer/public/psych-tts-input.json
+explainer/public/qa-themes.json
+explainer/public/lf-*.json
+explainer/public/lf-thumb-*.json
+explainer/public/ot-props.json
+explainer/public/teacher-demo.json
+explainer/public/tech-demo.json
+explainer/public/ts-props.json
+explainer/public/vox-collage-demo.json
+demos/hf-demos/
+state/avatar-*.jpg
+skills-lock.json
+colab-schemas-v4.json
+colab-tools.json
+thumbnails/assets/

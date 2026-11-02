@@ -1,0 +1,215 @@
+{
+  "date": "2026-10-09",
+  "executedBy": "zcode (user go)",
+  "rules": "exact-title public groups keep-oldest; QQ private heal-dupe",
+  "deletions": [
+    {
+      "slug": "quotequarry",
+      "action": "delete-public-dup",
+      "title": "Stop Begging For Respect | Stoicism Philosophy",
+      "videoId": "xxyZon3Nu1E",
+      "publishedAt": "2026-10-04T22:35:39Z",
+      "kept": "6xLQIY31E0k"
+    },
+    {
+      "slug": "quotequarry",
+      "action": "delete-public-dup",
+      "title": "Stop Begging For Respect | Stoicism Philosophy",
+      "videoId": "WJtnvx6rXFs",
+      "publishedAt": "2026-10-05T11:35:37Z",
+      "kept": "6xLQIY31E0k"
+    },
+    {
+      "slug": "quotequarry",
+      "action": "delete-public-dup",
+      "title": "Stop Begging For Respect | Stoicism Philosophy",
+      "videoId": "OZ24Hlbpu-o",
+      "publishedAt": "2026-10-05T22:35:32Z",
+      "kept": "6xLQIY31E0k"
+    },
+    {
+      "slug": "quotequarry",
+      "action": "delete-public-dup",
+      "title": "Conquer Yourself First | Stoicism Philosophy",
+      "videoId": "CDWYxiOhbqQ",
+      "publishedAt": "2026-09-29T11:35:35Z",
+      "kept": "joJxo1UW9Es"
+    },
+    {
+      "slug": "quotequarry",
+      "action": "delete-public-dup",
+      "title": "Conquer Yourself First | Stoicism Philosophy",
+      "videoId": "xmxWwlKVc34",
+      "publishedAt": "2026-09-29T15:35:37Z",
+      "kept": "joJxo1UW9Es"
+    },
+    {
+      "slug": "quotequarry",
+      "action": "delete-private-heal-dupe",
+      "title": "Emotionally Unbreakable Stoic Woman | Stoicism Philosophy",
+      "videoId": "gaMB4E7VDX8",
+      "uploadedAt": "2026-10-09T00:27:17Z",
+      "reason": "sweeper 00:23 heal + main 09:07 run both scheduled 22:35 — kept main-run copy"
+    },
+    {
+      "slug": "money-rulebook",
+      "action": "delete-public-dup",
+      "title": "7 Money Habits That Quietly Make You Rich | Personal Finance",
+      "videoId": "FvExsgmg1QM",
+      "publishedAt": "2026-10-06T00:05:25Z",
+      "kept": "YjDR9wnLADI"
+    },
+    {
+      "slug": "money-rulebook",
+      "action": "delete-public-dup",
+      "title": "6 Rules For Your First $10,000 | Personal Finance",
+      "videoId": "QK5Rxb3yHiA",
+      "publishedAt": "2026-09-24T16:35:03Z",
+      "kept": "K1-YVSSt7ss"
+    },
+    {
+      "slug": "money-rulebook",
+      "action": "delete-public-dup",
+      "title": "6 Rules For Your First $10,000 | Personal Finance",
+      "videoId": "FX0ojb3eiNA",
+      "publishedAt": "2026-09-28T16:35:38Z",
+      "kept": "K1-YVSSt7ss"
+    },
+    {
+      "slug": "money-rulebook",
+      "action": "delete-public-dup",
+      "title": "6 Rules For Your First $10,000 | Personal Finance",
+      "videoId": "E4FkPW3rMjM",
+      "publishedAt": "2026-10-02T00:05:07Z",
+      "kept": "K1-YVSSt7ss"
+    },
+    {
+      "slug": "money-rulebook",
+      "action": "delete-public-dup",
+      "title": "6 Rules For Your First $10,000 | Personal Finance",
+      "videoId": "dJSOYuS6X2E",
+      "publishedAt": "2026-10-03T00:05:35Z",
+      "kept": "K1-YVSSt7ss"
+    },
+    {
+      "slug": "money-rulebook",
+      "action": "delete-public-dup",
+      "title": "6 Rules For Your First $10,000 | Personal Finance",
+      "videoId": "KXLp1AbPCgg",
+      "publishedAt": "2026-10-03T12:35:10Z",
+      "kept": "K1-YVSSt7ss"
+    },
+    {
+      "slug": "money-rulebook",
+      "action": "delete-public-dup",
+      "title": "6 Rules For Your First $10,000 | Personal Finance",
+      "videoId": "xG_o_-Oopo4",
+      "publishedAt": "2026-10-04T12:35:14Z",
+      "kept": "K1-YVSSt7ss"
+    },
+    {
+      "slug": "money-rulebook",
+      "action": "delete-public-dup",
+      "title": "6 Rules For Your First $10,000 | Personal Finance",
+      "videoId": "1Dn6XXmdWa8",
+      "publishedAt": "2026-10-04T16:35:24Z",
+      "kept": "K1-YVSSt7ss"
+    },
+    {
+      "slug": "money-rulebook",
+      "action": "delete-public-dup",
+      "title": "6 Rules For Your First $10,000 | Personal Finance",
+      "videoId": "D_aQSnceytk",
+      "publishedAt": "2026-10-05T00:05:06Z",
+      "kept": "K1-YVSSt7ss"
+    },
+    {
+      "slug": "money-rulebook",
+      "action": "delete-public-dup",
+      "title": "6 Rules For Your First $10,000 | Personal Finance",
+      "videoId": "6_pvMS4adLc",
+      "publishedAt": "2026-10-05T12:35:04Z",
+      "kept": "K1-YVSSt7ss"
+    },
+    {
+      "slug": "money-rulebook",
+      "action": "delete-public-dup",
+      "title": "6 Rules For Your First $10,000 | Personal Finance",
+      "videoId": "JGquHx0g-cw",
+      "publishedAt": "2026-10-05T16:35:20Z",
+      "kept": "K1-YVSSt7ss"
+    },
+    {
+      "slug": "money-rulebook",
+      "action": "delete-public-dup",
+      "title": "4 Money Habits That Save Thousands | Personal Finance",
+      "videoId": "38ht3Xz5xno",
+      "publishedAt": "2026-10-04T00:05:12Z",
+      "kept": "FSUFmEYPEuk"
+    },
+    {
+      "slug": "money-rulebook",
+      "action": "delete-public-dup",
+      "title": "7 Money Habits Making You Rich | Personal Finance",
+      "videoId": "tMTXJor0PoY",
+      "publishedAt": "2026-10-03T16:35:03Z",
+      "kept": "1twuim4iJAo"
+    },
+    {
+      "slug": "money-rulebook",
+      "action": "delete-public-dup",
+      "title": "7 Money Habits To Get Rich | Personal Finance",
+      "videoId": "4TD9jS6V8ck",
+      "publishedAt": "2026-10-01T16:35:26Z",
+      "kept": "2Mc7d0pLKPU"
+    },
+    {
+      "slug": "money-rulebook",
+      "action": "delete-public-dup",
+      "title": "5 Things Rich People Never Buy | Personal Finance",
+      "videoId": "-xieEXaE_Wk",
+      "publishedAt": "2026-09-30T12:35:16Z",
+      "kept": "nWn2sbKugV8"
+    },
+    {
+      "slug": "money-rulebook",
+      "action": "delete-public-dup",
+      "title": "5 Money Moves Before 30 | Personal Finance",
+      "videoId": "moF-g2DhTdg",
+      "publishedAt": "2026-09-29T00:05:18Z",
+      "kept": "4R54KShI0mE"
+    },
+    {
+      "slug": "money-rulebook",
+      "action": "delete-public-dup",
+      "title": "7 Money Habits That Make You Rich | Personal Finance",
+      "videoId": "LCXeGytqbII",
+      "publishedAt": "2026-09-26T00:05:32Z",
+      "kept": "9eExaPG5YHc"
+    },
+    {
+      "slug": "money-rulebook",
+      "action": "delete-public-dup",
+      "title": "7 Money Habits That Make You Rich | Personal Finance",
+      "videoId": "VVrVEwm1j6E",
+      "publishedAt": "2026-09-27T12:35:16Z",
+      "kept": "9eExaPG5YHc"
+    },
+    {
+      "slug": "money-rulebook",
+      "action": "delete-public-dup",
+      "title": "7 Money Habits That Make You Rich | Personal Finance",
+      "videoId": "b27bmozhplo",
+      "publishedAt": "2026-09-28T00:05:31Z",
+      "kept": "9eExaPG5YHc"
+    },
+    {
+      "slug": "money-rulebook",
+      "action": "delete-public-dup",
+      "title": "7 Money Habits That Make You Rich | Personal Finance",
+      "videoId": "oWbgqCl2FPg",
+      "publishedAt": "2026-09-28T12:35:05Z",
+      "kept": "9eExaPG5YHc"
+    }
+  ]
+}

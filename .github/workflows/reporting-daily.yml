@@ -1,0 +1,81 @@
+name: 📊 Daily/Weekly/Monthly Reports (Excel + ntfy)
+
+on:
+  schedule:
+    # 16:45 UTC = 21:45 PKT — after all three posting slots have run
+    - cron: '45 16 * * *'
+  workflow_dispatch:
+    inputs:
+      mode:
+        description: 'Report mode'
+        default: 'daily'
+        type: choice
+        options: ['daily', 'weekly', 'monthly']
+
+concurrency:
+  group: reporting
+  cancel-in-progress: false
+
+jobs:
+  report:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - name: 📥 Checkout (push-capable)
+        uses: actions/checkout@v4
+        with:
+          token: ${{ secrets.GITHUB_PAT || secrets.SECRET_WRITER_PAT }}
+
+      - name: ⚙️ Setup Node.js 20
+        uses: actions/setup-node@v4
+        with:
+          node-version: 24
+
+      - name: 📦 Install Dependencies
+        run: npm install
+
+      - name: Build & Send Reports
+        env:
+          YOUTUBE_CLIENT_ID: ${{ secrets.YOUTUBE_CLIENT_ID }}
+          YOUTUBE_CLIENT_SECRET: ${{ secrets.YOUTUBE_CLIENT_SECRET }}
+          YT_TOKEN_QUOTEQUARRY: ${{ secrets.YT_TOKEN_QUOTEQUARRY }}
+          YT_TOKEN_INVESTORS_COMPASS: ${{ secrets.YT_TOKEN_INVESTORS_COMPASS }}
+          YT_TOKEN_MONEY_RULEBOOK: ${{ secrets.YT_TOKEN_MONEY_RULEBOOK }}
+          YT_TOKEN_DEBT_FREE_DOCTRINE: ${{ secrets.YT_TOKEN_DEBT_FREE_DOCTRINE }}
+          FB_PAGE_TOKEN: ${{ secrets.FB_PAGE_TOKEN }}
+          THREADS_ACCESS_TOKEN: ${{ secrets.THREADS_ACCESS_TOKEN }}
+          THREADS_USER_ID: ${{ secrets.THREADS_USER_ID }}
+          NTFY_TOPIC: ${{ secrets.NTFY_TOPIC }}
+        run: |
+          node daily-excel-report.mjs daily
+          # PKT weekday: 0=Sunday → also weekly; 1st of month → also monthly
+          PKTDOW=$(date -u -d "+5 hours" +%w)
+          PKTDATE=$(date -u -d "+5 hours" +%d)
+          if [ "$PKTDOW" = "0" ]; then node daily-excel-report.mjs weekly; fi
+          if [ "$PKTDATE" = "01" ]; then node daily-excel-report.mjs monthly; fi
+
+      - name: 🧹 Weekly FB duplicate-reel cleanup (Mondays only)
+        if: ${{ github.event.schedule != '' }}
+        env:
+          FB_PAGE_TOKEN: ${{ secrets.FB_PAGE_TOKEN }}
+        run: |
+          if [ "$(date -u +%u)" = "1" ]; then node fb-dedupe.mjs --apply; else echo "not Monday — skip"; fi
+
+      - name: 💾 Commit stats history back to repo
+        run: |
+          git config user.name "quarry-bot"
+          git config user.email "bot@quotequarry.local"
+          git add state/ logs/ || true
+          git diff --cached --quiet || git commit -m "report state: $(date -u -d '+5 hours' +%F)"
+          git push || true
+
+      - name: 🖼️ Upload PDF + Excel artifacts
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: reports-${{ github.run_id }}
+          path: |
+            reports/*.pdf
+            reports/*.xlsx
+          if-no-files-found: ignore
+          retention-days: 30

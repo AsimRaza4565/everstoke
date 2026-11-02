@@ -1,0 +1,15 @@
+[
+  { "num": "01", "group": "TENSION", "title": "Crypto" },
+  { "num": "02", "group": "TENSION", "title": "Scissors" },
+  { "num": "03", "group": "TENSION", "title": "I Can Feel it Coming" },
+  { "num": "04", "group": "TENSION", "title": "Enter the Maze" },
+  { "num": "05", "group": "TENSION", "title": "Impending Boom" },
+  { "num": "06", "group": "CINEMATIC", "title": "At Launch" },
+  { "num": "07", "group": "CINEMATIC", "title": "Minima" },
+  { "num": "08", "group": "CINEMATIC", "title": "Darkness is Coming" },
+  { "num": "09", "group": "CINEMATIC", "title": "Colossus" },
+  { "num": "10", "group": "TECH", "title": "Shiny Tech" },
+  { "num": "11", "group": "TECH", "title": "Ethernight Club" },
+  { "num": "12", "group": "TECH", "title": "Deliberate Thought" },
+  { "num": "13", "group": "TECH", "title": "Cut Trance" }
+]

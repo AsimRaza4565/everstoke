@@ -1,0 +1,96 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width={{WIDTH}}, height={{HEIGHT}}" />
+    <link href="https://fonts.googleapis.com/css2?{{FONTS}}&display=swap" rel="stylesheet" />
+    <script src="https://cdn.jsdelivr.net/npm/gsap@3.14.2/dist/gsap.min.js"></script>
+    <style>
+      * { margin: 0; padding: 0; box-sizing: border-box; }
+      html, body { margin: 0; width: {{WIDTH}}px; height: {{HEIGHT}}px; overflow: hidden; background: {{BG}}; }
+      #root {
+        position: relative; width: {{WIDTH}}px; height: {{HEIGHT}}px;
+        background:
+          radial-gradient(1200px 800px at 30% 20%, {{BG_GLOW}}, transparent 60%),
+          linear-gradient(180deg, {{BG}} 0%, {{BG}} 55%, {{BG_DEEP}} 100%);
+        font-family: {{FONT_STACK}};
+      }
+      .vignette { position: absolute; inset: 0; background: radial-gradient(130% 100% at 50% 45%, transparent 55%, rgba(0,0,0,0.5) 100%); }
+      .grain { position: absolute; inset: 0; opacity: 0.05; }
+      .kicker {
+        position: absolute; left: 120px; top: 180px;
+        font-family: {{UI_STACK}}; font-weight: 500; font-size: 26px;
+        letter-spacing: 0.4em; color: {{TEXT_SUBTLE}}; text-transform: uppercase;
+      }
+      .kicker-rule { position: absolute; left: 120px; top: 240px; height: 2px; width: 170px; background: {{ACCENT}}; }
+      .beat {
+        position: absolute; left: 120px; right: 120px; top: {{BEAT_TOP}}px;
+        font-weight: 500; color: {{TEXT}};
+        font-size: {{BEAT_SIZE}}px; line-height: 1.2; letter-spacing: -0.01em;
+        text-shadow: 0 2px 22px rgba(0,0,0,0.45);
+      }
+      .beat .em { color: {{ACCENT}}; font-style: italic; }
+      .beat .w { display: inline-block; will-change: transform, opacity; }
+      .endcard { position: absolute; inset: 0; text-align: center; }
+      .endcard .brand {
+        position: absolute; left: 60px; right: 60px; top: {{BRAND_TOP}}px;
+        font-size: {{BRAND_SIZE}}px; font-weight: 600; letter-spacing: 0.08em;
+        color: {{TEXT}}; text-transform: uppercase; text-shadow: 0 2px 22px rgba(0,0,0,0.45);
+      }
+      .endcard .rule { position: absolute; left: calc(50% - 130px); top: {{BRAND_TOP}}px; margin-top: 150px; width: 260px; height: 2px; background: {{ACCENT}}; }
+      .endcard .sub {
+        position: absolute; left: 40px; right: 40px; top: {{BRAND_TOP}}px; margin-top: 200px;
+        font-family: {{UI_STACK}}; font-size: 24px; letter-spacing: 0.3em;
+        color: {{TEXT_SUBTLE}}; text-transform: uppercase;
+      }
+    </style>
+  </head>
+  <body>
+    <div id="root" data-composition-id="main" data-start="0" data-duration="{{TOTAL}}" data-width="{{WIDTH}}" data-height="{{HEIGHT}}">
+      <div class="kicker clip" id="kicker" data-start="0.2" data-duration="{{TOTAL}}" data-track-index="1">{{KICKER}}</div>
+      <div class="kicker-rule clip" id="kicker-rule" data-start="0.2" data-duration="{{TOTAL}}" data-track-index="1"></div>
+{{BEAT_CLIPS}}
+      <div class="endcard clip" id="endcard" data-start="{{END_START}}" data-duration="{{END_DUR}}" data-track-index="2">
+        <span class="brand">{{BRAND}}</span>
+        <span class="rule"></span>
+        <span class="sub">{{SUBLINE}}</span>
+      </div>
+      <div class="vignette clip" id="vignette" data-start="0" data-duration="{{TOTAL}}" data-track-index="4"></div>
+      <svg class="grain clip" id="grain" data-start="0" data-duration="{{TOTAL}}" data-track-index="4" width="{{WIDTH}}" height="{{HEIGHT}}">
+        <filter id="n"><feTurbulence type="fractalNoise" baseFrequency="0.9" numOctaves="2" stitchTiles="stitch" /></filter>
+        <rect width="{{WIDTH}}" height="{{HEIGHT}}" filter="url(#n)" />
+      </svg>
+{{AUDIO_CLIPS}}
+      <script src="https://cdn.jsdelivr.net/npm/gsap@3.14.2/dist/gsap.min.js"></script>
+      <script>
+        const tl = gsap.timeline({ paused: true });
+        function splitWords(sel) {
+          const el = document.querySelector(sel);
+          if (!el) return [];
+          const nodes = [];
+          el.childNodes.forEach((n) => {
+            if (n.nodeType === 3) {
+              n.textContent.split(/(\s+)/).forEach((t) => {
+                if (t.trim()) { const s = document.createElement('span'); s.className = 'w'; s.textContent = t; nodes.push(s); n.parentNode.insertBefore(s, n); }
+                else if (t) { n.parentNode.insertBefore(document.createTextNode(' '), n); }
+              });
+              n.remove();
+            } else if (n.nodeType === 1) { n.classList.add('w'); nodes.push(n); }
+          });
+          return nodes;
+        }
+        const beatSels = {{BEAT_SELS}};
+        const allWords = beatSels.map(splitWords);
+        allWords.forEach((ws) => gsap.set(ws, { opacity: 0, y: {{RISE_Y}} }));
+        tl.fromTo('#kicker', { opacity: 0, y: 18 }, { opacity: 1, y: 0, duration: 0.7, ease: 'power2.out' }, 0.2);
+        tl.fromTo('#kicker-rule', { scaleX: 0, transformOrigin: 'left center' }, { scaleX: 1, duration: 0.8, ease: 'power2.out' }, 0.45);
+        {{WORD_REVEALS}}
+        tl.fromTo('#endcard', { opacity: 0, scale: 0.98 }, { opacity: 1, scale: 1, duration: 0.9, ease: 'power2.out' }, {{END_START}});
+        tl.fromTo('#endcard .rule', { scaleX: 0 }, { scaleX: 1, duration: 0.7, ease: 'power2.inOut' }, {{END_START}} + 0.35);
+        window.__timelines = window.__timelines || {};
+        window.__timelines['main'] = tl;
+        tl.seek(0);
+      </script>
+    </div>
+  </body>
+</html>

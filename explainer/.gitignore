@@ -1,0 +1,11 @@
+node_modules/
+out/
+public/audio/
+public/tts-input.json
+public/tts-durations.json
+research-ref/
+public/reel-broll/
+public/reel-audio/
+public/reel-*.json
+public/lv-broll/
+public/lv-audio/

@@ -1,0 +1,35 @@
+name: hyperframes-proof
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  render:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+
+      - name: Install ffmpeg
+        run: sudo apt-get update -qq && sudo apt-get install -y -qq ffmpeg
+
+      - name: Quality gate (lint + contrast + layout)
+        working-directory: hf-proof
+        run: npx --yes hyperframes@0.8.152 check
+
+      - name: Render MP4
+        working-directory: hf-proof
+        run: npx --yes hyperframes@0.8.152 render
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: hyperframes-proof-mp4
+          path: hf-proof/renders/*.mp4
+          retention-days: 7

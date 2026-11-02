@@ -1,0 +1,20 @@
+{
+  "id": "biz",
+  "themeKey": "biz",
+  "beats": [
+    { "type": "hook", "eyebrow": "HOW THEY MAKE MONEY", "text": "Costco loses money on a $5 chicken. On purpose.", "broll": { "query": "supermarket shopping" } },
+    { "type": "card", "label": "ROTISSERIE CHICKEN", "value": "$4.99", "sub": "priced so low, Costco loses tens of millions a year on it" },
+    { "type": "flow", "items": ["$5 CHICKEN GETS YOU IN", "YOU WALK OUT WITH $150"] },
+    { "type": "stat", "value": "$4.8B", "label": "membership fees — the real engine of Costco's profit", "pct": 74, "broll": { "query": "container port cargo" } },
+    { "type": "point", "n": "★", "title": "The cheap thing is the bait", "sub": "You are not the customer of the chicken. You are the subscriber of the store" },
+    { "type": "cta", "text": "How companies win you, explained in 45 seconds" }
+  ],
+  "narration": [
+    "Costco loses money on a five dollar chicken. On purpose. Here is the trap.",
+    "The rotisserie chicken costs four ninety-nine — so cheap that Costco loses tens of millions of dollars a year on it.",
+    "But that chicken gets you in the door. And you never walk out with just a chicken — the average trip is around one hundred fifty dollars.",
+    "Meanwhile, membership fees bring in four point eight billion dollars a year. That is the real engine of Costco's profit.",
+    "The cheap thing is the bait. You are not the customer of the chicken — you are the subscriber of the store.",
+    "How companies win you, explained in forty five seconds."
+  ]
+}

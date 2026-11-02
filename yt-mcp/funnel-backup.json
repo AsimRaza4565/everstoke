@@ -1,0 +1,45 @@
+{
+  "removedAt": "2026-10-05T18:22:47.599Z",
+  "sections": [
+    {
+      "id": "UCFhDqZsnGJI9WrhE7JL8jRg.iJLXf_7B368",
+      "slug": "quotequarry",
+      "title": "More From Quarry Studios",
+      "channels": [
+        "UC2LLA-GCDY6ycBfRjMN4Zog",
+        "UCsj4Ykvn50-KlBi5x84BOVQ",
+        "UCG4hHWwE-QPuSK9nSfEAGkQ"
+      ]
+    },
+    {
+      "id": "UC2LLA-GCDY6ycBfRjMN4Zog.jNQXAC9IVRw",
+      "slug": "investors-compass",
+      "title": "More From Quarry Studios",
+      "channels": [
+        "UCFhDqZsnGJI9WrhE7JL8jRg",
+        "UCsj4Ykvn50-KlBi5x84BOVQ",
+        "UCG4hHWwE-QPuSK9nSfEAGkQ"
+      ]
+    },
+    {
+      "id": "UCsj4Ykvn50-KlBi5x84BOVQ.jNQXAC9IVRw",
+      "slug": "money-rulebook",
+      "title": "More From Quarry Studios",
+      "channels": [
+        "UCFhDqZsnGJI9WrhE7JL8jRg",
+        "UC2LLA-GCDY6ycBfRjMN4Zog",
+        "UCG4hHWwE-QPuSK9nSfEAGkQ"
+      ]
+    },
+    {
+      "id": "UCG4hHWwE-QPuSK9nSfEAGkQ.jNQXAC9IVRw",
+      "slug": "debt-free-doctrine",
+      "title": "More From Quarry Studios",
+      "channels": [
+        "UCFhDqZsnGJI9WrhE7JL8jRg",
+        "UC2LLA-GCDY6ycBfRjMN4Zog",
+        "UCsj4Ykvn50-KlBi5x84BOVQ"
+      ]
+    }
+  ]
+}

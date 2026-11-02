@@ -1,0 +1,64 @@
+{
+  "compilerOptions": {
+    "target": "ES2022",
+    "lib": [
+      "dom",
+      "dom.iterable",
+      "esnext"
+    ],
+    "allowJs": true,
+    "skipLibCheck": true,
+    "strict": false,
+    "noEmit": true,
+    "esModuleInterop": true,
+    "module": "esnext",
+    "moduleResolution": "bundler",
+    "resolveJsonModule": true,
+    "isolatedModules": true,
+    "jsx": "react-jsx",
+    "incremental": true,
+    "plugins": [
+      {
+        "name": "next"
+      }
+    ],
+    "paths": {
+      "@/*": [
+        "./*"
+      ],
+      "@/utils/*": [
+        "./components/untitledui/utils/*"
+      ],
+      "@/hooks/*": [
+        "./components/untitledui/hooks/*"
+      ],
+      "@/components/base/*": [
+        "./components/untitledui/base/*"
+      ],
+      "@/components/application/*": [
+        "./components/untitledui/application/*"
+      ],
+      "@/components/foundations/*": [
+        "./components/untitledui/foundations/*"
+      ],
+      "@/components/internal/*": [
+        "./components/untitledui/internal/*"
+      ],
+      "@/components/shared-assets/*": [
+        "./components/untitledui/shared-assets/*"
+      ]
+    },
+    "ignoreDeprecations": "6.0"
+  },
+  "include": [
+    "next-env.d.ts",
+    "**/*.ts",
+    "**/*.tsx",
+    "**/*.js",
+    ".next/types/**/*.ts",
+    ".next/dev/types/**/*.ts"
+  ],
+  "exclude": [
+    "node_modules"
+  ]
+}

@@ -1,0 +1,121 @@
+name: "🛠️ Daily Sweeper — self-healing, re-runs anything missing"
+
+on:
+  schedule:
+    # 20:15 UTC = 01:15 PKT — after all 3 content slots had their chance
+    - cron: '15 20 * * *'
+  workflow_dispatch:
+    inputs:
+      dry_run:
+        description: 'Dry run (report only, heal nothing)'
+        default: false
+        type: boolean
+
+concurrency:
+  group: sweeper
+  cancel-in-progress: false
+
+# State commits below need write access (default-token restrictions would silently break them — see issue #70)
+permissions:
+  contents: write
+
+jobs:
+  sweep:
+    runs-on: ubuntu-latest
+    timeout-minutes: 100
+    steps:
+      - name: 📥 Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: 💾 Restore Pixabay 4K clip pool
+        uses: actions/cache@v4
+        with:
+          path: pixabay-pool
+          key: pixabay-pool-v1
+
+      - name: ⚙️ Setup Node.js 20
+        uses: actions/setup-node@v4
+        with:
+          node-version: 24
+
+      - name: 📦 Install Dependencies
+        run: npm install
+
+      - name: 🔊 Setup FFmpeg
+        uses: ./.github/actions/setup-ffmpeg
+
+      - name: 🔤 Install Fonts
+        run: |
+          sudo apt-get install -y -qq fonts-liberation fonts-dejavu-core fontconfig >/dev/null 2>&1 || true
+          mkdir -p ~/.local/share/fonts ~/.fonts
+          cp image-tools/fonts/* ~/.local/share/fonts/ 2>/dev/null || true
+          cp image-tools/fonts/* ~/.fonts/ 2>/dev/null || true
+          fc-cache -fv
+
+      - name: 🗣️ Install TTS engines
+        run: |
+          python3 -m pip install --quiet --user edge-tts kokoro-onnx || pip install --quiet edge-tts kokoro-onnx || true
+          curl -sL --retry 3 -o pixabay-pool/kokoro-v1.0.onnx "https://github.com/thewh1teagle/kokoro-onnx/releases/download/model-files-v1.0/kokoro-v1.0.onnx" || true
+          curl -sL --retry 3 -o pixabay-pool/voices-v1.0.bin "https://github.com/thewh1teagle/kokoro-onnx/releases/download/model-files-v1.0/voices-v1.0.bin" || true
+
+      - name: 🛠️ Sweep & heal
+        env:
+          GITHUB_PAT: ${{ secrets.GITHUB_PAT || secrets.SECRET_WRITER_PAT }}
+          YOUTUBE_CLIENT_ID: ${{ secrets.YOUTUBE_CLIENT_ID }}
+          YOUTUBE_CLIENT_SECRET: ${{ secrets.YOUTUBE_CLIENT_SECRET }}
+          YOUTUBE_REFRESH_TOKEN: ${{ secrets.YOUTUBE_REFRESH_TOKEN }}
+          YT_TOKEN_QUOTEQUARRY: ${{ secrets.YT_TOKEN_QUOTEQUARRY }}
+          YT_TOKEN_INVESTORS_COMPASS: ${{ secrets.YT_TOKEN_INVESTORS_COMPASS }}
+          YT_TOKEN_MONEY_RULEBOOK: ${{ secrets.YT_TOKEN_MONEY_RULEBOOK }}
+          YT_TOKEN_DEBT_FREE_DOCTRINE: ${{ secrets.YT_TOKEN_DEBT_FREE_DOCTRINE }}
+          GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
+          HF_TOKEN: ${{ secrets.HF_TOKEN }}
+          OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
+          PIXABAY_API_KEY: ${{ secrets.PIXABAY_API_KEY }}
+          FB_PAGE_TOKEN: ${{ secrets.FB_PAGE_TOKEN }}
+          GROQ_API_KEY: ${{ secrets.GROQ_API_KEY }}
+          CEREBRAS_API_KEY: ${{ secrets.CEREBRAS_API_KEY }}
+          MISTRAL_API_KEY: ${{ secrets.MISTRAL_API_KEY }}
+          NTFY_TOPIC: ${{ secrets.NTFY_TOPIC }}
+        run: |
+          if [ "${{ inputs.dry_run }}" = "true" ]; then
+            node sweeper.mjs --dry-run
+          else
+            node sweeper.mjs
+          fi
+
+      - name: 📦 Keep healed reels for IG slot poster (quotequarry)
+        if: ${{ hashFiles('fb-outbox/quotequarry/*.json*') != '' }}
+        uses: actions/cache/save@v4
+        with:
+          path: fb-outbox/quotequarry
+          key: ig-outbox-quotequarry-sweep-${{ github.run_id }}
+
+      - name: 📦 Keep healed reels for IG slot poster (investors-compass)
+        if: ${{ hashFiles('fb-outbox/investors-compass/*.json*') != '' }}
+        uses: actions/cache/save@v4
+        with:
+          path: fb-outbox/investors-compass
+          key: ig-outbox-investors-compass-sweep-${{ github.run_id }}
+
+      - name: 📦 Keep healed reels for IG slot poster (money-rulebook)
+        if: ${{ hashFiles('fb-outbox/money-rulebook/*.json*') != '' }}
+        uses: actions/cache/save@v4
+        with:
+          path: fb-outbox/money-rulebook
+          key: ig-outbox-money-rulebook-sweep-${{ github.run_id }}
+
+      - name: 📦 Keep healed reels for IG slot poster (debt-free-doctrine)
+        if: ${{ hashFiles('fb-outbox/debt-free-doctrine/*.json*') != '' }}
+        uses: actions/cache/save@v4
+        with:
+          path: fb-outbox/debt-free-doctrine
+          key: ig-outbox-debt-free-doctrine-sweep-${{ github.run_id }}
+
+      - name: 💾 Commit logs back
+        run: |
+          git config user.name "quarry-bot"
+          git config user.email "bot@quotequarry.local"
+          git add logs/ state/ yt-mcp/state/ yt-mcp/schedule-state.json || true
+          git diff --cached --quiet || git commit -m "sweeper log: $(date -u +%F)"
+          git push || true

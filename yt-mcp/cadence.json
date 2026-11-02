@@ -1,0 +1,74 @@
+{
+  "money-rulebook": {
+    "docDays": [
+      "Thu",
+      "Sun"
+    ],
+    "shortDays": [
+      "Mon",
+      "Tue",
+      "Wed",
+      "Thu",
+      "Fri",
+      "Sat",
+      "Sun"
+    ],
+    "shortsSource": "clips",
+    "updated": "2026-10-28T10:19:08.798Z",
+    "updatedBy": "E2E complete (issue #102) — reverted to owner cadence (#101 flip)"
+  },
+  "debt-free-doctrine": {
+    "docDays": [
+      "Fri",
+      "Mon"
+    ],
+    "shortDays": [
+      "Mon",
+      "Tue",
+      "Wed",
+      "Thu",
+      "Fri",
+      "Sat",
+      "Sun"
+    ],
+    "shortsSource": "clips",
+    "updated": "2026-10-24T10:30:00.000Z",
+    "updatedBy": "owner go — #101 flip completion (all 4 channels, 2 doc-days/week)"
+  },
+  "quotequarry": {
+    "docDays": [
+      "Sat",
+      "Wed"
+    ],
+    "shortDays": [
+      "Mon",
+      "Tue",
+      "Wed",
+      "Thu",
+      "Fri",
+      "Sat",
+      "Sun"
+    ],
+    "shortsSource": "clips",
+    "updated": "2026-10-24T10:30:00.000Z",
+    "updatedBy": "owner go — #101 flip completion (all 4 channels, 2 doc-days/week)"
+  },
+  "investors-compass": {
+    "docDays": [
+      "Wed",
+      "Sun"
+    ],
+    "shortDays": [
+      "Mon",
+      "Tue",
+      "Wed",
+      "Thu",
+      "Fri",
+      "Sat",
+      "Sun"
+    ],
+    "shortsSource": "clips",
+    "updated": "2026-10-24T10:30:00.000Z",
+    "updatedBy": "owner go — #101 flip completion (all 4 channels, 2 doc-days/week)"
+  }
+}

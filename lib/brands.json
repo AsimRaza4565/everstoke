@@ -1,0 +1,538 @@
+{
+  "quotequarry": {
+    "label": "QUOTE QUARRY",
+    "handle": "@quotequarry302",
+    "niche": "Timeless wisdom, self-mastery & human psychology",
+    "accent": "#F5E31C",
+    "bg": "#0A0A0A",
+    "voice": "am_michael",
+    "slots": [
+      "22:35"
+    ],
+    "longSlot": "14:30",
+    "musicFeels": [
+      "epic",
+      "inspir",
+      "heroic"
+    ],
+    "active": true,
+    "niches": [
+      "human psychology & respect",
+      "power of silence & solitude",
+      "dark psychology defense",
+      "samurai mindset & musashi",
+      "emotional detachment",
+      "stoic rules for modern life"
+    ],
+    "tags": [
+      "timeless wisdom",
+      "human psychology",
+      "self respect",
+      "power of silence",
+      "mental strength",
+      "stoicism",
+      "philosophy",
+      "mindset",
+      "self mastery",
+      "boundaries"
+    ],
+    "hashtags": "#Stoicism #DailyWisdom #Mindset",
+    "docDay": "Tue",
+    "brollQueries": [
+      "misty mountains",
+      "zen water stones",
+      "calm ocean waves",
+      "morning fog lake"
+    ]
+  },
+  "investors-compass": {
+    "label": "INVESTOR'S COMPASS",
+    "handle": "@investorscompasshq",
+    "niche": "Investing psychology & market wisdom",
+    "accent": "#E8C15A",
+    "bg": "#0A1128",
+    "voice": "bm_george",
+    "slots": [
+      "23:35"
+    ],
+    "longSlot": "21:30",
+    "musicFeels": [
+      "calming",
+      "inspir",
+      "mystical"
+    ],
+    "active": true,
+    "niches": [
+      "warren buffett rules",
+      "market crashes & history",
+      "compounding secrets",
+      "investing psychology",
+      "risk management",
+      "value investing"
+    ],
+    "tags": [
+      "investing",
+      "stock market",
+      "warren buffett",
+      "financial education",
+      "money mindset",
+      "compounding",
+      "value investing",
+      "market psychology",
+      "wealth building",
+      "finance",
+      "investment strategy",
+      "stock market for beginners"
+    ],
+    "hashtags": "#Stoicism #DailyWisdom #Mindset",
+    "docDay": "Wed",
+    "brollQueries": [
+      "city night aerial",
+      "luxury watch closeup",
+      "skyscraper clouds",
+      "clock macro"
+    ]
+  },
+  "money-rulebook": {
+    "label": "THE MONEY RULEBOOK",
+    "handle": "@themoneyrulebook-p4y",
+    "niche": "Personal finance rules & money habits",
+    "accent": "#3DDC97",
+    "bg": "#101314",
+    "voice": "bm_daniel",
+    "slots": [
+      "00:05"
+    ],
+    "longSlot": "22:30",
+    "musicFeels": [
+      "bright",
+      "uplifting",
+      "grooving"
+    ],
+    "active": true,
+    "niches": [
+      "silent money habits",
+      "frugal living rules",
+      "debt snowball stories",
+      "budgeting psychology",
+      "first $100k blueprint",
+      "assets vs liabilities"
+    ],
+    "tags": [
+      "personal finance",
+      "money tips",
+      "saving money",
+      "financial freedom",
+      "budgeting",
+      "wealth habits",
+      "money management",
+      "financial literacy",
+      "pay yourself first",
+      "money mindset",
+      "financial planning",
+      "build wealth"
+    ],
+    "hashtags": "#Stoicism #DailyWisdom #Mindset",
+    "docDay": "Thu",
+    "brollQueries": [
+      "sunrise runner silhouette",
+      "gym training dark",
+      "climbing mountain",
+      "working laptop night"
+    ]
+  },
+  "debt-free-doctrine": {
+    "label": "OLD MONEY CODE",
+    "handle": "@debtfreedoctrine",
+    "niche": "Old money habits & quiet wealth",
+    "accent": "#D9C7A7",
+    "bg": "#12100C",
+    "voice": "am_fenrir",
+    "slots": [
+      "00:35"
+    ],
+    "longSlot": "01:30",
+    "musicFeels": [
+      "calming",
+      "bright"
+    ],
+    "active": true,
+    "niches": [
+      "silent wealth standards",
+      "stealth wealth etiquette",
+      "generational wealth rules",
+      "taste over flash",
+      "quiet confidence habits"
+    ],
+    "tags": [
+      "old money",
+      "old money habits",
+      "quiet luxury",
+      "old money aesthetic",
+      "generational wealth",
+      "elegance",
+      "classy lifestyle",
+      "wealth habits",
+      "success habits",
+      "old money rules",
+      "style",
+      "self improvement"
+    ],
+    "hashtags": "#Stoicism #DailyWisdom #Mindset",
+    "docDay": "Fri",
+    "brollQueries": [
+      "ocean waves storm",
+      "lighthouse waves",
+      "rain window",
+      "alone beach walk"
+    ]
+  },
+  "escrow-estate": {
+    "label": "ESCROW & ESTATE",
+    "handle": "@escrowestate-p3x",
+    "niche": "Real estate wisdom & property",
+    "accent": "#D98E4A",
+    "bg": "#171210",
+    "voice": "bm_george",
+    "slots": [
+      "23:05"
+    ],
+    "longSlot": null,
+    "musicFeels": [],
+    "active": false,
+    "tags": [
+      "real estate",
+      "buying a home",
+      "first time home buyer",
+      "mortgage tips",
+      "property investment",
+      "house hacking",
+      "real estate investing",
+      "renting vs buying",
+      "home loans",
+      "property market",
+      "real estate tips",
+      "wealth through property"
+    ],
+    "hashtags": null
+  },
+  "policy-brief": {
+    "label": "THE POLICY BRIEF",
+    "handle": "@thepolicybrief-t9u",
+    "niche": "Insurance explained simply",
+    "accent": "#58A6C9",
+    "bg": "#0E1418",
+    "voice": "am_michael",
+    "slots": [
+      "02:35"
+    ],
+    "longSlot": null,
+    "musicFeels": [],
+    "active": false,
+    "tags": [
+      "insurance explained",
+      "life insurance",
+      "health insurance",
+      "car insurance",
+      "home insurance",
+      "insurance tips",
+      "coverage",
+      "claims",
+      "financial protection",
+      "insurance policy",
+      "term life",
+      "financial planning"
+    ],
+    "hashtags": null
+  },
+  "old-money-code": {
+    "label": "OLD MONEY CODE",
+    "handle": "@oldmoneycode-g2x",
+    "niche": "Old money habits & quiet wealth",
+    "accent": "#D9C7A7",
+    "bg": "#12100C",
+    "voice": "af_heart",
+    "slots": [
+      "13:05"
+    ],
+    "longSlot": null,
+    "musicFeels": [],
+    "active": false,
+    "tags": [
+      "old money",
+      "old money habits",
+      "quiet luxury",
+      "old money aesthetic",
+      "generational wealth",
+      "elegance",
+      "classy lifestyle",
+      "wealth habits",
+      "success habits",
+      "old money rules",
+      "style",
+      "self improvement"
+    ],
+    "hashtags": null
+  },
+  "founders-margin": {
+    "label": "FOUNDERS MARGIN",
+    "handle": "@FoundersMargin",
+    "niche": "Entrepreneurship & lean business",
+    "accent": "#9EE04F",
+    "bg": "#0C1210",
+    "voice": "am_adam",
+    "slots": [
+      "21:35"
+    ],
+    "longSlot": null,
+    "musicFeels": [],
+    "active": false,
+    "tags": [
+      "entrepreneurship",
+      "startup tips",
+      "founder mistakes",
+      "business lessons",
+      "small business",
+      "bootstrap",
+      "business mindset",
+      "side hustle",
+      "first customer",
+      "profit margin",
+      "business growth",
+      "solopreneur"
+    ],
+    "hashtags": null
+  },
+  "closing-table": {
+    "label": "THE CLOSING TABLE",
+    "handle": "@TheClosingTable",
+    "niche": "Sales & negotiation psychology",
+    "accent": "#E14D6B",
+    "bg": "#120C10",
+    "voice": "am_onyx",
+    "slots": [
+      "22:35"
+    ],
+    "longSlot": null,
+    "musicFeels": [],
+    "active": false,
+    "tags": [
+      "negotiation",
+      "sales tips",
+      "persuasion",
+      "sales psychology",
+      "closing techniques",
+      "business negotiation",
+      "influence",
+      "communication skills",
+      "deal making",
+      "salary negotiation",
+      "psychology of selling",
+      "dark psychology"
+    ],
+    "hashtags": null
+  },
+  "corner-office": {
+    "label": "CORNER OFFICE MIND",
+    "handle": "@CornerOfficeMind",
+    "niche": "Leadership & management wisdom",
+    "accent": "#C0C6D0",
+    "bg": "#0D1017",
+    "voice": "bm_daniel",
+    "slots": [
+      "23:35"
+    ],
+    "longSlot": null,
+    "musicFeels": [],
+    "active": false,
+    "tags": [
+      "leadership",
+      "management tips",
+      "leadership skills",
+      "boss tips",
+      "career advice",
+      "office politics",
+      "team management",
+      "executive presence",
+      "workplace wisdom",
+      "professional growth",
+      "people skills",
+      "promotion tips"
+    ],
+    "hashtags": null
+  },
+  "tax-shield": {
+    "label": "TAX SHIELD",
+    "handle": "@TaxShield",
+    "niche": "Small-business tax & legal principles",
+    "accent": "#4ECDC4",
+    "bg": "#0B1210",
+    "voice": "am_michael",
+    "slots": [
+      "00:05"
+    ],
+    "longSlot": null,
+    "musicFeels": [],
+    "active": false,
+    "tags": [
+      "tax tips",
+      "small business taxes",
+      "deductions",
+      "tax deductions",
+      "llc tips",
+      "bookkeeping",
+      "tax season",
+      "self employment taxes",
+      "keep more money",
+      "tax planning",
+      "business finance",
+      "accounting basics"
+    ],
+    "hashtags": null
+  },
+  "ai-observer": {
+    "label": "THE AI OBSERVER",
+    "handle": "@TheAIObserver",
+    "niche": "AI & future tech",
+    "accent": "#39D5FF",
+    "bg": "#05090F",
+    "voice": "af_heart",
+    "slots": [
+      "21:05"
+    ],
+    "longSlot": null,
+    "musicFeels": [],
+    "active": false,
+    "tags": [
+      "artificial intelligence",
+      "ai",
+      "ai tools",
+      "future tech",
+      "technology",
+      "ai news",
+      "machine learning",
+      "ai jobs",
+      "chatgpt",
+      "automation",
+      "tech explained",
+      "future of work"
+    ],
+    "hashtags": null
+  },
+  "deep-work-os": {
+    "label": "DEEP WORK OS",
+    "handle": "@DeepWorkOS",
+    "niche": "Focus & productivity systems",
+    "accent": "#C8B6FF",
+    "bg": "#0E0B14",
+    "voice": "am_onyx",
+    "slots": [
+      "00:35"
+    ],
+    "longSlot": null,
+    "musicFeels": [],
+    "active": false,
+    "tags": [
+      "deep work",
+      "productivity",
+      "focus",
+      "time management",
+      "study tips",
+      "productivity systems",
+      "attention span",
+      "work smarter",
+      "pomodoro",
+      "procrastination",
+      "digital minimalism",
+      "cal newport"
+    ],
+    "hashtags": null
+  },
+  "longevity-code": {
+    "label": "THE LONGEVITY CODE",
+    "handle": "@TheLongevityCode",
+    "niche": "Healthspan & longevity habits",
+    "accent": "#7ED957",
+    "bg": "#0A100C",
+    "voice": "af_heart",
+    "slots": [
+      "01:05"
+    ],
+    "longSlot": null,
+    "musicFeels": [],
+    "active": false,
+    "tags": [
+      "longevity",
+      "health tips",
+      "healthspan",
+      "healthy habits",
+      "wellness",
+      "biohacking",
+      "exercise science",
+      "nutrition tips",
+      "aging well",
+      "sleep health",
+      "preventive health",
+      "energy"
+    ],
+    "hashtags": null
+  },
+  "iron-discipline": {
+    "label": "IRON DISCIPLINE",
+    "handle": "@IronDiscipline",
+    "niche": "Gym & training motivation",
+    "accent": "#CCFF00",
+    "bg": "#050505",
+    "voice": "am_fenrir",
+    "slots": [
+      "02:05"
+    ],
+    "longSlot": null,
+    "musicFeels": [],
+    "active": false,
+    "tags": [
+      "gym motivation",
+      "fitness motivation",
+      "workout discipline",
+      "training hard",
+      "no excuses",
+      "gym life",
+      "self discipline",
+      "mindset",
+      "consistency",
+      "grind mode",
+      "mens fitness",
+      "transformation"
+    ],
+    "hashtags": null
+  },
+  "sleep-architect": {
+    "label": "THE SLEEP ARCHITECT",
+    "handle": "@TheSleepArchitect",
+    "niche": "Sleep & recovery science",
+    "accent": "#8C9EFF",
+    "bg": "#080A14",
+    "voice": "af_heart",
+    "slots": [
+      "01:35"
+    ],
+    "longSlot": null,
+    "musicFeels": [],
+    "active": false,
+    "tags": [
+      "sleep tips",
+      "sleep science",
+      "better sleep",
+      "insomnia help",
+      "recovery",
+      "evening routine",
+      "deep sleep",
+      "circadian rhythm",
+      "sleep hygiene",
+      "rest",
+      "wellness tips",
+      "night routine"
+    ],
+    "hashtags": null
+  }
+}

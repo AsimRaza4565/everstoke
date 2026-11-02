@@ -1,0 +1,395 @@
+{
+  "title": "What Happens When Your App Goes Viral",
+  "chapters": [
+    {
+      "n": 1,
+      "title": "The Viral Night"
+    },
+    {
+      "n": 2,
+      "title": "Spread the Load"
+    },
+    {
+      "n": 3,
+      "title": "The Memory Trick"
+    },
+    {
+      "n": 4,
+      "title": "What It Costs"
+    }
+  ],
+  "beats": [
+    {
+      "tpl": "hook",
+      "text": "You shipped your app. It works, users are happy, and life is good. And then one morning, the entire internet shows up at your door at the same time.",
+      "props": {
+        "highlight": "internet"
+      }
+    },
+    {
+      "tpl": "statement",
+      "text": "This is the story of surviving your own success. And every big system you admire was built exactly this way.",
+      "props": {
+        "highlight": "surviving"
+      }
+    },
+    {
+      "tpl": "chapter",
+      "text": "",
+      "props": {
+        "n": 1,
+        "title": "The Viral Night",
+        "total": 4
+      }
+    },
+    {
+      "tpl": "server",
+      "text": "This is your app on its best day. One server running your code, and one database holding your data. Two machines, working together, simple and clean.",
+      "props": {
+        "variant": "intro",
+        "label": "YOUR APP"
+      }
+    },
+    {
+      "tpl": "server",
+      "text": "Forty users? No problem at all. The server barely notices them. This is the setup every tutorial ends with, and honestly, it goes further than you think.",
+      "props": {
+        "variant": "traffic",
+        "label": "YOUR APP",
+        "users": 40000
+      }
+    },
+    {
+      "tpl": "statement",
+      "text": "Then a creator with two million followers mentions your app. And by sunrise, forty users becomes forty thousand.",
+      "props": {
+        "highlight": "forty thousand"
+      }
+    },
+    {
+      "tpl": "overload",
+      "text": "Every single one of them hits your one server at the same moment. New requests arrive faster than the old ones can finish. The line just keeps growing.",
+      "props": {
+        "variant": "cpu",
+        "label": "YOUR APP",
+        "errors": [
+          "500",
+          "timeout",
+          "503"
+        ]
+      }
+    },
+    {
+      "tpl": "overload",
+      "text": "The CPU maxes out. Responses that took fifty milliseconds now take thirty seconds. And then the server simply gives up and stops answering completely.",
+      "props": {
+        "variant": "cpu",
+        "label": "YOUR APP",
+        "errors": [
+          "500",
+          "timeout",
+          "503",
+          "crashed"
+        ]
+      }
+    },
+    {
+      "tpl": "panel",
+      "text": "",
+      "props": {
+        "title": "GAME SERVER",
+        "status": "OVERLOADED",
+        "rows": [
+          {
+            "label": "CPU",
+            "value": "98%",
+            "pct": 98
+          },
+          {
+            "label": "RAM",
+            "value": "3.8 GB",
+            "pct": 74
+          },
+          {
+            "label": "QUEUE",
+            "value": "12,402",
+            "pct": 88
+          }
+        ],
+        "note": "CAPACITY: 1 SERVER"
+      }
+    },
+    {
+      "tpl": "statement",
+      "text": "Your app is down. And here is the uncomfortable part: not because the code is bad, but because one physical machine has hard limits.",
+      "props": {
+        "highlight": "limits"
+      }
+    },
+    {
+      "tpl": "cost",
+      "text": "The obvious fix is the right one: get more servers. But the moment you do, a new question appears, and it has no obvious answer.",
+      "props": {
+        "items": [
+          {
+            "name": "Add more servers",
+            "cost": "which one gets the traffic?"
+          }
+        ]
+      }
+    },
+    {
+      "tpl": "chapter",
+      "text": "",
+      "props": {
+        "n": 2,
+        "title": "Spread the Load",
+        "total": 4
+      }
+    },
+    {
+      "tpl": "balancer",
+      "text": "Meet the load balancer. It is one calm door standing in front of all your servers, and its only job is handing each request to whoever is free.",
+      "props": {
+        "servers": 3,
+        "label": "LOAD BALANCER"
+      }
+    },
+    {
+      "tpl": "balancer",
+      "text": "Now three servers share the traffic. Each one works at a comfortable half speed, instead of one machine dying at full speed. That is the whole trick.",
+      "props": {
+        "servers": 3,
+        "label": "LOAD BALANCER"
+      }
+    },
+    {
+      "tpl": "server",
+      "text": "The crash stops. Users get their responses, the error messages disappear, and the app feels alive again. Crisis over, for about an hour.",
+      "props": {
+        "variant": "traffic",
+        "label": "YOUR APP",
+        "users": 40000
+      }
+    },
+    {
+      "tpl": "code",
+      "text": "",
+      "props": {
+        "lang": "SQL",
+        "code": "SELECT * FROM orders WHERE user_id = 42;",
+        "result": "1 ROW — 8.5 SECONDS",
+        "note": "EVERY REQUEST, EVERY TIME"
+      }
+    },
+    {
+      "tpl": "database",
+      "text": "Because now look closer at what those servers are talking to. Every single request turns into a question for the database. Every single one.",
+      "props": {
+        "variant": "converge",
+        "label": "DATABASE",
+        "queries": 300
+      }
+    },
+    {
+      "tpl": "overload",
+      "text": "Three servers are all asking the same tiny database thousands of questions per minute. The servers are fine. The database is drowning.",
+      "props": {
+        "variant": "db",
+        "label": "DROWNING"
+      }
+    },
+    {
+      "tpl": "statement",
+      "text": "And here is the cruel part: your three servers are sitting there at half load, completely healthy, while one small database does all the work for all of them.",
+      "props": {
+        "highlight": "cruel part"
+      }
+    },
+    {
+      "tpl": "statement",
+      "text": "Same symptoms, completely different patient. And here is the lesson worth writing down: scaling is a chain, and you are always as slow as your slowest part.",
+      "props": {
+        "highlight": "slowest part"
+      }
+    },
+    {
+      "tpl": "cost",
+      "text": "The database fix exists, and it is called a read replica. But that is another story. First, watch what your users are actually asking for.",
+      "props": {
+        "items": [
+          {
+            "name": "Read replicas",
+            "cost": "a story for later"
+          }
+        ]
+      }
+    },
+    {
+      "tpl": "chapter",
+      "text": "",
+      "props": {
+        "n": 3,
+        "title": "The Memory Trick",
+        "total": 4
+      }
+    },
+    {
+      "tpl": "cache",
+      "text": "So watch what your users actually ask for. The same questions, over and over, thousands of times. So we add a cache, a small fast memory that sits in front.",
+      "props": {
+        "hitrate": 92
+      }
+    },
+    {
+      "tpl": "cache",
+      "text": "Now nine out of ten answers come straight from memory. The database barely gets touched, pages load instantly, and the whole system breathes again.",
+      "props": {
+        "hitrate": 92
+      }
+    },
+    {
+      "tpl": "stale",
+      "text": "But cached data gets old. You change the price from forty-nine dollars to thirty-nine, push the update, and users are still seeing the old price.",
+      "props": {
+        "item": "PRICE",
+        "old": "$49",
+        "neu": "$39"
+      }
+    },
+    {
+      "tpl": "stale",
+      "text": "That is real money leaving your checkout page, and real broken trust. And this gap has a name every engineer should know: stale cache.",
+      "props": {
+        "item": "PRICE",
+        "old": "$49",
+        "neu": "$39"
+      }
+    },
+    {
+      "tpl": "statement",
+      "text": "So you make a decision, on purpose, about which data is allowed to be a few minutes old, and which data must always be perfectly fresh.",
+      "props": {
+        "highlight": "on purpose"
+      }
+    },
+    {
+      "tpl": "statement",
+      "text": "Fresh when it matters, forgiving when it does not. That single decision is what separates apps that feel broken from apps that feel instant.",
+      "props": {
+        "highlight": "single decision"
+      }
+    },
+    {
+      "tpl": "cost",
+      "text": "Cache invalidation is one of the famously hard problems in computer science, and now you know why. But we are not done with the bill yet.",
+      "props": {
+        "items": [
+          {
+            "name": "Cache invalidation",
+            "cost": "famously hard"
+          }
+        ]
+      }
+    },
+    {
+      "tpl": "chapter",
+      "text": "",
+      "props": {
+        "n": 4,
+        "title": "What It Costs",
+        "total": 4
+      }
+    },
+    {
+      "tpl": "cost",
+      "text": "Nothing you did today was free. Every single fix bought you speed and stability, and every one of them sends you a bill that arrives later.",
+      "props": {
+        "items": [
+          {
+            "name": "Load balancer",
+            "cost": "one more moving part"
+          },
+          {
+            "name": "More servers",
+            "cost": "real money every month"
+          },
+          {
+            "name": "Cache",
+            "cost": "data can go stale"
+          }
+        ]
+      }
+    },
+    {
+      "tpl": "cost",
+      "text": "The load balancer itself can fail, and now it takes everything down with it. Servers cost real money whether traffic comes or not. And a cache can quietly lie to your users.",
+      "props": {
+        "items": [
+          {
+            "name": "Load balancer",
+            "cost": "single point of failure"
+          },
+          {
+            "name": "More servers",
+            "cost": "$$ every month"
+          },
+          {
+            "name": "Cache",
+            "cost": "can serve old data"
+          }
+        ]
+      }
+    },
+    {
+      "tpl": "panel",
+      "text": "",
+      "props": {
+        "title": "MONTHLY BILL",
+        "status": "DUE",
+        "rows": [
+          {
+            "label": "SERVERS",
+            "value": "$240/mo",
+            "pct": 70
+          },
+          {
+            "label": "BANDWIDTH",
+            "value": "$180/mo",
+            "pct": 52
+          },
+          {
+            "label": "CACHE",
+            "value": "$60/mo",
+            "pct": 30
+          }
+        ],
+        "note": "THE METER NEVER STOPS"
+      }
+    },
+    {
+      "tpl": "statement",
+      "text": "This is what senior engineers actually know that beginners do not: architecture is not a list of buzzwords. It is a list of trade-offs you chose.",
+      "props": {
+        "highlight": "trade-offs"
+      }
+    },
+    {
+      "tpl": "statement",
+      "text": "And here is the part nobody puts in the tutorial: the bill never stops arriving. Scaling is not a one-time purchase, it is a subscription.",
+      "props": {
+        "highlight": "subscription"
+      }
+    },
+    {
+      "tpl": "outro",
+      "text": "One server became a real system. Not all at once, and not by guessing, but every time something broke, you fixed exactly one thing and understood why.",
+      "props": {}
+    },
+    {
+      "tpl": "outro",
+      "text": "That is system design. Not scary words on day one, but answers you earned one crash at a time. Now go break something on purpose.",
+      "props": {}
+    }
+  ]
+}

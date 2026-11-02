@@ -1,0 +1,16 @@
+{
+  "slug": "tech-eventloop",
+  "topic": "How the JavaScript event loop actually works",
+  "dna": "neon-tech",
+  "brand": "Byte Theory",
+  "subline": "Code, explained simply",
+  "kicker": "Byte Theory · JS Deep Dive",
+  "voice": "en-US-AndrewNeural",
+  "beats": [
+    { "text": "JavaScript runs on one thread. One.", "em": "one" },
+    { "text": "So how does it handle thousands of requests without freezing?", "em": "thousands" },
+    { "text": "The event loop. It's a queue, not magic.", "em": "queue" },
+    { "text": "Sync code runs first. Then timers. Then promises microtasks jump the line.", "em": "microtasks" },
+    { "text": "Master this one loop, and async bugs stop being mysteries.", "em": "mysteries" }
+  ]
+}

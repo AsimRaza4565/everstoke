@@ -1,0 +1,103 @@
+# Long-form daily: ONE 10+ min documentary per channel per day (4 channels).
+# topic -> script -> TTS -> photos -> approved music -> 720p render -> thumbnail
+# -> scheduled YouTube upload (prime-time ET slot per channel).
+# PHASE 1: manual dispatch only (test=true renders without uploading).
+# After a clean review, the schedule block gets uncommented to go daily.
+name: Long-form Daily
+
+on:
+  workflow_dispatch:
+    inputs:
+      test:
+        description: "true = render only, NO upload"
+        required: false
+        default: "true"
+      minutes:
+        description: "script minutes (test = 1)"
+        required: false
+        default: "1"
+      channel:
+        description: "one channel only (blank = all 4)"
+        required: false
+        default: ""
+  # schedule:
+  #   - cron: "0 18 * * *"
+# State commits below need write access (default-token restrictions would silently break them — see issue #70)
+permissions:
+  contents: write
+
+jobs:
+  video:
+    runs-on: ubuntu-latest
+    timeout-minutes: 55
+    strategy:
+      fail-fast: false
+      matrix:
+        channel: ${{ fromJSON(inputs.channel && format('["{0}"]', inputs.channel) || '["investors-compass", "money-rulebook", "debt-free-doctrine", "quotequarry"]') }}
+    outputs:
+      testmode: ${{ steps.cfg.outputs.test }}
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: npm
+          cache-dependency-path: explainer/package-lock.json
+
+      - name: 🔊 Setup FFmpeg
+        uses: ./.github/actions/setup-ffmpeg
+
+      - name: Install Edge-TTS
+        run: python3 -m pip install --quiet --user edge-tts
+
+      - name: Install node dependencies
+        working-directory: explainer
+        run: npm ci
+
+      - name: Decide mode
+        id: cfg
+        run: |
+          if [ "${{ github.event_name }}" = "schedule" ]; then
+            echo "test=" >> "$GITHUB_OUTPUT"; echo "minutes=10" >> "$GITHUB_OUTPUT"
+          elif [ "${{ inputs.test }}" = "true" ]; then
+            echo "test=--test" >> "$GITHUB_OUTPUT"; echo "minutes=${{ inputs.minutes }}" >> "$GITHUB_OUTPUT"
+          else
+            echo "test=" >> "$GITHUB_OUTPUT"; echo "minutes=${{ inputs.minutes }}" >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: Build + upload daily documentary
+        working-directory: longvideo
+        env:
+          LF_MINUTES: ${{ steps.cfg.outputs.minutes }}
+          LONGVIDEO_GEMINI_API_KEY: ${{ secrets.LONGVIDEO_GEMINI_API_KEY }}
+          LONGVIDEO_GROQ_API_KEY: ${{ secrets.LONGVIDEO_GROQ_API_KEY }}
+          PEXELS_API_KEY: ${{ secrets.PEXELS_API_KEY }}
+          PIXABAY_API_KEY: ${{ secrets.PIXABAY_API_KEY }}
+          NTFY_TOPIC: ${{ secrets.NTFY_TOPIC }}
+          YOUTUBE_CLIENT_ID: ${{ secrets.YOUTUBE_CLIENT_ID }}
+          YOUTUBE_CLIENT_SECRET: ${{ secrets.YOUTUBE_CLIENT_SECRET }}
+          YT_TOKEN_INVESTORS_COMPASS: ${{ secrets.YT_TOKEN_INVESTORS_COMPASS }}
+          YT_TOKEN_MONEY_RULEBOOK: ${{ secrets.YT_TOKEN_MONEY_RULEBOOK }}
+          YT_TOKEN_DEBT_FREE_DOCTRINE: ${{ secrets.YT_TOKEN_DEBT_FREE_DOCTRINE }}
+          YT_TOKEN_QUOTEQUARRY: ${{ secrets.YT_TOKEN_QUOTEQUARRY }}
+        run: node make-longform.mjs --channel ${{ matrix.channel }} ${{ steps.cfg.outputs.test }}
+
+      - name: Save channel history
+        run: |
+          if [ -f state/longform-${{ matrix.channel }}.json ]; then
+            git config user.name "longform-bot"
+            git config user.email "bot@users.noreply.github.com"
+            git add state/longform-${{ matrix.channel }}.json
+            git commit -m "longform state ${{ matrix.channel }} [skip ci]" || true
+            git push origin HEAD:main || (git pull --rebase -q origin main && git push origin HEAD:main) || true
+          fi
+
+      - name: Upload video artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: lf-${{ matrix.channel }}
+          path: |
+            explainer/out/lf-${{ matrix.channel }}.mp4
+            explainer/out/lf-thumb-${{ matrix.channel }}.jpg
+          if-no-files-found: warn

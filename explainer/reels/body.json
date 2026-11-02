@@ -1,0 +1,20 @@
+{
+  "id": "body",
+  "themeKey": "body",
+  "beats": [
+    { "type": "hook", "eyebrow": "HUMAN BODY FACTS", "text": "Your body after 24 hours awake", "broll": { "query": "alarm clock night" } },
+    { "type": "steps", "title": "THE TIMELINE", "items": [
+      { "chip": "HOUR 12", "text": "Cortisol spikes — you are running on pure stress hormone" },
+      { "chip": "HOUR 17", "text": "Reaction time drops to the level of legal drunkenness" },
+      { "chip": "HOUR 20", "text": "Micro-sleeps begin — your brain shuts off without asking" }
+    ] },
+    { "type": "stat", "value": "0.05%", "label": "blood-alcohol equivalence: your brain on 19 hours awake", "pct": 55, "broll": { "query": "clock time lapse" } },
+    { "type": "cta", "text": "Daily body facts, backed by research" }
+  ],
+  "narration": [
+    "This is your body after twenty four hours with no sleep.",
+    "Hour twelve: cortisol spikes — you are running on pure stress hormone. Hour seventeen: your reaction time drops to the level of legal drunkenness. And by hour twenty: micro-sleeps begin. Your brain shuts off for seconds, without asking you.",
+    "After nineteen hours awake, your brain performs like zero point zero five percent blood alcohol.",
+    "Follow for daily body facts, backed by research."
+  ]
+}

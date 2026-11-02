@@ -1,0 +1,119 @@
+================================================================================
+YOUTUBE AUTOMATION PIPELINE — COLLEAGUE START GUIDE
+(what this project is, what accounts/keys you need, and how to run it)
+================================================================================
+
+WHAT THIS IS
+------------
+An automated YouTube Shorts + documentary pipeline:
+  1. A daily cron researches trends for your channel
+  2. An AI writes the script (through a provider chain with fallbacks)
+  3. The system renders a vertical Short (and optionally a weekly documentary)
+  4. It uploads to your YouTube channel automatically
+Everything runs on GitHub Actions (free for public repos, paid minutes for
+private) — no computer of yours needs to stay on.
+
+
+WHAT YOU NEED — ACCOUNTS (all have free tiers)
+----------------------------------------------
+1. GitHub account            — hosts the code + runs the automation
+2. YouTube channel(s)        — where videos publish
+3. Google Cloud project      — for YouTube upload permission (OAuth)
+   (one Google account can hold this; per-channel Gmail works too)
+4. Groq console (groq.com)   — FREE AI that writes scripts
+5. Google AI Studio (aistudio.google.com) — FREE Gemini AI (script fallback)
+6. Neon (neon.tech)          — FREE database (schedules + template registry)
+7. Optional extras:
+   - Cerebras / Mistral      — more free AI fallbacks
+   - ElevenLabs              — paid AI voices (optional; a free local voice exists)
+   - Pixabay                 — free stock clips
+   - ntfy.sh                 — free phone notifications when videos publish
+
+
+WHAT YOU NEED — KEYS & SECRETS (paste into GitHub → Settings → Secrets → Actions)
+--------------------------------------------------------------------------------
+The workflows read these secret NAMES. Create each one with the value from
+the service listed. Your values are yours — never commit them into files.
+
+REQUIRED — YouTube upload:
+  YOUTUBE_CLIENT_ID          from Google Cloud console → OAuth client (Desktop app)
+  YOUTUBE_CLIENT_SECRET      from the same OAuth client
+  YT_TOKEN_<CHANNEL>         one per channel, UPPER SNAKE_CASE slug
+                             (example: YT_TOKEN_MY_CHANNEL) — the OAuth refresh
+                             token that lets CI upload to that channel
+  YOUTUBE_REFRESH_TOKEN      legacy/shared token used by some report jobs
+
+REQUIRED — AI script writing (free tiers are enough):
+  GROQ_API_KEY               from console.groq.com → API Keys (free)
+  GEMINI_API_KEY             from aistudio.google.com → Get API key (free)
+
+RECOMMENDED — AI fallbacks + quota safety:
+  CEREBRAS_API_KEY           cloud.cerebras.ai (free)
+  MISTRAL_API_KEY            console.mistral.ai (free tier)
+  HF_TOKEN                   huggingface.co/settings/tokens (free)
+
+RECOMMENDED — database (schedules, templates, provider routing):
+  DATABASE_URL               from console.neon.tech → your project → connection
+                             string (pooled). The schema auto-creates.
+
+OPTIONAL:
+  PIXABAY_API_KEY            pixabay.com/api/docs (free stock clips)
+  PEXELS_API_KEY             pexels.com/api (free stock photos)
+  NTFY_TOPIC                 ntfy.sh topic name (phone alerts when videos post)
+  FB_PAGE_TOKEN              Facebook page token (only if auto-posting to FB)
+  OPENAI_API_KEY             platform.openai.com (PAID — best quality scripts;
+                             optional priority slot)
+  SECRET_WRITER_PAT          GitHub PAT with repo scope (state pushes)
+  LONGVIDEO_GROQ_API_KEY     separate Groq key for the long-form lane (optional)
+  LONGVIDEO_GEMINI_API_KEY   separate Gemini key for long-form (optional)
+
+
+FIRST-TIME SETUP (order matters)
+--------------------------------
+1. Create your GitHub repo (private recommended) and upload/push this code.
+2. Add the secrets above (Repo → Settings → Secrets and variables → Actions).
+3. Edit yt-mcp/cadence.json — set YOUR channels with their posting schedule:
+     "your-slug": { "docDays": ["Fri"], "shortDays": [...], "shortsSource": ... }
+4. Edit yt-mcp/studio-channels.json — list your channel(s):
+     slug, label, handle, active: true, tokenSecretSaved: true
+5. Actions tab → enable "Channel Autopilot" → click "Run workflow" →
+   enter your channel slug → Run.
+   First run: researches trends → writes script → renders → uploads.
+6. Check the run's log (Actions → your run → produce job). Video appears on
+   your channel as scheduled in the channel's slots.
+
+HOW THE AI PROVIDER CHAIN WORKS
+-------------------------------
+Scripts try providers in this order until one succeeds:
+  Gemini → Groq → Cerebras → Mistral → OpenRouter → Cloudflare
+All free tiers. If one is rate-limited, the next picks up automatically.
+You can override this order per channel in the admin panel's Routing panel
+(Studio) — or just leave the defaults; they are pre-configured.
+
+
+SAFETY / POLICY NOTES
+---------------------
+- Start with ONE channel and ONE video/day. Add channels only after the
+  first runs cleanly for a week.
+- The AI writes original scripts from live trend research — but YOU are
+  responsible for what publishes. Review the first several videos.
+- YouTube requires "not made for kids" honesty, original content, and no
+  misleading metadata — the pipeline defaults handle these; do not override.
+- Free tiers reset daily. One channel × one script/day is well within them.
+
+
+TROUBLESHOOTING QUICK HITS
+--------------------------
+- Run failed at script stage: check GROQ/GEMINI keys are valid and not
+  rate-limited (free tiers: ~30-50 script requests/day each).
+- "already posted today": the daily guard — correct behavior, one Short
+  per channel per day.
+- Video not visible: it uploads as PRIVATE and publishes at the channel's
+  next scheduled slot (see SLOTS in the channel card / cadence.json).
+- Actions minutes exhausted (private repo): make the repo public (free,
+  unlimited minutes) or upgrade to a paid plan.
+
+================================================================================
+Questions? Start with: .github/workflows/channel-autopilot.yml (the main flow)
+                       channel-pipeline.mjs (what one run does, step by step)
+================================================================================

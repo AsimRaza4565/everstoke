@@ -1,0 +1,12 @@
+regex:JWT_SECRET=.*==>JWT_SECRET=<redacted>
+regex:N8N_ENCRYPTION_KEY=.*==>N8N_ENCRYPTION_KEY=<redacted>
+regex:POSTIZ_API_KEY=.*==>POSTIZ_API_KEY=<redacted>
+regex:POSTIZ_BASE_URL=.*==>POSTIZ_BASE_URL=<redacted>
+regex:FB_PAGE_TOKEN=.*==>FB_PAGE_TOKEN=<redacted>
+regex:YOUTUBE_CLIENT_SECRET=.*==>YOUTUBE_CLIENT_SECRET=<redacted>
+regex:GEMINI_API_KEY=.*==>GEMINI_API_KEY=<redacted>
+regex:GROQ_API_KEY=.*==>GROQ_API_KEY=<redacted>
+regex:HF_TOKEN=.*==>HF_TOKEN=<redacted>
+regex:PIXABAY_API_KEY=.*==>PIXABAY_API_KEY=<redacted>
+regex:THREADS_APP_SECRET=.*==>THREADS_APP_SECRET=<redacted>
+regex:PINTEREST_ACCESS_TOKEN=.*==>PINTEREST_ACCESS_TOKEN=<redacted>

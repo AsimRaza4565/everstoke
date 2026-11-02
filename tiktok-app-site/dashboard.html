@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Dashboard — Quarry Studio</title>
+<style>
+  body{font-family:Segoe UI,sans-serif;margin:0;background:#0d1117;color:#e6edf3;line-height:1.6}
+  main{max-width:640px;margin:0 auto;padding:50px 24px}
+  h1{color:#fff;font-size:24px} .tag{color:#58a6ff;font-size:13px;letter-spacing:2px;text-transform:uppercase}
+  .box{background:#161b22;border:1px solid #30363d;border-radius:12px;padding:22px;margin-top:18px}
+  .btn{display:inline-block;background:#238636;color:#fff;padding:12px 22px;border-radius:9px;text-decoration:none;font-weight:700;border:none;cursor:pointer;font-size:15px}
+  .btn[disabled]{background:#21262d;color:#8b949e}
+  input[type=file]{color:#c9d1d9;margin:10px 0}
+  input[type=text]{width:100%;background:#0d1117;border:1px solid #30363d;color:#e6edf3;border-radius:8px;padding:10px;font-size:14px}
+  label{font-size:13px;color:#8b949e;display:block;margin-top:14px}
+  .status{padding:8px 0;font-size:14px;color:#8b949e}
+  .ok{color:#3fb950}.err{color:#f85149}
+  a{color:#58a6ff}
+</style>
+</head>
+<body>
+<main>
+  <div class="tag">Quarry Studio</div>
+  <h1>Publish to TikTok</h1>
+  <div id="step1" class="box">
+    <b>Step 1 — Connect your TikTok account</b>
+    <p style="color:#8b949e;font-size:14px">You'll approve Quarry Studio on TikTok's official consent screen. Requested permissions: upload and publish videos to your account.</p>
+    <a id="connectBtn" class="btn" href="#">Connect with TikTok</a>
+    <div id="connStatus" class="status"></div>
+  </div>
+  <div id="step2" class="box" style="display:none">
+    <b>Step 2 — Publish a video</b>
+    <label>Video file (mp4)</label>
+    <input type="file" id="file" accept="video/mp4">
+    <label>Caption</label>
+    <input type="text" id="caption" placeholder="My video caption">
+    <label>AI-generated content disclosure (required by TikTok when content is AI-made)</label>
+    <label class="chk" style="color:#e6edf3"><input type="checkbox" id="disclosure"> This content is AI-generated</label>
+    <label>Privacy</label>
+    <select id="privacy" style="width:100%;background:#0d1117;border:1px solid #30363d;color:#e6edf3;border-radius:8px;padding:10px">
+      <option value="SELF_ONLY">Only me (sandbox)</option>
+      <option value="PUBLIC_TO_EVERYONE">Everyone</option>
+      <option value="MUTUAL_FOLLOW_FRIENDS">Friends</option>
+    </select>
+    <p style="margin-top:14px"><button class="btn" id="pub">Publish now</button></p>
+    <div id="pubStatus" class="status"></div>
+  </div>
+  <p style="margin-top:22px;font-size:13px"><a href="index.html">← Quarry Studio home</a></p>
+</main>
+<script src="api-config.js"></script>
+<script>
+const API = window.QS_API_BASE;
+const authUrl = `https://www.tiktok.com/v2/auth/authorize/?client_key=${encodeURIComponent(window.QS_CLIENT_KEY)}&scope=user.info.basic,video.upload,video.publish&response_type=code&redirect_uri=${encodeURIComponent(window.QS_REDIRECT)}&state=qs`;
+document.getElementById('connectBtn').href = authUrl;
+
+async function checkConn() {
+  try {
+    const r = await fetch(API + '/api/status');
+    const d = await r.json();
+    if (d.connected) {
+      document.getElementById('connStatus').innerHTML = '<span class="ok">✅ TikTok account connected</span>';
+      document.getElementById('connectBtn').style.display = 'none';
+      document.getElementById('step2').style.display = 'block';
+    }
+  } catch (e) {
+    document.getElementById('connStatus').innerHTML = '<span class="err">⚠ backend unreachable — is the Quarry Studio server + tunnel running?</span>';
+  }
+}
+checkConn();
+
+document.getElementById('pub').onclick = async () => {
+  const f = document.getElementById('file').files[0];
+  const st = document.getElementById('pubStatus');
+  if (!f) { st.innerHTML = '<span class="err">choose a video file</span>'; return; }
+  const disc = document.getElementById('disclosure').checked;
+  const privacy = document.getElementById('privacy').value;
+  const caption = document.getElementById('caption').value;
+  const title = disc ? `[AI-generated] ${caption}` : caption;
+  st.innerHTML = 'publishing...';
+  try {
+    const r = await fetch(`${API}/api/publish?title=${encodeURIComponent(title)}&privacy=${privacy}`, { method: 'POST', body: f });
+    const d = await r.json();
+    if (d.publish_id) st.innerHTML = `<span class="ok">✅ Published! id ${d.publish_id} — status: ${d.status}</span>`;
+    else st.innerHTML = `<span class="err">failed: ${d.error || 'unknown'}</span>`;
+  } catch (e) { st.innerHTML = `<span class="err">failed: ${e.message}</span>`; }
+};
+</script>
+</body>
+</html>

@@ -1,0 +1,163 @@
+{
+ "slug": "long-dns2",
+ "topic": "How DNS actually works when you type a website name",
+ "pack": "network",
+ "minutes": 5,
+ "brand": "Byte Theory",
+ "subline": "Code, explained simply",
+ "kicker": "Byte Theory \u00b7 Networking",
+ "voice": "en-US-AndrewNeural",
+ "width": 1920,
+ "height": 1080,
+ "ambient": {
+  "a": "#a78bfa",
+  "b": "#fbbf24"
+ },
+ "beats": [
+  {
+   "text": "You type a domain, and invisible servers race to locate its IP address.",
+   "em": "invisible"
+  },
+  {
+   "text": "Behind the scenes, DNS transforms that name into numbers that route traffic.",
+   "em": "numbers"
+  },
+  {
+   "text": "First problem: your browser doesn\u2019t know any IPs, so it must ask a resolver.",
+   "em": "resolver"
+  },
+  {
+   "text": "Second problem: the resolver may have stale cache, leading to outdated or failed lookups.",
+   "em": "stale"
+  },
+  {
+   "text": "Third problem: without hierarchical servers, the resolver would need to query every domain individually.",
+   "em": "hierarchical"
+  },
+  {
+   "text": "The browser sends a DNS query to the local recursive resolver configured on your OS.",
+   "em": "recursive"
+  },
+  {
+   "text": "The resolver first checks its own cache for a matching domain record before contacting external servers.",
+   "em": "cache"
+  },
+  {
+   "text": "If cache misses, the resolver contacts a root server, the top of the DNS hierarchy.",
+   "em": "root"
+  },
+  {
+   "text": "Root servers respond with the IP addresses of the TLD name servers responsible for the domain\u2019s extension.",
+   "em": "tld"
+  },
+  {
+   "text": "The resolver then queries the appropriate TLD server, asking for the domain\u2019s authoritative name server.",
+   "em": "authoritative"
+  },
+  {
+   "text": "The TLD server replies with NS records pointing to the domain\u2019s authoritative servers.",
+   "em": "ns"
+  },
+  {
+   "text": "Resolver contacts one of those authoritative servers, which holds the definitive A record for the hostname.",
+   "em": "a"
+  },
+  {
+   "text": "The authoritative server returns the IPv4 address, optionally alongside IPv6 AAAA, TTL, and other data.",
+   "em": "ipv4"
+  },
+  {
+   "text": "Resolver stores the answer in its cache, respecting the TTL to know when it expires.",
+   "em": "ttl"
+  },
+  {
+   "text": "Finally, the resolver sends the IP address back to the browser, completing the lookup cycle.",
+   "em": "lookup"
+  },
+  {
+   "text": "Resolvers can operate recursively, performing all queries themselves, or iteratively, delegating each step to next server.",
+   "em": "recursively"
+  },
+  {
+   "text": "Most client systems use a stub resolver, which merely forwards queries to the system\u2019s recursive resolver.",
+   "em": "stub"
+  },
+  {
+   "text": "DNS queries default to UDP for speed; if responses exceed 512 bytes, the client retries over TCP.",
+   "em": "udp"
+  },
+  {
+   "text": "EDNS0 extends the UDP payload limit, allowing larger DNS messages without switching to TCP.",
+   "em": "edns0"
+  },
+  {
+   "text": "When a response is truncated, the server sets the TC flag, prompting the client to retry via TCP.",
+   "em": "truncated"
+  },
+  {
+   "text": "DNSSEC adds digital signatures to records, enabling resolvers to verify data integrity and authenticity.",
+   "em": "signatures"
+  },
+  {
+   "text": "If validation fails, the resolver returns a SERVFAIL, protecting users from forged DNS responses.",
+   "em": "servfail"
+  },
+  {
+   "text": "Negative caching stores NXDOMAIN responses, reducing future queries for non\u2011existent domains during the TTL.",
+   "em": "nxdomain"
+  },
+  {
+   "text": "CNAME records alias one name to another, causing the resolver to repeat the lookup for the target.",
+   "em": "cname"
+  },
+  {
+   "text": "Load\u2011balancing DNS returns multiple A records, letting clients pick the fastest or round\u2011robin server.",
+   "em": "load\u2011balancing"
+  },
+  {
+   "text": "TTL values control how long records stay cached, balancing freshness against query overhead.",
+   "em": "ttl"
+  },
+  {
+   "text": "Recursive resolvers often query multiple authoritative servers and use the fastest response to improve latency.",
+   "em": "fastest"
+  },
+  {
+   "text": "Anycast routing advertises the same IP from many locations, directing users to the nearest resolver instance.",
+   "em": "anycast"
+  },
+  {
+   "text": "Modern browsers support DNS\u2011over\u2011HTTPS, encrypting queries to prevent eavesdropping and tampering on the network.",
+   "em": "encrypting"
+  },
+  {
+   "text": "Encrypted DNS protects privacy but adds latency due to TLS handshake, mitigated by session reuse.",
+   "em": "tls"
+  },
+  {
+   "text": "Despite these optimizations, DNS remains a critical, globally distributed service underpinning every internet connection.",
+   "em": "critical"
+  },
+  {
+   "text": "Summarizing: a typed name triggers cache check, root referral, TLD lookup, authoritative answer.",
+   "em": "summarizing"
+  },
+  {
+   "text": "Each step adds speed, reliability, and security, making DNS the internet\u2019s phonebook.",
+   "em": "phonebook"
+  },
+  {
+   "text": "Understanding these mechanisms empowers developers to design faster, safer, and more resilient applications.",
+   "em": "empowers"
+  },
+  {
+   "text": "Apply DNS best practices: proper TTLs, DNSSEC signing, and monitoring to keep services responsive.",
+   "em": "monitoring"
+  },
+  {
+   "text": "With this knowledge, you\u2019ll troubleshoot issues faster and architect networks that scale globally.",
+   "em": "scale"
+  }
+ ],
+ "freeScenes": true
+}

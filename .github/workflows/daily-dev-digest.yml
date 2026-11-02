@@ -1,0 +1,30 @@
+name: 📰 Daily.dev news digest
+
+on:
+  schedule:
+    # 00:45 UTC = 05:45 PKT — morning digest (GitHub crons can run a few hours late)
+    - cron: '45 0 * * *'
+  workflow_dispatch:
+
+concurrency:
+  group: daily-dev-digest
+  cancel-in-progress: false
+
+jobs:
+  digest:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - name: 📥 Checkout
+        uses: actions/checkout@v4
+
+      - name: ⚙️ Setup Node.js 20
+        uses: actions/setup-node@v4
+        with:
+          node-version: 24
+
+      - name: 📰 Fetch daily.dev news + push digest to phone
+        env:
+          DAILY_DEV_TOKEN: ${{ secrets.DAILY_DEV_TOKEN }}
+          NTFY_TOPIC: ${{ secrets.NTFY_TOPIC }}
+        run: node daily-dev-digest.mjs

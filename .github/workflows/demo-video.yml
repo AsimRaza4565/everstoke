@@ -1,0 +1,92 @@
+# Cloud demo renderer: builds ONE 2-3 minute themed video per run, fully on
+# GitHub's servers (script -> Edge-TTS -> Pexels photos -> Remotion 720p).
+# The finished mp4 is attached to the run as an artifact — nothing local.
+name: Demo Video (cloud render)
+
+on:
+  workflow_dispatch:
+    inputs:
+      slug:
+        description: "Output name, e.g. demo-invest"
+        required: true
+      theme:
+        description: "investing | vox | poster"
+        required: true
+        default: "investing"
+      title:
+        description: "Video title"
+        required: true
+      topic:
+        description: "Story topic for the AI script"
+        required: true
+      brand:
+        description: "Brand strip text (bottom)"
+        required: false
+        default: ""
+      eyebrow:
+        description: "Top-left kicker line"
+        required: false
+        default: ""
+      queries:
+        description: "Backup photo queries, pipe-separated"
+        required: false
+        default: ""
+      voice:
+        description: "Edge-TTS voice"
+        required: false
+        default: ""
+
+jobs:
+  render:
+    runs-on: ubuntu-latest
+    timeout-minutes: 55
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+
+      - name: 🔊 Setup FFmpeg
+        uses: ./.github/actions/setup-ffmpeg
+
+      - name: Install Edge-TTS (free Microsoft voices)
+        run: python3 -m pip install --quiet --user edge-tts
+
+      - name: Install node dependencies
+        working-directory: explainer
+        run: npm ci
+
+      - name: Build demo video
+        working-directory: longvideo
+        env:
+          LONGVIDEO_GEMINI_API_KEY: ${{ secrets.LONGVIDEO_GEMINI_API_KEY }}
+          LONGVIDEO_GROQ_API_KEY: ${{ secrets.LONGVIDEO_GROQ_API_KEY }}
+          PEXELS_API_KEY: ${{ secrets.PEXELS_API_KEY }}
+          PIXABAY_API_KEY: ${{ secrets.PIXABAY_API_KEY }}
+          # #56: inputs via env — argv reads quoted shell vars, no direct interpolation
+          INPUT_SLUG: ${{ inputs.slug }}
+          INPUT_THEME: ${{ inputs.theme }}
+          INPUT_TITLE: ${{ inputs.title }}
+          INPUT_TOPIC: ${{ inputs.topic }}
+          INPUT_BRAND: ${{ inputs.brand }}
+          INPUT_EYEBROW: ${{ inputs.eyebrow }}
+          INPUT_QUERIES: ${{ inputs.queries }}
+          INPUT_VOICE: ${{ inputs.voice }}
+        run: |
+          node make-demo.mjs \
+            --slug "$INPUT_SLUG" \
+            --theme "$INPUT_THEME" \
+            --title "$INPUT_TITLE" \
+            --topic "$INPUT_TOPIC" \
+            --brand "$INPUT_BRAND" \
+            --eyebrow "$INPUT_EYEBROW" \
+            --queries "$INPUT_QUERIES" \
+            --voice "$INPUT_VOICE"
+
+      - name: Upload finished video
+        uses: actions/upload-artifact@v4
+        with:
+          name: ${{ inputs.slug }}
+          path: explainer/out/demo-${{ inputs.slug }}.mp4
+          if-no-files-found: error

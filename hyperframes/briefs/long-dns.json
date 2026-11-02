@@ -1,0 +1,13 @@
+{
+  "slug": "long-dns",
+  "topic": "How DNS actually works when you type a website name",
+  "pack": "network",
+  "minutes": 5,
+  "brand": "Byte Theory",
+  "subline": "Code, explained simply",
+  "kicker": "Byte Theory · Networking",
+  "voice": "en-US-AndrewNeural",
+  "width": 1920,
+  "height": 1080,
+  "ambient": { "a": "#a78bfa", "b": "#fbbf24" }
+}

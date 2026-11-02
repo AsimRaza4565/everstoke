@@ -1,0 +1,107 @@
+{
+  "channels": [
+    {
+      "slug": "quotequarry",
+      "label": "Quote Quarry",
+      "handle": "@quotequarry302",
+      "cron": "13 2 * * *",
+      "docDay": "Tue",
+      "active": true,
+      "autopilot": true,
+      "tokenSecretSaved": true,
+      "niche": "Timeless wisdom, self-mastery & human psychology",
+      "kit": {
+        "niches": [
+          "human psychology & respect",
+          "power of silence & solitude",
+          "dark psychology defense",
+          "samurai mindset & musashi",
+          "emotional detachment",
+          "stoic rules for modern life"
+        ],
+        "longSlot": "14:30",
+        "slots": [
+          "22:35"
+        ],
+        "docDay": "Tue"
+      }
+    },
+    {
+      "slug": "investors-compass",
+      "label": "Investor's Compass",
+      "handle": "@investorscompasshq",
+      "cron": "47 2 * * *",
+      "docDay": "Wed",
+      "active": true,
+      "autopilot": true,
+      "tokenSecretSaved": true,
+      "niche": "Investing psychology & market wisdom",
+      "kit": {
+        "niches": [
+          "warren buffett rules",
+          "market crashes & history",
+          "compounding secrets",
+          "investing psychology",
+          "risk management",
+          "value investing"
+        ],
+        "longSlot": "21:30",
+        "slots": [
+          "23:35"
+        ],
+        "docDay": "Wed"
+      }
+    },
+    {
+      "slug": "money-rulebook",
+      "label": "Money Rulebook",
+      "handle": "@moneyrulebook",
+      "cron": "21 3 * * *",
+      "docDay": "Thu",
+      "active": true,
+      "autopilot": true,
+      "tokenSecretSaved": true,
+      "niche": "Personal finance rules & money habits",
+      "kit": {
+        "niches": [
+          "silent money habits",
+          "frugal living rules",
+          "debt snowball stories",
+          "budgeting psychology",
+          "first $100k blueprint",
+          "assets vs liabilities"
+        ],
+        "longSlot": "22:30",
+        "slots": [
+          "00:05"
+        ],
+        "docDay": "Thu"
+      }
+    },
+    {
+      "slug": "debt-free-doctrine",
+      "label": "Debt-Free Doctrine",
+      "handle": "@debtfreedoctrine",
+      "cron": "53 3 * * *",
+      "docDay": "Fri",
+      "active": true,
+      "autopilot": true,
+      "tokenSecretSaved": true,
+      "niche": "Old money habits & quiet wealth",
+      "kit": {
+        "niches": [
+          "silent wealth standards",
+          "stealth wealth etiquette",
+          "generational wealth rules",
+          "taste over flash",
+          "quiet confidence habits"
+        ],
+        "longSlot": "20:20",
+        "slots": [
+          "21:20"
+        ],
+        "docDay": "Fri"
+      }
+    }
+  ]
+}

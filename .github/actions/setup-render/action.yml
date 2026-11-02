@@ -1,0 +1,27 @@
+name: 'Setup Render'
+description: 'Install system fonts, Edge-TTS, Kokoro-82M, and start image-tools server'
+
+runs:
+  using: 'composite'
+  steps:
+    - name: 🔤 Install Fonts
+      shell: bash
+      run: |
+        sudo apt-get install -y -qq fonts-liberation fonts-dejavu-core fontconfig >/dev/null 2>&1 || true
+        mkdir -p ~/.local/share/fonts ~/.fonts
+        cp image-tools/fonts/* ~/.local/share/fonts/ 2>/dev/null || true
+        cp image-tools/fonts/* ~/.fonts/ 2>/dev/null || true
+        fc-cache -fv
+
+    - name: 🗣️ Install TTS engines (edge-tts + Kokoro-82M)
+      shell: bash
+      run: |
+        python3 -m pip install --quiet edge-tts kokoro-onnx soundfile || true
+        python3 -c "import edge_tts; print('edge-tts ready.')"
+        python3 -c "import kokoro_onnx; print('kokoro ready.')" || echo "kokoro unavailable — edge fallback."
+
+    - name: 🎨 Start Image & Video Engine
+      shell: bash
+      run: |
+        node image-tools/server.js &
+        sleep 3

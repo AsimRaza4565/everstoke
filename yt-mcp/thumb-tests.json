@@ -1,0 +1,24 @@
+{
+  "mumpWZQE_yE": {
+    "slug": "money-rulebook",
+    "title": "4 Money Habits For Couples",
+    "variants": [
+      "thumbnails/tests/mumpWZQE_yE-a.jpg",
+      "thumbnails/tests/mumpWZQE_yE-b.jpg"
+    ],
+    "intervalHours": 1,
+    "started": "2026-10-10T18:21:56.000Z",
+    "current": 1,
+    "ended": "2026-10-10T20:03:43.792Z",
+    "periods": [
+      {
+        "variant": 0,
+        "from": "2026-10-10T19:50:51.186Z"
+      },
+      {
+        "variant": 1,
+        "from": "2026-10-10T19:53:56.396Z"
+      }
+    ]
+  }
+}

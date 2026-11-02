@@ -1,0 +1,135 @@
+name: codeberry-video
+
+on:
+  workflow_dispatch:
+    inputs:
+      topic:
+        description: 'Video topic (e.g. "How DNS actually works")'
+        required: true
+      pack:
+        description: 'Motion pack'
+        type: choice
+        options: [network, git, realtime, generic]
+        default: network
+      minutes:
+        description: 'Target length in minutes (3-8)'
+        default: '5'
+      brand:
+        description: 'Brand / channel name'
+        default: 'Byte Theory'
+      kicker:
+        description: 'Kicker label'
+        default: 'Byte Theory · Deep Dive'
+
+permissions:
+  contents: write
+
+concurrency:
+  group: codeberry-video
+  cancel-in-progress: false
+
+jobs:
+  render:
+    runs-on: ubuntu-latest
+    timeout-minutes: 90
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+
+      - name: Install ffmpeg + edge-tts
+        run: sudo apt-get update -qq && sudo apt-get install -y -qq ffmpeg && python3 -m pip install --quiet --break-system-packages edge-tts || python3 -m pip install --quiet edge-tts
+
+      - name: Write brief
+        working-directory: hyperframes
+        env:
+          # #56: inputs via env — the Python reads os.environ, no shell interpolation
+          INPUT_TOPIC: ${{ inputs.topic }}
+          INPUT_PACK: ${{ inputs.pack }}
+          INPUT_MINUTES: ${{ inputs.minutes }}
+          INPUT_BRAND: ${{ inputs.brand }}
+          INPUT_KICKER: ${{ inputs.kicker }}
+        run: |
+          mkdir -p work
+          python3 - <<PY
+          import json, os
+          topic = os.environ["INPUT_TOPIC"]
+          slug = 'cb-' + ''.join(c for c in topic.lower().replace(' ', '-') if c.isalnum() or c == '-')[:40]
+          brief = {
+            'slug': slug, 'topic': topic, 'pack': os.environ["INPUT_PACK"],
+            'minutes': float(os.environ.get("INPUT_MINUTES") or 10), 'brand': os.environ["INPUT_BRAND"],
+            'subline': 'Code, explained simply', 'kicker': os.environ["INPUT_KICKER"],
+            'voice': 'en-US-AndrewNeural', 'width': 1920, 'height': 1080,
+          }
+          json.dump(brief, open(f'work/{slug}.brief.json', 'w'), indent=1)
+          print('brief:', slug)
+          PY
+
+      - name: Generate video (AI script -> scene plan -> TTS -> render)
+        working-directory: hyperframes
+        env:
+          GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
+          GROQ_API_KEY: ${{ secrets.GROQ_API_KEY }}
+          CEREBRAS_API_KEY: ${{ secrets.CEREBRAS_API_KEY }}
+          MISTRAL_API_KEY: ${{ secrets.MISTRAL_API_KEY }}
+        run: node render-codeberry.mjs work/cb-*.brief.json 2>&1 | tee render.log; grep -q "DONE ->" render.log
+
+      - name: Locate output
+        id: out
+        working-directory: hyperframes/work
+        run: |
+          MP4=$(ls cb-*/gen/renders/*.mp4 2>/dev/null | head -1)
+          SLUG=$(echo "$MP4" | cut -d/ -f1)
+          echo "mp4=hyperframes/work/$MP4" >> "$GITHUB_OUTPUT"
+          echo "slug=$SLUG" >> "$GITHUB_OUTPUT"
+          echo "rendered: $MP4"
+
+      - name: Thumbnail + metadata pack
+        working-directory: hyperframes
+        env:
+          GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
+          GROQ_API_KEY: ${{ secrets.GROQ_API_KEY }}
+          CEREBRAS_API_KEY: ${{ secrets.CEREBRAS_API_KEY }}
+          # #56: inputs via env
+          INPUT_TOPIC: ${{ inputs.topic }}
+          INPUT_BRAND: ${{ inputs.brand }}
+        run: |
+          TOPIC="$INPUT_TOPIC"
+          case "$TOPIC" in *" vs "*) KIND=vs ;; *) KIND=sense ;; esac
+          node gen-pack.mjs --topic "$TOPIC" --kind "$KIND" --brand "$INPUT_BRAND" --out "work/${{ steps.out.outputs.slug }}/pack" 2>&1 | tail -4
+
+      - name: Publish result to hf-out/tech/
+        run: |
+          ID="${{ steps.out.outputs.slug }}"
+          ROOT="$GITHUB_WORKSPACE"
+          mkdir -p "$ROOT/hf-out/tech/$ID"
+          cp "${{ steps.out.outputs.mp4 }}" "$ROOT/hf-out/tech/$ID/video.mp4"
+          cp "hyperframes/work/$ID/pack/thumbnail.jpg" "$ROOT/hf-out/tech/$ID/thumbnail.jpg" 2>/dev/null || true
+          cp "hyperframes/work/$ID/pack/metadata.json" "$ROOT/hf-out/tech/$ID/metadata.json" 2>/dev/null || true
+          python3 - "$ID" "$TOPIC" <<'PY'
+          import json, sys, datetime
+          json.dump({'id': sys.argv[1], 'state': 'done', 'topic': sys.argv[2], 'engine': 'codeberry',
+                     'finishedAt': datetime.datetime.utcnow().isoformat() + 'Z'},
+                    open(f'hf-out/tech/{sys.argv[1]}/status.json', 'w'), indent=1)
+          PY
+          cd "$ROOT"
+          git config user.name "quarry-bot"
+          git config user.email "bot@quarry.studio"
+          git add "hf-out/tech/$ID"
+          git pull --rebase --autostash || true
+          git commit -m "codeberry: $ID rendered" || echo "nothing to commit"
+          git push || (git pull --rebase --autostash && git push)
+        env:
+          TOPIC: ${{ inputs.topic }}
+
+      - name: Upload artifact
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: ${{ steps.out.outputs.slug || 'codeberry' }}
+          path: |
+            hf-out/tech/**/video.mp4
+            hf-out/tech/**/thumbnail.jpg
+            hf-out/tech/**/metadata.json

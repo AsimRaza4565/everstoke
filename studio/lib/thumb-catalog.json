@@ -1,0 +1,1346 @@
+{
+  "templates": [
+    {
+      "id": "ketchup",
+      "label": "Ketchup",
+      "category": "bold-impact",
+      "needsPhoto": true,
+      "desc": "Full-bleed photo, stacked Anton lines, yellow highlight box on the key word",
+      "aiPreset": "cinematic photo matching the topic, high contrast, subject center-left, no text",
+      "bg": "#0A0A0A",
+      "photo": "full",
+      "scrim": 0.35,
+      "title": {
+        "font": "anton",
+        "case": "upper",
+        "size": "auto",
+        "pos": "bottom",
+        "fg": "#FFFFFF",
+        "maxLines": 3,
+        "highlight": {
+          "word": "keyword",
+          "bg": "#F5E31C",
+          "fg": "#0A0A0A"
+        }
+      },
+      "face": {
+        "shape": "circle",
+        "cx": 1080,
+        "cy": 185,
+        "r": 140,
+        "ring": "#FFFFFF",
+        "ringW": 10
+      }
+    },
+    {
+      "id": "blackout",
+      "label": "Blackout",
+      "category": "bold-impact",
+      "needsPhoto": false,
+      "desc": "Pure black canvas, giant white Anton underline on the last word",
+      "bg": "#000000",
+      "photo": "none",
+      "title": {
+        "font": "anton",
+        "case": "upper",
+        "size": "auto",
+        "pos": "center",
+        "fg": "#FFFFFF",
+        "maxLines": 3,
+        "underline": {
+          "word": "last",
+          "c": "#F5E31C",
+          "h": 16
+        }
+      },
+      "badge": {
+        "text": "proof",
+        "bg": "#F5E31C",
+        "fg": "#000000",
+        "corner": "tl",
+        "size": 44
+      },
+      "face": {
+        "shape": "circle",
+        "cx": 1080,
+        "cy": 185,
+        "r": 140,
+        "ring": "#FFFFFF",
+        "ringW": 10
+      }
+    },
+    {
+      "id": "boxed-scream",
+      "label": "Boxed Scream",
+      "category": "bold-impact",
+      "needsPhoto": true,
+      "desc": "Archivo Black with an inverted highlight box — flips contrast so it survives mobile",
+      "aiPreset": "dramatic wide shot matching the topic, dark tones, subject silhouette, no text",
+      "bg": "#101010",
+      "photo": "full",
+      "scrim": 0.3,
+      "title": {
+        "font": "archivo",
+        "case": "upper",
+        "size": "auto",
+        "pos": "bottom",
+        "fg": "#FFFFFF",
+        "maxLines": 3,
+        "highlight": {
+          "word": "keyword",
+          "bg": "#FFFFFF",
+          "fg": "#D7263D"
+        }
+      },
+      "face": {
+        "shape": "circle",
+        "cx": 1080,
+        "cy": 185,
+        "r": 140,
+        "ring": "#FFFFFF",
+        "ringW": 10
+      }
+    },
+    {
+      "id": "slab-core",
+      "label": "Slab Core",
+      "category": "bold-impact",
+      "needsPhoto": true,
+      "desc": "Alfa Slab One with a thick 10px stroke — the slab face that survives compression",
+      "aiPreset": "close-up subject matching the topic, bold rim light, saturated backdrop, no text",
+      "bg": "#14213D",
+      "photo": "full",
+      "scrim": 0.3,
+      "title": {
+        "font": "alfaslab",
+        "case": "upper",
+        "size": "auto",
+        "pos": "bottom",
+        "fg": "#FFFFFF",
+        "maxLines": 3,
+        "stroke": {
+          "c": "#000000",
+          "w": 10
+        }
+      },
+      "face": {
+        "shape": "circle",
+        "cx": 1080,
+        "cy": 185,
+        "r": 140,
+        "ring": "#FFFFFF",
+        "ringW": 10
+      }
+    },
+    {
+      "id": "whitespace",
+      "label": "Whitespace",
+      "category": "minimal",
+      "needsPhoto": false,
+      "desc": "Off-white canvas, Inter 800, thin overline — the no-clutter extreme",
+      "bg": "#F4F1EA",
+      "photo": "none",
+      "title": {
+        "font": "inter800",
+        "case": "as-is",
+        "size": "auto",
+        "pos": "center",
+        "fg": "#111111",
+        "maxLines": 3,
+        "overline": {
+          "word": "first",
+          "c": "#D7263D",
+          "h": 12
+        }
+      },
+      "badge": {
+        "text": "essay",
+        "bg": "#111111",
+        "fg": "#F4F1EA",
+        "corner": "tl",
+        "size": 36
+      },
+      "face": {
+        "shape": "circle",
+        "cx": 1080,
+        "cy": 185,
+        "r": 140,
+        "ring": "#FFFFFF",
+        "ringW": 10
+      }
+    },
+    {
+      "id": "focal-cut",
+      "label": "Focal Cut",
+      "category": "minimal",
+      "needsPhoto": false,
+      "desc": "One giant word, Inter 900 weight, nothing else",
+      "bg": "#0D1B2A",
+      "photo": "none",
+      "title": {
+        "font": "inter800",
+        "case": "upper",
+        "size": "auto",
+        "pos": "center",
+        "fg": "#F5E31C",
+        "maxLines": 2,
+        "maxWords": 2
+      },
+      "face": {
+        "shape": "circle",
+        "cx": 1080,
+        "cy": 185,
+        "r": 140,
+        "ring": "#FFFFFF",
+        "ringW": 10
+      }
+    },
+    {
+      "id": "frame-line",
+      "label": "Frame Line",
+      "category": "minimal",
+      "needsPhoto": true,
+      "desc": "Rule-of-thirds photo right, Barlow Condensed two-tone left",
+      "aiPreset": "editorial photo on the right half, plain dark wall on the left half, cinematic, no text",
+      "bg": "#101418",
+      "photo": "right",
+      "panel": {
+        "side": "left",
+        "w": 52,
+        "bg": "#101418"
+      },
+      "title": {
+        "font": "barlow",
+        "case": "upper",
+        "size": "auto",
+        "pos": "center",
+        "fg": "#E8EDF2",
+        "tone": [
+          "#E8EDF2",
+          "#F5E31C"
+        ],
+        "maxLines": 4
+      },
+      "face": {
+        "shape": "circle",
+        "cx": 1080,
+        "cy": 185,
+        "r": 140,
+        "ring": "#FFFFFF",
+        "ringW": 10
+      }
+    },
+    {
+      "id": "third-face",
+      "label": "Third Face",
+      "category": "face-emotion",
+      "needsPhoto": true,
+      "desc": "Face filling a third of the frame + two-tone Anton — the top-50 composition",
+      "aiPreset": "close-up human face with genuine emotion, face on the left third, dark background, no text",
+      "bg": "#160D02",
+      "photo": "full",
+      "scrim": 0.25,
+      "title": {
+        "font": "anton",
+        "case": "upper",
+        "size": "auto",
+        "pos": "bottom",
+        "fg": "#FFFFFF",
+        "tone": [
+          "#FFFFFF",
+          "#F5E31C"
+        ],
+        "maxLines": 3,
+        "stroke": {
+          "c": "#000000",
+          "w": 8
+        }
+      },
+      "face": {
+        "shape": "circle",
+        "cx": 1080,
+        "cy": 185,
+        "r": 140,
+        "ring": "#FFFFFF",
+        "ringW": 10
+      }
+    },
+    {
+      "id": "genuine",
+      "label": "Genuine",
+      "category": "face-emotion",
+      "needsPhoto": true,
+      "desc": "Playfair italic serif — genuine emotion over shocked faces",
+      "aiPreset": "candid human portrait, soft window light, genuine calm expression, muted tones, no text",
+      "bg": "#1B1B1B",
+      "photo": "right",
+      "panel": {
+        "side": "left",
+        "w": 48,
+        "bg": "#1B1B1B"
+      },
+      "title": {
+        "font": "playfairI",
+        "case": "as-is",
+        "size": "auto",
+        "pos": "center",
+        "fg": "#F3EDE2",
+        "maxLines": 4,
+        "underline": {
+          "word": "last",
+          "c": "#D9C7A7",
+          "h": 10
+        }
+      },
+      "face": {
+        "shape": "circle",
+        "cx": 1080,
+        "cy": 185,
+        "r": 140,
+        "ring": "#FFFFFF",
+        "ringW": 10
+      }
+    },
+    {
+      "id": "duo-tension",
+      "label": "Duo Tension",
+      "category": "face-emotion",
+      "needsPhoto": true,
+      "desc": "Two faces, split tones, Archivo Black alternating color lines",
+      "aiPreset": "two people facing each other with tension, split lighting warm vs cool, no text",
+      "bg": "#101010",
+      "photo": "full",
+      "scrim": 0.3,
+      "title": {
+        "font": "archivo",
+        "case": "upper",
+        "size": "auto",
+        "pos": "bottom",
+        "fg": "#FFFFFF",
+        "tone": [
+          "#FF6B6B",
+          "#4ECDC4"
+        ],
+        "maxLines": 3,
+        "stroke": {
+          "c": "#000000",
+          "w": 8
+        }
+      },
+      "face": {
+        "shape": "circle",
+        "cx": 1080,
+        "cy": 185,
+        "r": 140,
+        "ring": "#FFFFFF",
+        "ringW": 10
+      }
+    },
+    {
+      "id": "question-economy",
+      "label": "Question Economy",
+      "category": "curiosity",
+      "needsPhoto": true,
+      "desc": "Bungee question mark medallion + Anton curiosity gap",
+      "aiPreset": "moody shot matching the question, dramatic subject, dark background, no text",
+      "bg": "#0E0E0E",
+      "photo": "full",
+      "scrim": 0.35,
+      "title": {
+        "font": "anton",
+        "case": "upper",
+        "size": "auto",
+        "pos": "bottom",
+        "fg": "#FFFFFF",
+        "maxLines": 3,
+        "underline": {
+          "word": "last",
+          "c": "#D7263D",
+          "h": 14
+        }
+      },
+      "badge": {
+        "text": "?",
+        "bg": "#D7263D",
+        "fg": "#FFFFFF",
+        "corner": "tl",
+        "shape": "circle",
+        "size": 90,
+        "font": "bungee"
+      },
+      "face": {
+        "shape": "circle",
+        "cx": 1080,
+        "cy": 185,
+        "r": 140,
+        "ring": "#FFFFFF",
+        "ringW": 10
+      }
+    },
+    {
+      "id": "strike-truth",
+      "label": "Strike Truth",
+      "category": "curiosity",
+      "needsPhoto": true,
+      "desc": "Passion One 900 with a red strike through the myth word",
+      "aiPreset": "bold subject shot matching the topic, hard light, punchy colors, no text",
+      "bg": "#12100C",
+      "photo": "full",
+      "scrim": 0.3,
+      "title": {
+        "font": "passionBlack",
+        "case": "upper",
+        "size": "auto",
+        "pos": "center",
+        "fg": "#F5E31C",
+        "maxLines": 3,
+        "strike": {
+          "word": "first",
+          "c": "#D7263D",
+          "h": 16
+        }
+      },
+      "face": {
+        "shape": "circle",
+        "cx": 1080,
+        "cy": 185,
+        "r": 140,
+        "ring": "#FFFFFF",
+        "ringW": 10
+      }
+    },
+    {
+      "id": "tease-chip",
+      "label": "Tease Chip",
+      "category": "curiosity",
+      "needsPhoto": true,
+      "desc": "Barlow eyebrow chip + Anton headline — the median 5-word pattern",
+      "aiPreset": "cinematic scene matching the topic, film-grade color, shallow depth, no text",
+      "bg": "#0B132B",
+      "photo": "full",
+      "scrim": 0.3,
+      "kicker": {
+        "text": "nobody talks about this",
+        "bg": "#F5E31C",
+        "fg": "#0B132B",
+        "font": "monoMed",
+        "size": 28
+      },
+      "title": {
+        "font": "anton",
+        "case": "upper",
+        "size": "auto",
+        "pos": "bottom",
+        "fg": "#FFFFFF",
+        "maxLines": 3
+      },
+      "face": {
+        "shape": "circle",
+        "cx": 1080,
+        "cy": 185,
+        "r": 140,
+        "ring": "#FFFFFF",
+        "ringW": 10
+      }
+    },
+    {
+      "id": "big-number",
+      "label": "Big Number",
+      "category": "listicle",
+      "needsPhoto": false,
+      "desc": "Giant Passion One numeral + Inter label — instant parse",
+      "bg": "#0A1128",
+      "photo": "none",
+      "title": {
+        "font": "passionBlack",
+        "case": "upper",
+        "size": 220,
+        "pos": "center",
+        "fg": "#F5E31C",
+        "maxLines": 1,
+        "maxWords": 2
+      },
+      "kicker": {
+        "text": "the 5 rules",
+        "bg": "#F5E31C",
+        "fg": "#0A1128",
+        "font": "monoMed",
+        "size": 30
+      },
+      "face": {
+        "shape": "circle",
+        "cx": 1080,
+        "cy": 185,
+        "r": 140,
+        "ring": "#FFFFFF",
+        "ringW": 10
+      }
+    },
+    {
+      "id": "stacked-count",
+      "label": "Stacked Count",
+      "category": "listicle",
+      "needsPhoto": true,
+      "desc": "Alfa Slab count with overline bars on every stacked line",
+      "aiPreset": "strong background photo matching the topic, textured, high contrast, no text",
+      "bg": "#161616",
+      "photo": "full",
+      "scrim": 0.4,
+      "title": {
+        "font": "alfaslab",
+        "case": "upper",
+        "size": "auto",
+        "pos": "bottom",
+        "fg": "#FFFFFF",
+        "maxLines": 3,
+        "overline": {
+          "word": "first",
+          "c": "#F5E31C",
+          "h": 10
+        }
+      },
+      "face": {
+        "shape": "circle",
+        "cx": 1080,
+        "cy": 185,
+        "r": 140,
+        "ring": "#FFFFFF",
+        "ringW": 10
+      }
+    },
+    {
+      "id": "badge-circle",
+      "label": "Badge Circle",
+      "category": "listicle",
+      "needsPhoto": true,
+      "desc": "Circle badge TOP 5 + Anton headline — the classic listicle",
+      "aiPreset": "subject matching the topic, clean backdrop, space on the left, no text",
+      "bg": "#0F0F0F",
+      "photo": "right",
+      "title": {
+        "font": "anton",
+        "case": "upper",
+        "size": "auto",
+        "pos": "center",
+        "fg": "#FFFFFF",
+        "maxLines": 3,
+        "highlight": {
+          "word": "keyword",
+          "bg": "#D7263D",
+          "fg": "#FFFFFF"
+        }
+      },
+      "badge": {
+        "text": "TOP 5",
+        "bg": "#F5E31C",
+        "fg": "#0A0A0A",
+        "corner": "tl",
+        "size": 54
+      },
+      "face": {
+        "shape": "circle",
+        "cx": 1080,
+        "cy": 185,
+        "r": 140,
+        "ring": "#FFFFFF",
+        "ringW": 10
+      }
+    },
+    {
+      "id": "split-verdict",
+      "label": "Split Verdict",
+      "category": "vs",
+      "needsPhoto": true,
+      "desc": "Two halves, alternating color lines, VS medallion center",
+      "aiPreset": "split composition: left half subject A warm tones, right half subject B cool tones, no text",
+      "bg": "#101010",
+      "photo": "full",
+      "scrim": 0.25,
+      "title": {
+        "font": "archivo",
+        "case": "upper",
+        "size": "auto",
+        "pos": "bottom",
+        "fg": "#FFFFFF",
+        "tone": [
+          "#FF6B6B",
+          "#4ECDC4"
+        ],
+        "maxLines": 2,
+        "stroke": {
+          "c": "#000000",
+          "w": 8
+        }
+      },
+      "badge": {
+        "text": "VS",
+        "bg": "#F5E31C",
+        "fg": "#0A0A0A",
+        "corner": "center",
+        "shape": "circle",
+        "size": 110,
+        "font": "bungee"
+      },
+      "face": {
+        "shape": "circle",
+        "cx": 1080,
+        "cy": 185,
+        "r": 140,
+        "ring": "#FFFFFF",
+        "ringW": 10
+      }
+    },
+    {
+      "id": "price-fight",
+      "label": "Price Fight",
+      "category": "vs",
+      "needsPhoto": false,
+      "desc": "Strike the old price word, highlight the new — Inter chips style",
+      "bg": "#0D1117",
+      "photo": "none",
+      "title": {
+        "font": "inter800",
+        "case": "upper",
+        "size": "auto",
+        "pos": "center",
+        "fg": "#E6EDF3",
+        "maxLines": 3,
+        "strike": {
+          "word": "first",
+          "c": "#D7263D",
+          "h": 14
+        },
+        "highlight": {
+          "word": 2,
+          "bg": "#4ECDC4",
+          "fg": "#0D1117"
+        }
+      },
+      "badge": {
+        "text": "real cost",
+        "bg": "#D7263D",
+        "fg": "#FFFFFF",
+        "corner": "tl",
+        "size": 40
+      },
+      "face": {
+        "shape": "circle",
+        "cx": 1080,
+        "cy": 185,
+        "r": 140,
+        "ring": "#FFFFFF",
+        "ringW": 10
+      }
+    },
+    {
+      "id": "seam",
+      "label": "Seam",
+      "category": "before-after",
+      "needsPhoto": true,
+      "desc": "Before half desaturated panel, after half accent panel, Barlow labels on overline bars",
+      "aiPreset": "two-state composition matching before/after of the topic, dramatic difference, no text",
+      "bg": "#101010",
+      "photo": "left",
+      "panel": {
+        "side": "right",
+        "w": 50,
+        "bg": "#14213D"
+      },
+      "title": {
+        "font": "barlow",
+        "case": "upper",
+        "size": "auto",
+        "pos": "center",
+        "fg": "#FFFFFF",
+        "maxLines": 4,
+        "overline": {
+          "word": "first",
+          "c": "#F5E31C",
+          "h": 10
+        }
+      },
+      "face": {
+        "shape": "circle",
+        "cx": 1080,
+        "cy": 185,
+        "r": 140,
+        "ring": "#FFFFFF",
+        "ringW": 10
+      }
+    },
+    {
+      "id": "arrow-jump",
+      "label": "Arrow Jump",
+      "category": "before-after",
+      "needsPhoto": true,
+      "desc": "Passion One with alternating two-tone lines — the jump-cut energy",
+      "aiPreset": "dynamic action shot matching transformation of the topic, motion energy, no text",
+      "bg": "#12081F",
+      "photo": "full",
+      "scrim": 0.3,
+      "title": {
+        "font": "passionBold",
+        "case": "upper",
+        "size": "auto",
+        "pos": "bottom",
+        "fg": "#FFFFFF",
+        "tone": [
+          "#FFFFFF",
+          "#F5E31C"
+        ],
+        "maxLines": 3,
+        "stroke": {
+          "c": "#12081F",
+          "w": 8
+        }
+      },
+      "face": {
+        "shape": "circle",
+        "cx": 1080,
+        "cy": 185,
+        "r": 140,
+        "ring": "#FFFFFF",
+        "ringW": 10
+      }
+    },
+    {
+      "id": "slab-quote",
+      "label": "Slab Quote",
+      "category": "quote",
+      "needsPhoto": false,
+      "desc": "Alfa Slab One mixed case — the feed pattern break",
+      "bg": "#1C1C1C",
+      "photo": "none",
+      "frame": {
+        "c": "#F5E31C",
+        "w": 8,
+        "inset": 28
+      },
+      "title": {
+        "font": "alfaslab",
+        "case": "as-is",
+        "size": "auto",
+        "pos": "center",
+        "fg": "#F5E31C",
+        "maxLines": 3,
+        "align-center": true
+      },
+      "face": {
+        "shape": "circle",
+        "cx": 1080,
+        "cy": 185,
+        "r": 140,
+        "ring": "#FFFFFF",
+        "ringW": 10
+      }
+    },
+    {
+      "id": "serif-frame",
+      "label": "Serif Frame",
+      "category": "quote",
+      "needsPhoto": false,
+      "desc": "Cinzel serif inside a gold frame, overline + underline",
+      "bg": "#12100C",
+      "photo": "none",
+      "frame": {
+        "c": "#D9C7A7",
+        "w": 4,
+        "inset": 34
+      },
+      "title": {
+        "font": "cinzel",
+        "case": "upper",
+        "size": "auto",
+        "pos": "center",
+        "fg": "#F3EDE2",
+        "maxLines": 3,
+        "underline": {
+          "word": "last",
+          "c": "#D9C7A7",
+          "h": 8
+        },
+        "overline": {
+          "word": "first",
+          "c": "#D9C7A7",
+          "h": 8
+        }
+      },
+      "face": {
+        "shape": "circle",
+        "cx": 1080,
+        "cy": 185,
+        "r": 140,
+        "ring": "#FFFFFF",
+        "ringW": 10
+      }
+    },
+    {
+      "id": "gold-standard",
+      "label": "Gold Standard",
+      "category": "luxury",
+      "needsPhoto": false,
+      "desc": "Cinzel letterspaced gold-on-black — avoids the YouTube UI palette",
+      "bg": "#0A0A0A",
+      "photo": "none",
+      "title": {
+        "font": "cinzel",
+        "case": "upper",
+        "size": "auto",
+        "pos": "center",
+        "fg": "#D9C7A7",
+        "maxLines": 3,
+        "spacing": 6
+      },
+      "kicker": {
+        "text": "old money rules",
+        "bg": "",
+        "fg": "#D9C7A7",
+        "font": "monoMed",
+        "size": 26
+      },
+      "face": {
+        "shape": "circle",
+        "cx": 1080,
+        "cy": 185,
+        "r": 140,
+        "ring": "#FFFFFF",
+        "ringW": 10
+      }
+    },
+    {
+      "id": "marble",
+      "label": "Marble",
+      "category": "luxury",
+      "needsPhoto": true,
+      "desc": "Cinzel + gold underline on a duotone marble panel",
+      "aiPreset": "marble texture with gold veins, luxury editorial, dark elegant tones, no text",
+      "bg": "#12100C",
+      "photo": "right",
+      "panel": {
+        "side": "left",
+        "w": 52,
+        "bg": "#12100C"
+      },
+      "title": {
+        "font": "cinzel",
+        "case": "upper",
+        "size": "auto",
+        "pos": "center",
+        "fg": "#F3EDE2",
+        "maxLines": 3,
+        "underline": {
+          "word": "last",
+          "c": "#D9C7A7",
+          "h": 10
+        }
+      },
+      "face": {
+        "shape": "circle",
+        "cx": 1080,
+        "cy": 185,
+        "r": 140,
+        "ring": "#FFFFFF",
+        "ringW": 10
+      }
+    },
+    {
+      "id": "terminal",
+      "label": "Terminal",
+      "category": "tech",
+      "needsPhoto": false,
+      "desc": "JetBrains/IBM Mono, two-tone, blinking-cursor block — dev niche",
+      "bg": "#0C0C0C",
+      "photo": "none",
+      "title": {
+        "font": "mono",
+        "case": "as-is",
+        "size": "auto",
+        "pos": "center",
+        "fg": "#7EE787",
+        "tone": [
+          "#7EE787",
+          "#E6EDF3"
+        ],
+        "maxLines": 4,
+        "spacing": 2,
+        "align-center": true
+      },
+      "kicker": {
+        "text": "$ root@dev:~",
+        "bg": "",
+        "fg": "#7EE787",
+        "font": "monoMed",
+        "size": 30
+      },
+      "face": {
+        "shape": "circle",
+        "cx": 1080,
+        "cy": 185,
+        "r": 140,
+        "ring": "#FFFFFF",
+        "ringW": 10
+      }
+    },
+    {
+      "id": "data-callout",
+      "label": "Data Callout",
+      "category": "tech",
+      "needsPhoto": true,
+      "desc": "Passion One stat + IBM Plex Mono label — the data story",
+      "aiPreset": "tech scene matching the data story, screens and glow colors kept crisp, no text",
+      "bg": "#0D1117",
+      "photo": "full",
+      "scrim": 0.4,
+      "title": {
+        "font": "passionBlack",
+        "case": "upper",
+        "size": "auto",
+        "pos": "bottom",
+        "fg": "#58A6FF",
+        "maxLines": 2,
+        "maxWords": 4
+      },
+      "kicker": {
+        "text": "the data says",
+        "bg": "#58A6FF",
+        "fg": "#0D1117",
+        "font": "monoMed",
+        "size": 28
+      },
+      "face": {
+        "shape": "circle",
+        "cx": 1080,
+        "cy": 185,
+        "r": 140,
+        "ring": "#FFFFFF",
+        "ringW": 10
+      }
+    },
+    {
+      "id": "changelog",
+      "label": "Changelog",
+      "category": "tech",
+      "needsPhoto": true,
+      "desc": "IBM Plex Mono with strike on the old way + highlight on the new",
+      "aiPreset": "developer workspace matching the topic, dark IDE mood, crisp screens, no text",
+      "bg": "#0C0C0C",
+      "photo": "full",
+      "scrim": 0.35,
+      "title": {
+        "font": "monoMed",
+        "case": "as-is",
+        "size": "auto",
+        "pos": "center",
+        "fg": "#E6EDF3",
+        "maxLines": 4,
+        "strike": {
+          "word": "first",
+          "c": "#FF7B72",
+          "h": 10
+        },
+        "highlight": {
+          "word": 2,
+          "bg": "#7EE787",
+          "fg": "#0C0C0C"
+        }
+      },
+      "face": {
+        "shape": "circle",
+        "cx": 1080,
+        "cy": 185,
+        "r": 140,
+        "ring": "#FFFFFF",
+        "ringW": 10
+      }
+    },
+    {
+      "id": "tabloid",
+      "label": "Tabloid",
+      "category": "retro-print",
+      "needsPhoto": true,
+      "desc": "Passion One stacked + red masthead overline — tabloid energy",
+      "aiPreset": "vintage news scene matching the topic, high contrast print mood, no text",
+      "bg": "#F4F1EA",
+      "photo": "none",
+      "title": {
+        "font": "passionBold",
+        "case": "upper",
+        "size": "auto",
+        "pos": "center",
+        "fg": "#111111",
+        "maxLines": 3,
+        "overline": {
+          "word": "first",
+          "c": "#D7263D",
+          "h": 14
+        }
+      },
+      "badge": {
+        "text": "exclusive",
+        "bg": "#D7263D",
+        "fg": "#F4F1EA",
+        "corner": "tl",
+        "size": 40
+      },
+      "face": {
+        "shape": "circle",
+        "cx": 1080,
+        "cy": 185,
+        "r": 140,
+        "ring": "#FFFFFF",
+        "ringW": 10
+      }
+    },
+    {
+      "id": "bungee-sign",
+      "label": "Bungee Sign",
+      "category": "retro-print",
+      "needsPhoto": false,
+      "desc": "Bungee letters + hairline frame — the roadside sign",
+      "bg": "#1A1A1A",
+      "photo": "none",
+      "frame": {
+        "c": "#F5E31C",
+        "w": 6,
+        "inset": 26
+      },
+      "title": {
+        "font": "bungee",
+        "case": "upper",
+        "size": "auto",
+        "pos": "center",
+        "fg": "#F5E31C",
+        "maxLines": 3,
+        "align-center": true
+      },
+      "face": {
+        "shape": "circle",
+        "cx": 1080,
+        "cy": 185,
+        "r": 140,
+        "ring": "#FFFFFF",
+        "ringW": 10
+      }
+    },
+    {
+      "id": "field-notes",
+      "label": "Field Notes",
+      "category": "doc-style",
+      "needsPhoto": true,
+      "desc": "Inter kicker + Anton headline, strike + margin rule — documentary style",
+      "aiPreset": "documentary scene matching the topic, film grain mood, natural light, no text",
+      "bg": "#141210",
+      "photo": "full",
+      "scrim": 0.35,
+      "title": {
+        "font": "anton",
+        "case": "upper",
+        "size": "auto",
+        "pos": "bottom",
+        "fg": "#F3EDE2",
+        "maxLines": 3,
+        "strike": {
+          "word": 2,
+          "c": "#D7263D",
+          "h": 12
+        }
+      },
+      "kicker": {
+        "text": "field notes",
+        "bg": "#F3EDE2",
+        "fg": "#141210",
+        "font": "monoMed",
+        "size": 26
+      },
+      "face": {
+        "shape": "circle",
+        "cx": 1080,
+        "cy": 185,
+        "r": 140,
+        "ring": "#FFFFFF",
+        "ringW": 10
+      }
+    },
+
+    {
+      "id": "summit",
+      "label": "Summit",
+      "category": "bold-impact",
+      "needsPhoto": true,
+      "desc": "Headline anchored in the TOP third over a full-bleed photo — survives the mobile home-feed dynamic crop and never fights the duration chip",
+      "aiPreset": "cinematic wide photo matching the topic, strong subject low in frame, dark upper area for text, no text",
+      "bg": "#0A0A0A",
+      "photo": "full",
+      "scrim": 0.5,
+      "title": {
+        "font": "anton",
+        "case": "upper",
+        "size": "auto",
+        "pos": "top",
+        "fg": "#FFFFFF",
+        "maxLines": 2,
+        "maxWords": 4,
+        "highlight": { "word": "keyword", "bg": "#F5E31C", "fg": "#0A0A0A" }
+      },
+      "face": { "shape": "circle", "cx": 1118, "cy": 470, "r": 112, "ring": "#FFFFFF", "ringW": 8 }
+    },
+
+    {
+      "id": "redact",
+      "label": "Redacted",
+      "category": "curiosity",
+      "needsPhoto": false,
+      "desc": "The key word is buried under an opaque censor bar — the thumbnail hides exactly one thing",
+      "bg": "#0B0B0F",
+      "photo": "none",
+      "title": {
+        "font": "inter800",
+        "case": "upper",
+        "size": "auto",
+        "pos": "center",
+        "fg": "#F2F2F2",
+        "maxLines": 3,
+        "maxWords": 5,
+        "strike": { "word": "keyword", "c": "#0B0B0F", "h": 104 }
+      },
+      "badge": { "text": "file", "bg": "#D7263D", "fg": "#FFFFFF", "corner": "tl", "size": 40 },
+      "face": { "shape": "circle", "cx": 1080, "cy": 185, "r": 140, "ring": "#FFFFFF", "ringW": 10 }
+    },
+
+    {
+      "id": "ledger",
+      "label": "Ledger",
+      "category": "doc-style",
+      "needsPhoto": false,
+      "desc": "Paper-white card with ink rules top and bottom — bookkeeping, balance-sheet authority",
+      "bg": "#F4EFE6",
+      "photo": "none",
+      "frame": { "inset": 22, "c": "#1A1A1A", "w": 4 },
+      "title": {
+        "font": "barlowBold",
+        "case": "upper",
+        "size": "auto",
+        "pos": "center",
+        "fg": "#1A1A1A",
+        "tone": ["#1A1A1A", "#0B5D3B"],
+        "maxLines": 3,
+        "maxWords": 6,
+        "overline": { "word": "first", "c": "#B3121D", "h": 10 },
+        "underline": { "word": "last", "c": "#B3121D", "h": 12 }
+      },
+      "face": { "shape": "circle", "cx": 1080, "cy": 190, "r": 128, "ring": "#1A1A1A", "ringW": 8 }
+    },
+
+    {
+      "id": "screen",
+      "label": "Screen",
+      "category": "tech",
+      "needsPhoto": false,
+      "desc": "Inset hairline box reads as a device screen; monospaced centred type, alternating green/white lines",
+      "bg": "#0D1117",
+      "photo": "none",
+      "frame": { "inset": 118, "c": "#4ADE80", "w": 6 },
+      "title": {
+        "font": "monoMed",
+        "case": "upper",
+        "size": "auto",
+        "pos": "center",
+        "align": "center",
+        "fg": "#E6EDF3",
+        "tone": ["#4ADE80", "#E6EDF3"],
+        "maxLines": 3,
+        "maxWords": 5
+      },
+      "face": { "shape": "circle", "cx": 1128, "cy": 176, "r": 104, "ring": "#4ADE80", "ringW": 8 }
+    },
+
+    {
+      "id": "plinth",
+      "label": "Plinth",
+      "category": "bold-impact",
+      "needsPhoto": false,
+      "desc": "Centred Alfa Slab monument with a heavy outline and a single overline rule — statement, not question",
+      "bg": "#111014",
+      "photo": "none",
+      "title": {
+        "font": "alfaslab",
+        "case": "upper",
+        "size": "auto",
+        "pos": "center",
+        "align": "center",
+        "fg": "#FFFFFF",
+        "maxLines": 3,
+        "maxWords": 4,
+        "stroke": { "c": "#0A0A0A", "w": 12, "followAccent": false },
+        "overline": { "word": "keyword", "c": "#F5E31C", "h": 14 }
+      },
+      "face": { "shape": "circle", "cx": 1080, "cy": 185, "r": 140, "ring": "#F5E31C", "ringW": 10 }
+    },
+
+    {
+      "id": "sidebar",
+      "label": "Sidebar",
+      "category": "curiosity",
+      "needsPhoto": true,
+      "desc": "Solid accent panel occupies the right 42% with dark type on it; photo bleeds on the left — contrast flip that cannot blend into YouTube chrome",
+      "aiPreset": "photo matching the topic, subject on the left side of frame, high contrast, no text",
+      "bg": "#0A0A0A",
+      "photo": "left",
+      "panel": { "side": "right", "w": 42, "bg": "#F5E31C" },
+      "title": {
+        "font": "archivo",
+        "case": "upper",
+        "size": "auto",
+        "pos": "top",
+        "fg": "#0A0A0A",
+        "maxLines": 4,
+        "maxWords": 4,
+        "underline": { "word": "last", "c": "#0A0A0A", "h": 12 }
+      },
+      "face": { "shape": "circle", "cx": 200, "cy": 520, "r": 120, "ring": "#0A0A0A", "ringW": 8 }
+    },
+
+    {
+      "id": "duojug",
+      "label": "Duo Jug",
+      "category": "vs",
+      "needsPhoto": true,
+      "desc": "Photo left against a dark right panel, two-tone condensed lines, the closing word struck through — verdict framing",
+      "aiPreset": "split photo matching the topic, two contrasting subjects, left half of frame, no text",
+      "bg": "#0C0F14",
+      "photo": "left",
+      "panel": { "side": "right", "w": 50, "bg": "#0C0F14" },
+      "title": {
+        "font": "barlow",
+        "case": "upper",
+        "size": "auto",
+        "pos": "center",
+        "fg": "#FFFFFF",
+        "tone": ["#FFFFFF", "#F5E31C"],
+        "maxLines": 4,
+        "maxWords": 6,
+        "strike": { "word": "last", "c": "#D7263D", "h": 12 }
+      },
+      "face": { "shape": "circle", "cx": 1090, "cy": 500, "r": 118, "ring": "#FFFFFF", "ringW": 8 }
+    },
+
+    {
+      "id": "coinflip",
+      "label": "Coin Flip",
+      "category": "listicle",
+      "needsPhoto": false,
+      "desc": "Corner medallion badge plus a two-tone Passion Black headline — the two-sided bet",
+      "bg": "#101018",
+      "photo": "none",
+      "badge": { "text": "vs", "shape": "circle", "corner": "tr", "bg": "#F5E31C", "fg": "#101018", "ring": "#101018", "size": 56 },
+      "title": {
+        "font": "passionBlack",
+        "case": "upper",
+        "size": "auto",
+        "pos": "bottom",
+        "fg": "#FFFFFF",
+        "tone": ["#FFFFFF", "#F5E31C"],
+        "maxLines": 3,
+        "maxWords": 5
+      },
+      "face": { "shape": "circle", "cx": 1080, "cy": 470, "r": 112, "ring": "#FFFFFF", "ringW": 8 }
+    },
+
+    {
+      "id": "marquee",
+      "label": "Marquee",
+      "category": "retro-print",
+      "needsPhoto": false,
+      "desc": "Flat saturated field, near-black type, two words maximum — a signboard, not a poster",
+      "bg": "#F5E31C",
+      "photo": "none",
+      "title": {
+        "font": "anton",
+        "case": "upper",
+        "size": "auto",
+        "pos": "center",
+        "align": "center",
+        "fg": "#0A0A0A",
+        "maxLines": 2,
+        "maxWords": 2,
+        "spacing": 4,
+        "underline": { "word": "last", "c": "#0A0A0A", "h": 18 }
+      },
+      "face": { "shape": "circle", "cx": 1100, "cy": 170, "r": 118, "ring": "#0A0A0A", "ringW": 10 }
+    },
+
+    {
+      "id": "dossier",
+      "label": "Dossier",
+      "category": "doc-style",
+      "needsPhoto": true,
+      "desc": "Heavy 62% scrim, monospaced dateline top-anchored, first word struck — case-file register",
+      "aiPreset": "documentary still matching the topic, archival mood, flat even light, no text",
+      "bg": "#0B0B0F",
+      "photo": "full",
+      "scrim": 0.62,
+      "kicker": { "text": "case file", "bg": "#00000000", "fg": "#F3EDE2", "font": "monoMed", "size": 28, "spacing": 6 },
+      "title": {
+        "font": "monoMed",
+        "case": "upper",
+        "size": "auto",
+        "pos": "top",
+        "fg": "#F3EDE2",
+        "maxLines": 3,
+        "maxWords": 5,
+        "spacing": 1,
+        "strike": { "word": "first", "c": "#D7263D", "h": 10 }
+      },
+      "face": { "shape": "circle", "cx": 1112, "cy": 500, "r": 110, "ring": "#F3EDE2", "ringW": 8 }
+    },
+
+    {
+      "id": "pillar",
+      "label": "Pillar",
+      "category": "luxury",
+      "needsPhoto": false,
+      "desc": "Deep green plate, letterspaced Cinzel inside a gold rule frame — old-money engraving",
+      "bg": "#0C2B22",
+      "photo": "none",
+      "frame": { "inset": 30, "c": "#E8C15A", "w": 5 },
+      "title": {
+        "font": "cinzel",
+        "case": "upper",
+        "size": "auto",
+        "pos": "center",
+        "align": "center",
+        "fg": "#F2ECDC",
+        "spacing": 10,
+        "maxLines": 3,
+        "maxWords": 4,
+        "overline": { "word": "first", "c": "#E8C15A", "h": 8 },
+        "underline": { "word": "last", "c": "#E8C15A", "h": 8 }
+      },
+      "face": { "shape": "circle", "cx": 1080, "cy": 185, "r": 132, "ring": "#E8C15A", "ringW": 8 }
+    },
+
+    {
+      "id": "shout",
+      "label": "Shout",
+      "category": "bold-impact",
+      "needsPhoto": true,
+      "desc": "Bungee centred in the top third over a vivid photo, accent box behind the keyword — festival energy",
+      "aiPreset": "vivid high-energy photo matching the topic, saturated colour, bright subject, no text",
+      "bg": "#12091A",
+      "photo": "full",
+      "scrim": 0.4,
+      "title": {
+        "font": "bungee",
+        "case": "upper",
+        "size": "auto",
+        "pos": "top",
+        "align": "center",
+        "fg": "#FFFFFF",
+        "maxLines": 2,
+        "maxWords": 3,
+        "highlight": { "word": "keyword", "bg": "#FF3D7F", "fg": "#FFFFFF" }
+      },
+      "face": { "shape": "circle", "cx": 1108, "cy": 486, "r": 114, "ring": "#FF3D7F", "ringW": 8 }
+    }
+  ]
+}

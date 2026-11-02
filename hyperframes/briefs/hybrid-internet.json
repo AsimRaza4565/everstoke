@@ -1,0 +1,45 @@
+{
+  "slug": "hybrid-internet",
+  "brand": "Byte Theory",
+  "subline": "the internet, explained simply",
+  "kicker": "Byte Theory · Networking",
+  "voice": "en-US-AndrewNeural",
+  "width": 1920,
+  "height": 1080,
+  "ambient": { "a": "#a78bfa", "b": "#fbbf24" },
+  "beats": [
+    { "text": "You hit send. Your message becomes light.", "em": "light" },
+    { "text": "It is chopped into dozens of packets, each carrying its own address.", "em": "packets" },
+    { "text": "Routers fire them hop by hop, choosing the best path in microseconds.", "em": "hop" },
+    { "text": "Packets take different roads and arrive out of order. Scrambled is fine.", "em": "scrambled" },
+    { "text": "TCP numbers every piece and rebuilds your message at the end.", "em": "rebuilds" },
+    { "text": "Lost one? TCP just asks for it again. No drama.", "em": "again" },
+    { "text": "Trillions of times a second, this is the heartbeat of the internet.", "em": "heartbeat" }
+  ],
+  "scenes": [
+    { "type": "browser", "title": "New Message", "url": "https://you.send/hello-world", "sub": "one click · a journey begins" },
+    { "type": "chain", "tiles": [
+        { "icon": "chat", "label": "message", "variant": "v" },
+        { "icon": "zap", "label": "packets", "variant": "g" },
+        { "icon": "idcard", "label": "address", "variant": "e" }
+      ],
+      "caption": "every packet knows where it belongs" },
+    { "type": "remo" },
+    { "type": "search", "query": "packet 7 of 12", "results": [
+        { "icon": "zap", "w": 82, "label": "arrived · out of order" },
+        { "icon": "server", "w": 64, "label": "arrived · out of order" },
+        { "icon": "globe", "w": 40, "label": "scrambled is fine" }
+      ] },
+    { "type": "mcseg" },
+    { "type": "result", "icon": "server", "big": "TCP", "label": "lost one? it just asks again · no drama" },
+    { "type": "theatre",
+      "big": "THE INTERNET'S HEARTBEAT",
+      "cards": [
+        { "icon": "globe", "label": "7 nets", "x": "8%", "y": "58%" },
+        { "icon": "server", "label": "99.99%", "x": "42%", "y": "12%" },
+        { "icon": "zap", "label": "µs speed", "x": "74%", "y": "62%" }
+      ],
+      "far": "<g fill='none' stroke='#a78bfa' stroke-width='2' opacity='.35'><circle cx='240' cy='140' r='60'/><circle cx='920' cy='90' r='40'/><circle cx='1600' cy='160' r='70'/><circle cx='520' cy='470' r='50'/><circle cx='1350' cy='480' r='60'/></g>",
+      "mid": "<g stroke-width='3' fill='none'><path d='M240 140 L920 90 L1600 160 M520 470 L920 90 M1350 480 L1600 160' stroke='#4ade80' stroke-dasharray='14 10' opacity='.55'/></g><g fill='#fff'><circle cx='240' cy='140' r='8'/><circle cx='920' cy='90' r='8'/><circle cx='1600' cy='160' r='8'/><circle cx='520' cy='470' r='8'/><circle cx='1350' cy='480' r='8'/></g>" }
+  ]
+}

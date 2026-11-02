@@ -1,0 +1,20 @@
+{
+  "id": "psych",
+  "themeKey": "psych",
+  "beats": [
+    { "type": "hook", "eyebrow": "DARK PSYCHOLOGY", "text": "4 signs someone is manipulating you", "broll": { "query": "night city street walking" } },
+    { "type": "point", "n": "01", "title": "Love bombing", "sub": "Extreme affection in week one is a lever, not luck" },
+    { "type": "point", "n": "02", "title": "Guilt trips", "sub": "You keep apologizing for things you never did" },
+    { "type": "point", "n": "03", "title": "Gaslighting", "sub": "\"That never happened\" — until you doubt your own memory" },
+    { "type": "point", "n": "04", "title": "Foot in the door", "sub": "Tiny favors first. They test your boundaries one yes at a time" },
+    { "type": "cta", "text": "One concept a day, so it never works on you" }
+  ],
+  "narration": [
+    "Four signs someone is manipulating you. Number three is the most common.",
+    "One. Love bombing. Extreme affection in week one is a lever, not luck.",
+    "Two. Guilt trips. You keep apologizing for things you never did.",
+    "Three. Gaslighting. That never happened — until you start doubting your own memory.",
+    "Four. Foot in the door. Tiny favors first. They test your boundaries one yes at a time.",
+    "One concept a day, so it never works on you."
+  ]
+}

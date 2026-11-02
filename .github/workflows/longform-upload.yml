@@ -1,0 +1,64 @@
+# MOVED 09-19: the upload flow now lives in the PUBLIC muzzamilhassan/quarry-render
+# (workflow longform-upload, cron 20:30 UTC) — free minutes, no private quota.
+# This file stays for emergency manual dispatch ONLY. Do NOT re-enable its schedule:
+# two uploaders = duplicate documentaries (that bug already cost 8 deleted dups).
+name: Long-form Upload
+
+on:
+  workflow_dispatch:
+    inputs:
+      channel:
+        description: "one channel only (blank = all 4)"
+        required: false
+        default: ""
+
+permissions:
+  contents: write
+
+jobs:
+  upload:
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+
+      - name: Install dependencies
+        run: npm install
+
+      - name: Install Chrome (poster thumbnails)
+        run: |
+          npx --yes @puppeteer/browsers install chrome@stable --path "$HOME/chrome-cache"
+          echo "CHROME_PATH=$(find "$HOME/chrome-cache" -name chrome -type f | head -1)" >> "$GITHUB_ENV"
+
+      - name: Guard — poster integration must be in the uploader
+        run: grep -q "buildPoster" longvideo/longform-upload.mjs || { echo "::error::uploader lost the poster-thumbnail integration (a sync overwrote it) — restore the buildPoster block"; exit 1; }
+
+      - name: Install Pillow (thumbnail style generator)
+        run: python3 -m pip install --quiet pillow || sudo apt-get install -y -qq python3-pil
+
+      - name: Download artifacts + schedule uploads
+        env:
+          GITHUB_PAT: ${{ secrets.SECRET_WRITER_PAT }}
+          NTFY_TOPIC: ${{ secrets.NTFY_TOPIC }}
+          YOUTUBE_CLIENT_ID: ${{ secrets.YOUTUBE_CLIENT_ID }}
+          YOUTUBE_CLIENT_SECRET: ${{ secrets.YOUTUBE_CLIENT_SECRET }}
+          YT_TOKEN_INVESTORS_COMPASS: ${{ secrets.YT_TOKEN_INVESTORS_COMPASS }}
+          YT_TOKEN_MONEY_RULEBOOK: ${{ secrets.YT_TOKEN_MONEY_RULEBOOK }}
+          YT_TOKEN_DEBT_FREE_DOCTRINE: ${{ secrets.YT_TOKEN_DEBT_FREE_DOCTRINE }}
+          YT_TOKEN_QUOTEQUARRY: ${{ secrets.YT_TOKEN_QUOTEQUARRY }}
+          PEXELS_API_KEY: ${{ secrets.PEXELS_API_KEY }}
+        run: node longvideo/longform-upload.mjs ${{ inputs.channel != '' && format('--channel {0}', inputs.channel) || '' }}
+
+      - name: Save upload history
+        run: |
+          if [ -f state/longform-uploads.json ]; then
+            git config user.name "longform-bot"
+            git config user.email "bot@users.noreply.github.com"
+            git add state/longform-uploads.json
+            git commit -m "longform uploads [skip ci]" || true
+            git push origin HEAD:main || (git pull --rebase -q origin main && git push origin HEAD:main) || true
+          fi

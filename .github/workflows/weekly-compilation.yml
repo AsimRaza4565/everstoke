@@ -1,0 +1,80 @@
+name: 📼 Daily Long-Form Compilation (watch-hours engine)
+
+on:
+  schedule:
+    # DAILY long-form: 13:00 UTC = 18:00 PKT evening prime time
+    - cron: '0 13 * * *'
+  workflow_dispatch:
+    inputs:
+      extra:
+        description: 'Extra args (e.g. fb-only)'
+        required: false
+        default: ''
+
+concurrency:
+  group: weekly-compilation
+  cancel-in-progress: false
+
+jobs:
+  compile:
+    name: 🎬 Build & Upload Weekly Compilation
+    runs-on: ubuntu-latest
+    timeout-minutes: 90
+
+    steps:
+      - name: 📥 Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: 💾 Restore Pixabay 4K clip pool
+        uses: actions/cache@v4
+        with:
+          path: pixabay-pool
+          key: pixabay-pool-v1
+
+      - name: ⚙️ Setup Node.js 20
+        uses: actions/setup-node@v4
+        with:
+          node-version: 24
+
+      - name: 📦 Install Node Dependencies
+        run: npm install
+
+      - name: 🔊 Setup FFmpeg
+        uses: ./.github/actions/setup-ffmpeg
+
+      - name: 🔤 Install Fonts
+        run: |
+          sudo apt-get install -y -qq fonts-liberation fonts-dejavu-core fontconfig >/dev/null 2>&1 || true
+          mkdir -p ~/.local/share/fonts ~/.fonts
+          cp image-tools/fonts/* ~/.local/share/fonts/ 2>/dev/null || true
+          cp image-tools/fonts/* ~/.fonts/ 2>/dev/null || true
+          fc-cache -fv
+
+      - name: 🗣️ Install TTS engines (Kokoro → Edge fallback chain)
+        run: |
+          python3 -m pip install --quiet --user edge-tts kokoro-onnx || pip install --quiet edge-tts kokoro-onnx || true
+          python3 -c "import edge_tts, kokoro_onnx; print('TTS engines ready.')" || echo "TTS partial — fallbacks handle it."
+          curl -sL --retry 3 -o pixabay-pool/kokoro-v1.0.onnx "https://github.com/thewh1teagle/kokoro-onnx/releases/download/model-files-v1.0/kokoro-v1.0.onnx" || true
+          curl -sL --retry 3 -o pixabay-pool/voices-v1.0.bin "https://github.com/thewh1teagle/kokoro-onnx/releases/download/model-files-v1.0/voices-v1.0.bin" || true
+
+      - name: 📼 Build & Upload Weekly Compilation
+        env:
+          YOUTUBE_CLIENT_ID: ${{ secrets.YOUTUBE_CLIENT_ID }}
+          YOUTUBE_CLIENT_SECRET: ${{ secrets.YOUTUBE_CLIENT_SECRET }}
+          YOUTUBE_REFRESH_TOKEN: ${{ secrets.YOUTUBE_REFRESH_TOKEN }}
+          OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
+          PIXABAY_API_KEY: ${{ secrets.PIXABAY_API_KEY }}
+          FB_PAGE_TOKEN: ${{ secrets.FB_PAGE_TOKEN }}
+          GROQ_API_KEY: ${{ secrets.GROQ_API_KEY }}
+        run: node weekly-compilation.mjs daily ${{ github.event.inputs.extra }}
+
+      - name: 🖼️ Upload Compilation Artifact
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: weekly-compilation-${{ github.run_id }}
+          path: |
+            pixabay-pool/compilation-week.mp4
+            yt-compilation-test.mp4
+          if-no-files-found: ignore
+          retention-days: 7

@@ -1,0 +1,96 @@
+{
+  "version": 1,
+  "library": "Quarry Studio Originals \u2014 self-produced, claim-proof",
+  "tracks": [
+    {
+      "file": "calm-pad-01.mp3",
+      "mood": "calm",
+      "title": "Quarry Calm 01",
+      "tags": "calm"
+    },
+    {
+      "file": "calm-pad-02.mp3",
+      "mood": "calm",
+      "title": "Quarry Calm 02",
+      "tags": "calm"
+    },
+    {
+      "file": "calm-pad-03.mp3",
+      "mood": "calm",
+      "title": "Quarry Calm 03",
+      "tags": "calm"
+    },
+    {
+      "file": "luxury-pad-01.mp3",
+      "mood": "luxury",
+      "title": "Quarry Luxury 01",
+      "tags": "luxury"
+    },
+    {
+      "file": "luxury-pad-02.mp3",
+      "mood": "luxury",
+      "title": "Quarry Luxury 02",
+      "tags": "luxury"
+    },
+    {
+      "file": "luxury-pluck-01.mp3",
+      "mood": "luxury",
+      "title": "Quarry Luxury 01",
+      "tags": "luxury"
+    },
+    {
+      "file": "epic-pad-01.mp3",
+      "mood": "epic",
+      "title": "Quarry Epic 01",
+      "tags": "epic"
+    },
+    {
+      "file": "epic-pad-02.mp3",
+      "mood": "epic",
+      "title": "Quarry Epic 02",
+      "tags": "epic"
+    },
+    {
+      "file": "epic-pluck-01.mp3",
+      "mood": "epic",
+      "title": "Quarry Epic 01",
+      "tags": "epic"
+    },
+    {
+      "file": "driving-pad-01.mp3",
+      "mood": "driving",
+      "title": "Quarry Driving 01",
+      "tags": "driving"
+    },
+    {
+      "file": "driving-pad-02.mp3",
+      "mood": "driving",
+      "title": "Quarry Driving 02",
+      "tags": "driving"
+    },
+    {
+      "file": "bright-pad-01.mp3",
+      "mood": "bright",
+      "title": "Quarry Bright 01",
+      "tags": "bright"
+    },
+    {
+      "file": "bright-pad-02.mp3",
+      "mood": "bright",
+      "title": "Quarry Bright 02",
+      "tags": "bright"
+    },
+    {
+      "file": "dark-pad-01.mp3",
+      "mood": "dark",
+      "title": "Quarry Dark 01",
+      "tags": "dark"
+    },
+    {
+      "file": "dark-pad-02.mp3",
+      "mood": "dark",
+      "title": "Quarry Dark 02",
+      "tags": "dark"
+    }
+  ]
+}

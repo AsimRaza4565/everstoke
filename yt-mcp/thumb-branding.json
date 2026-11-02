@@ -1,0 +1,37 @@
+{
+  "quotequarry": {
+    "accent": "#E8C15A",
+    "shade": "#0A1128",
+    "chip": "",
+    "eyebrow": "",
+    "template": null,
+    "updated": "2026-10-12T04:43:58.999Z",
+    "updatedBy": "muzzamilhassan302@gmail.com"
+  },
+  "money-rulebook": {
+    "accent": "#C1272D",
+    "shade": "#120808",
+    "chip": "MONEY RULES",
+    "eyebrow": "",
+    "template": "poster",
+    "updated": "2026-10-12T04:48:07.005Z",
+    "updatedBy": "muzzamilhassan302@gmail.com"
+  },
+  "investors-compass": {
+    "faces": [
+      "yt-mcp/branding-assets/investors-compass/face-1792341528105.jpg"
+    ],
+    "updated": "2026-10-18T16:38:51.850Z",
+    "updatedBy": "muzzamilhassan302@gmail.com",
+    "accent": null,
+    "shade": null,
+    "chip": "",
+    "eyebrow": "",
+    "template": null,
+    "templateRotation": [
+      "v2/ketchup",
+      "v2/blackout",
+      "v2/terminal"
+    ]
+  }
+}

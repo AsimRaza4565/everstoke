@@ -1,0 +1,15 @@
+{
+  "slug": "motivation-discipline",
+  "topic": "Discipline is the highest form of self-respect",
+  "dna": "cinematic",
+  "brand": "Iron Daily",
+  "subline": "Show up. Every day.",
+  "kicker": "Iron Daily",
+  "voice": "en-US-AndrewNeural",
+  "beats": [
+    { "text": "Motivation is weather. Discipline is climate.", "em": "climate" },
+    { "text": "You don't rise to goals. You fall to systems.", "em": "systems" },
+    { "text": "The version of you that you want is built in the hours nobody claps for.", "em": "nobody" },
+    { "text": "Discipline is the highest form of self-respect.", "em": "self-respect" }
+  ]
+}

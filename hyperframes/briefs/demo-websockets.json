@@ -1,0 +1,39 @@
+{
+  "slug": "demo-websockets",
+  "brand": "Byte Theory",
+  "subline": "Code, explained simply",
+  "kicker": "Byte Theory · Real-Time Web",
+  "voice": "en-US-AndrewNeural",
+  "width": 1920,
+  "height": 1080,
+  "ambient": { "a": "#ec4899", "b": "#22d3ee" },
+  "beats": [
+    { "text": "Every chat app breaks one HTTP rule.", "em": "rule" },
+    { "text": "HTTP is a question, then an answer. Then the connection dies.", "em": "dies" },
+    { "text": "So the client keeps asking. Anything new? Nothing. Again. Again.", "em": "asking" },
+    { "text": "A WebSocket opens once and never hangs up.", "em": "once" },
+    { "text": "Both sides talk whenever they want. One socket, endless messages.", "em": "endless" },
+    { "text": "Polling checks. WebSockets listen.", "em": "listen" }
+  ],
+  "scenes": [
+    { "type": "browser", "title": "Byte Chat", "url": "https://chat.byte.dev", "sub": "new messages should appear… live" },
+    { "type": "flow", "mode": "close", "leftIcon": "phone", "leftLabel": "client", "rightIcon": "server", "rightLabel": "server",
+      "caption": "one question · one answer · then silence" },
+    { "type": "flow", "mode": "poll", "leftIcon": "phone", "leftLabel": "client", "rightIcon": "server", "rightLabel": "server",
+      "caption": "asking every 2 seconds · mostly nothing" },
+    { "type": "code", "title": "client.js",
+      "lines": [
+        [ { "t": "const ", "c": "k" }, { "t": "socket = ", "c": "w" }, { "t": "new ", "c": "k" }, { "t": "WebSocket(", "c": "u" }, { "t": "'wss://chat.byte.dev'", "c": "s" }, { "t": ")", "c": "w" } ],
+        [ { "t": "socket.readyState", "c": "w" }, { "t": "  →  ", "c": "c" }, { "t": "1 · OPEN", "c": "s" } ]
+      ],
+      "tag": "opens once · never hangs up" },
+    { "type": "flow", "mode": "duplex", "leftIcon": "phone", "leftLabel": "client", "rightIcon": "server", "rightLabel": "server",
+      "caption": "one open wire · messages both ways · forever" },
+    { "type": "pills",
+      "items": [
+        { "icon": "search", "label": "POLLING · checks", "variant": "pink" },
+        { "icon": "chat", "label": "WEBSOCKET · listens", "variant": "emerald" }
+      ],
+      "caption": "now you know which one feels instant" }
+  ]
+}

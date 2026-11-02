@@ -1,0 +1,84 @@
+{
+  "lastRunId": "manual-0919-doc",
+  "queue": {
+    "title": "How Marcus Aurelius Beat the Market With Stoicism",
+    "keyword": "stoic wisdom",
+    "total": 12,
+    "parts": [
+      {
+        "part": 1,
+        "asset": "part-01.mp4",
+        "url": "https://api.github.com/repos/muzzamilhassan/automation/releases/assets/628197996",
+        "start": 0,
+        "posted": true,
+        "postedAt": "2026-10-10T14:43:23.388Z"
+      },
+      {
+        "part": 2,
+        "asset": "part-02.mp4",
+        "url": "https://api.github.com/repos/muzzamilhassan/automation/releases/assets/628198172",
+        "start": 58
+      },
+      {
+        "part": 3,
+        "asset": "part-03.mp4",
+        "url": "https://api.github.com/repos/muzzamilhassan/automation/releases/assets/628198485",
+        "start": 116
+      },
+      {
+        "part": 4,
+        "asset": "part-04.mp4",
+        "url": "https://api.github.com/repos/muzzamilhassan/automation/releases/assets/628198772",
+        "start": 174
+      },
+      {
+        "part": 5,
+        "asset": "part-05.mp4",
+        "url": "https://api.github.com/repos/muzzamilhassan/automation/releases/assets/628199246",
+        "start": 232
+      },
+      {
+        "part": 6,
+        "asset": "part-06.mp4",
+        "url": "https://api.github.com/repos/muzzamilhassan/automation/releases/assets/628199389",
+        "start": 290
+      },
+      {
+        "part": 7,
+        "asset": "part-07.mp4",
+        "url": "https://api.github.com/repos/muzzamilhassan/automation/releases/assets/628199632",
+        "start": 348
+      },
+      {
+        "part": 8,
+        "asset": "part-08.mp4",
+        "url": "https://api.github.com/repos/muzzamilhassan/automation/releases/assets/628199780",
+        "start": 406
+      },
+      {
+        "part": 9,
+        "asset": "part-09.mp4",
+        "url": "https://api.github.com/repos/muzzamilhassan/automation/releases/assets/628199972",
+        "start": 464
+      },
+      {
+        "part": 10,
+        "asset": "part-10.mp4",
+        "url": "https://api.github.com/repos/muzzamilhassan/automation/releases/assets/628200117",
+        "start": 522
+      },
+      {
+        "part": 11,
+        "asset": "part-11.mp4",
+        "url": "https://api.github.com/repos/muzzamilhassan/automation/releases/assets/628200274",
+        "start": 580
+      },
+      {
+        "part": 12,
+        "asset": "part-12.mp4",
+        "url": "https://api.github.com/repos/muzzamilhassan/automation/releases/assets/628200424",
+        "start": 638
+      }
+    ]
+  }
+}

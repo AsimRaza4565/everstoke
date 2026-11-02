@@ -1,0 +1,99 @@
+# Studio Buttons — manual FB runs from the Quarry Studio dashboard (or Actions tab).
+# reels   = drain queued FB reels from the channel-workflow outbox caches
+# posters = daily niche poster images per FB page
+# Everything else (shorts, episodes, IG slots) has its own workflow — this file
+# only exists for the two FB scripts that had no cloud home.
+name: 🎛️ Studio — FB now
+
+on:
+  workflow_dispatch:
+    inputs:
+      job:
+        description: "reels | posters"
+        required: true
+        default: "reels"
+
+concurrency:
+  #63: one shared group — both workflows write the same outbox cache;
+  # parallel runs overwrote each other's save, resurrecting posted reels
+  group: outbox-drain
+  cancel-in-progress: false
+
+# State commits below need write access (default-token restrictions would silently break them — see issue #70)
+permissions:
+  contents: write
+
+jobs:
+  run:
+    runs-on: ubuntu-latest
+    timeout-minutes: 40
+    steps:
+      - name: 📥 Checkout
+        uses: actions/checkout@v4
+
+      - name: ⚙️ Setup Node.js 20
+        uses: actions/setup-node@v4
+        with:
+          node-version: 24
+
+      - name: ♻️ Restore quotequarry reels
+        uses: actions/cache@v4
+        with:
+          path: fb-outbox/quotequarry
+          key: ig-outbox-quotequarry-${{ github.run_id }}
+          restore-keys: ig-outbox-quotequarry-
+
+      - name: ♻️ Restore investors-compass reels
+        uses: actions/cache@v4
+        with:
+          path: fb-outbox/investors-compass
+          key: ig-outbox-investors-compass-${{ github.run_id }}
+          restore-keys: ig-outbox-investors-compass-
+
+      - name: ♻️ Restore money-rulebook reels
+        uses: actions/cache@v4
+        with:
+          path: fb-outbox/money-rulebook
+          key: ig-outbox-money-rulebook-${{ github.run_id }}
+          restore-keys: ig-outbox-money-rulebook-
+
+      - name: ♻️ Restore debt-free-doctrine reels
+        uses: actions/cache@v4
+        with:
+          path: fb-outbox/debt-free-doctrine
+          key: ig-outbox-debt-free-doctrine-${{ github.run_id }}
+          restore-keys: ig-outbox-debt-free-doctrine-
+
+      - name: 📦 Install dependencies
+        run: npm install
+
+      - name: 🔊 Install FFmpeg (posters render video-style frames)
+        run: |
+          if ! command -v ffmpeg > /dev/null 2>&1; then
+            sudo apt-get update -qq && sudo apt-get install -y -qq ffmpeg
+          fi
+          ffmpeg -version | head -n 1
+
+      - name: 📤 FB reels — drain outbox
+        if: ${{ inputs.job == 'reels' }}
+        env:
+          FB_PAGE_TOKEN: ${{ secrets.FB_PAGE_TOKEN }}
+        run: node fb-crosspost.mjs
+
+      - name: 🖼️ FB posters — daily niche image per page
+        if: ${{ inputs.job == 'posters' }}
+        env:
+          FB_PAGE_TOKEN: ${{ secrets.FB_PAGE_TOKEN }}
+          GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
+          HF_TOKEN: ${{ secrets.HF_TOKEN }}
+          YOUTUBE_CLIENT_ID: ${{ secrets.YOUTUBE_CLIENT_ID }}
+          YOUTUBE_CLIENT_SECRET: ${{ secrets.YOUTUBE_CLIENT_SECRET }}
+        run: node fb-images.mjs
+
+      - name: 💾 Commit publishing state
+        run: |
+          git config user.name "quarry-bot"
+          git config user.email "bot@quotequarry.local"
+          git add yt-mcp/schedule-state.json yt-mcp/state/ || true
+          git diff --cached --quiet || git commit -m "fb-now state [skip ci]"
+          git push || true

@@ -1,0 +1,47 @@
+name: 🖼️ Thumbnail A/B Swapper
+
+on:
+  schedule:
+    - cron: '43 * * * *'
+  workflow_dispatch:
+
+concurrency:
+  group: thumb-ab
+  cancel-in-progress: false
+
+permissions:
+  contents: write
+
+jobs:
+  swap:
+    name: Swap due A/B variants
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - name: 📥 Checkout
+        uses: actions/checkout@v4
+
+      - name: ⚙️ Setup Node.js 20
+        uses: actions/setup-node@v4
+        with:
+          node-version: 24
+
+      - name: 🔁 Swap due variants + record periods
+        env:
+          YOUTUBE_CLIENT_ID: ${{ secrets.YOUTUBE_CLIENT_ID }}
+          YOUTUBE_CLIENT_SECRET: ${{ secrets.YOUTUBE_CLIENT_SECRET }}
+          YT_TOKEN_QUOTEQUARRY: ${{ secrets.YT_TOKEN_QUOTEQUARRY }}
+          YT_TOKEN_INVESTORS_COMPASS: ${{ secrets.YT_TOKEN_INVESTORS_COMPASS }}
+          YT_TOKEN_MONEY_RULEBOOK: ${{ secrets.YT_TOKEN_MONEY_RULEBOOK }}
+          YT_TOKEN_DEBT_FREE_DOCTRINE: ${{ secrets.YT_TOKEN_DEBT_FREE_DOCTRINE }}
+          NTFY_TOPIC: ${{ secrets.NTFY_TOPIC }}
+        run: node thumbnails/ab-runner.mjs
+
+      - name: 💾 Commit test state
+        run: |
+          git config user.name "quarry-bot"
+          git config user.email "bot@quotequarry.local"
+          git add yt-mcp/thumb-tests.json || true
+          git diff --cached --quiet || git commit -m "thumb-ab state [skip ci]"
+          git pull --rebase --autostash origin main || true
+          git push || echo "::warning::state push failed — state stays local to this run"

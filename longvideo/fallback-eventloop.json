@@ -1,0 +1,164 @@
+[
+ {
+  "t": "title",
+  "headline": "What is the Event Loop?",
+  "sub": "JAVASCRIPT'S SECRET ENGINE",
+  "text": ""
+ },
+ {
+  "t": "steps",
+  "label": "THE PROBLEM",
+  "items": [
+   "JavaScript runs on ONE thread",
+   "One thread = one call stack",
+   "One thing at a time"
+  ],
+  "caption": "so how does it handle timers, network and clicks?",
+  "text": "Here is the first thing to understand, because everything else builds on it. JavaScript is single threaded. It has exactly one call stack, which means the engine can only execute one piece of code at any given moment. There is no second worker waiting to help. So a natural question appears: if the language can only do one thing at a time, how does it handle timers, network requests, and user clicks without freezing the entire page? That question is exactly what the event loop exists to answer. And here is a detail most tutorials skip: single threaded does not mean weak. It means every single operation, no matter how small, must fully finish before the next one begins. There is no interleaving inside the engine. Once you accept that one hard rule, every async feature in the language starts to look like a clever workaround for it."
+ },
+ {
+  "t": "terminal",
+  "label": "THE CALL STACK",
+  "termTitle": "main.js — call stack",
+  "lines": [
+   "function greet() {",
+   "  return 'hi';",
+   "}",
+   "greet();  // push, run, pop"
+  ],
+  "caption": "functions stack up, finish, and pop off",
+  "text": "Every function call goes onto the call stack. Push, run, pop. If the greet function calls another function, that new call lands on top of the stack, and the engine always finishes the topmost frame before moving down. It is simple, it is predictable, and it is fast. Watch the model in front of you: main runs, greet gets pushed, it returns, and it pops. This little machine is the entire execution model of the language, and once you see it this way, everything about async JavaScript starts to make sense. One more thing worth noticing: the stack has a real size limit, usually around ten thousand frames. Exceed it and you get the famous stack overflow error. So the stack is finite, the thread is single, and every frame must run to completion. Keep those three facts in your head, because the entire event loop is really just a system for keeping this one little stack as busy and as unblocked as possible."
+ },
+ {
+  "t": "statement",
+  "label": "THE DANGER",
+  "headline": "One slow task blocks everything",
+  "sub": "the page freezes",
+  "text": "But there is a dark side to having only one stack. Because the engine can do just one thing at a time, a slow task blocks everything else. Imagine a function that takes five seconds to finish. During those five seconds the page cannot repaint, buttons stop responding, animations stop, and the browser eventually shows the dreaded page unresponsive dialog. Users do not blame the function. They blame your app. So the language needed a way to hand off slow work without blocking the one and only stack. And this is not a rare edge case. A tight loop over a big array, a huge JSON parse, a badly written regex, any of them can freeze a real production app. The browser cannot even show you a spinner, because rendering is also work, and the one thread is busy. This exact pain is why web workers, chunking, and the entire async ecosystem exist in the first place."
+ },
+ {
+  "t": "flow",
+  "label": "THE ESCAPE HATCH",
+  "nodes": [
+   "Call Stack",
+   "Web APIs",
+   "Callback Queue"
+  ],
+  "loop": false,
+  "caption": "timers, fetch and event listeners run OUTSIDE the engine",
+  "text": "This is where the browser quietly saves the day. The runtime gives JavaScript helpers that live outside the engine itself. Set timeout, fetch, and event listeners are not really JavaScript features. They are Web APIs provided by the browser. You hand your work to them, they do the waiting in the background, whether that is five milliseconds or five seconds, and when the work is done they place the result into a waiting line called the callback queue. The single thread never had to stop. And here is the part people miss: those Web APIs are not magic. They are code too, running on other threads that the browser owns. The waiting, the network round trip, the timer countdown, all of that happens far away from your single thread. Your code just hands over a function and moves on. When the result is ready, the queue makes sure it gets back onto the stack safely."
+ },
+ {
+  "t": "terminal",
+  "label": "THE FAMOUS TRAP",
+  "termTitle": "interview-question.js",
+  "lines": [
+   "setTimeout(task, 0);",
+   "// does NOT run immediately"
+  ],
+  "caption": "zero does not mean now. it means: wait your turn",
+  "text": "Now for the classic interview trap. What does set timeout with zero milliseconds do? Most people say it runs immediately. It does not. Calling set timeout zero hands the task to a Web API, which starts a timer that fires almost instantly, but the callback does not jump onto the call stack. It stands at the back of the callback queue and waits. And it will keep waiting until the call stack is completely empty. Zero means skip the delay, not skip the line. The reason behind this rule is simple but strict: the call stack must never be interrupted mid function. If a timer callback could cut into running code, variables could change halfway through and the whole language would become chaos. So the loop never interrupts. It waits for a clean, empty stack, and only then does it feed in the next task. That patience is what keeps JavaScript safe to write."
+ },
+ {
+  "t": "flow",
+  "label": "THE FULL MACHINE",
+  "nodes": [
+   "Web APIs",
+   "Callback Queue",
+   "Event Loop",
+   "Call Stack"
+  ],
+  "loop": true,
+  "caption": "one rule: stack empty? take the next task",
+  "text": "So how do all these pieces connect? Meet the event loop. It is a tiny supervisor with one absurdly simple rule, running on repeat forever. If the call stack is empty, take the first task from the callback queue and push it onto the stack. Then check again. That is the entire machine. It is not smart, it is not complicated, it is just a while loop that watches two lines. But this humble loop is the reason a single-threaded language can feel asynchronous at all. Developers hear the words event loop and imagine something mysterious, but you have now seen the whole thing. Boxes, a queue, and a rule. Every framework, every library, every line of async JavaScript you will ever write runs on top of this simple supervisor. Learn to reason about the emptiness of the stack, and you can predict the behavior of any snippet anyone throws at you."
+ },
+ {
+  "t": "steps",
+  "label": "THE LOOP, STEP BY STEP",
+  "items": [
+   "Is the call stack empty?",
+   "Drain ALL microtasks first",
+   "Run ONE task from the queue",
+   "Render, then repeat"
+  ],
+  "caption": "promises live in microtasks — they always go first",
+  "text": "Let us walk the loop exactly, because the order matters more than most developers realize. Step one, is the call stack empty? If not, keep waiting. Step two, drain the entire microtask queue until it is completely empty. Promises live here. Step three, take exactly one task, one macrotask, from the callback queue and run it. Step four, let the browser render the screen. Then the loop starts over, forever, as long as your page is open."
+ },
+ {
+  "t": "code",
+  "label": "MICROTASKS WIN",
+  "big": "promise.then() runs FIRST",
+  "caption": "microtasks jump the entire callback queue",
+  "grid": false,
+  "lines": [
+   "Promise.resolve().then(run);",
+   "setTimeout(run, 0);",
+   "// promise wins — every time"
+  ],
+  "text": "Not all queues are equal, and this is the part that separates seniors from juniors. Promise callbacks go into a separate, faster line called the microtask queue. The rule says the event loop must drain every single microtask before it is allowed to touch even one macrotask. So a promise that already resolved beats a zero millisecond timeout, even when the timeout was registered first in your code. The microtask queue does not share. It finishes completely. Why does this rule even exist? Because microtasks are meant to be tiny, immediate follow-ups, like updating state right after a promise resolves, before the browser gets a chance to paint anything. If macrotasks could sneak in between microtasks, the screen could show half finished updates. The drain everything rule guarantees a promise chain completes as one atomic unit, with no rendering and no other tasks sneaking into the middle."
+ },
+ {
+  "t": "terminal",
+  "label": "PROOF IN CODE",
+  "termTitle": "order.js — predict the output",
+  "lines": [
+   "console.log('1');",
+   "setTimeout(() => log('2'), 0);",
+   "Promise.resolve().then(() => log('3'));",
+   "// prints: 1, 3, 2 — always"
+  ],
+  "caption": "sync first, then microtasks, then macrotasks",
+  "text": "Run this snippet in any browser and you get one, three, two. Every single time, in every browser, and in Node too. One prints because synchronous code always runs to completion first. Three prints before two because promise callbacks are microtasks and the loop drains them before macrotasks. Two prints last because the timeout is a macrotask standing in the regular queue. Interviewers love this question, and now you can answer it from first principles instead of memorizing an answer. If you want a harder version for interviews, swap the promise for two chained then calls, or add an await inside an async function, and predict the order again. Same rules, deeper water. The microtask queue drains fully between every macrotask, chained microtasks keep joining the back of the microtask line, and nothing else runs until that line is truly empty. Once the model is in your head, none of the trick versions can surprise you."
+ },
+ {
+  "t": "statement",
+  "label": "THE ONE WARNING",
+  "headline": "Hungry tasks starve the queue",
+  "sub": "never block the loop",
+  "text": "One warning before we finish. The event loop can only turn when the stack is free, so a task that runs too long starves everything else. Timers wait, clicks wait, renders wait, and the page freezes again, even with all this machinery in place. That is why heavy work gets split into small chunks, why developers slice big loops into batches, and why truly heavy computation moves into a worker, which is a separate thread with its own event loop. Keep every task short and the loop keeps spinning smoothly. A good rule of thumb: keep every task under about fifty milliseconds, and the page will feel instant no matter how much work is happening. Frameworks like React actually schedule their rendering around this exact budget. When you hear the term concurrent rendering, it is really just smart event loop citizenship, spreading work across many turns of the loop instead of hogging one."
+ },
+ {
+  "t": "flow",
+  "label": "WHERE NODE JS FITS",
+  "nodes": [
+   "V8 Engine",
+   "Libuv",
+   "Thread Pool",
+   "Event Loop"
+  ],
+  "loop": true,
+  "caption": "same rules, different referee — libuv runs the show",
+  "text": "Node js uses the exact same idea outside the browser, with different players. The V8 engine still executes your JavaScript with its single call stack. But the event loop itself is provided by a library called libuv, which also manages a thread pool for heavy filesystem and crypto work, its own timers, and several extra queues. The rules you just learned still apply. Microtasks still drain first, then one macrotask at a time. Same beautiful machine, just a different referee running it. One small difference to remember: in Node, microtasks run between every phase of the loop, not just after macrotasks, and there are extra queues like the check phase for set immediate. The vocabulary grows, but the heart of it is identical. Empty stack, drain microtasks, run the next task, keep the process alive as long as there is work or timers on the books."
+ },
+ {
+  "t": "code",
+  "label": "WHY ASYNC AWAIT WORKS",
+  "big": "await = microtask pause",
+  "caption": "await pauses THIS function, never the thread",
+  "grid": false,
+  "lines": [
+   "const data = await fetch(url);",
+   "// function suspends here",
+   "// the thread stays free"
+  ],
+  "text": "Finally, this is the reason async await behaves the way it does. When a function hits await, it pauses, and the rest of that function is scheduled as a microtask. The call stack pops the function, the thread goes free, and the loop keeps serving everyone else. When the network response finally arrives, the continuation runs as a microtask, jumping ahead of macrotasks as promised. Await never blocks the thread. It only ever pauses the one function that is waiting, and that is a huge difference. And this is also why an await inside a loop can be a performance trap. Each await yields to the loop, letting every queued task jump ahead of your next iteration. Sometimes that is exactly what you want, and sometimes it quietly multiplies your total time. Understanding the loop turns that guesswork into a decision you make on purpose."
+ },
+ {
+  "t": "steps",
+  "label": "THE RULES YOU NOW KNOW",
+  "items": [
+   "One thread, one call stack",
+   "Web APIs do the waiting",
+   "Microtasks drain FIRST",
+   "One macrotask, then render"
+  ],
+  "caption": "this is the whole engine — everything else is detail",
+  "text": "Let us lock in the four rules you now know cold. One, JavaScript has a single thread and a single call stack. Two, slow work is handed to Web APIs, or in Node to libuv, which do the waiting outside the engine. Three, when the stack empties, the microtask queue drains completely before anything else runs. Four, exactly one macrotask runs, then the browser renders, and the loop turns again. If you can say those four sentences from memory, you understand the event loop better than most working developers. From here, the next steps are natural. Learn the microtask exceptions like queue microtask, look into web workers for true parallelism, and explore Node streams for handling big data without blocking. But do not rush. The event loop you just learned is the foundation under all of it, and most developers never take the time to understand it this deeply."
+ },
+ {
+  "t": "end",
+  "headline": "Now the event loop makes sense.",
+  "sub": "FOLLOW FOR MORE",
+  "text": ""
+ }
+]

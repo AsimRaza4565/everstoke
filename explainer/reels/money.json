@@ -1,0 +1,20 @@
+{
+  "id": "money",
+  "themeKey": "money",
+  "beats": [
+    { "type": "hook", "eyebrow": "MONEY PSYCHOLOGY", "text": "Why the rich never look rich", "broll": { "query": "city night aerial" } },
+    { "type": "point", "n": "01", "title": "They buy assets first", "sub": "Luxury is what assets buy later — not what a salary proves today" },
+    { "type": "point", "n": "02", "title": "They refuse visible debt", "sub": "A $90,000 car on a loan is a $90,000 hole with leather seats" },
+    { "type": "stat", "value": "78%", "label": "of NFL players go broke or feel financial stress within 5 years of retiring", "pct": 78, "broll": { "query": "finance money cash" } },
+    { "type": "point", "n": "03", "title": "They fix boring leaks", "sub": "Fees, taxes, subscriptions — the quiet drips sink big ships" },
+    { "type": "cta", "text": "Daily money psychology, in 45 seconds" }
+  ],
+  "narration": [
+    "Why the rich never look rich. Three habits they share.",
+    "One. They buy assets first. Luxury is what assets buy later, not what a salary proves today.",
+    "Two. They refuse visible debt. A ninety thousand dollar car on a loan is a ninety thousand dollar hole, with leather seats.",
+    "Seventy-eight percent of NFL players go broke or feel financial stress within five years of retiring. Income is not wealth.",
+    "Three. They fix boring leaks. Fees, taxes, subscriptions — the quiet drips sink big ships.",
+    "Follow for daily money psychology."
+  ]
+}

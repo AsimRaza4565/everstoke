@@ -1,0 +1,91 @@
+name: 📸 IG Reels — Slot Poster
+
+# IG has no scheduling API, so reels are posted HERE at fixed audience slots
+# instead of the instant a channel pipeline finishes. Each run posts ONE queued
+# reel per channel (oldest first, tracked in yt-mcp/ig-state.json).
+# Reels are produced by the channel workflows overnight and handed over via
+# the actions cache (ig-outbox-<slug>-*).
+
+on:
+  # 2026-10-23 owner: platforms paused (YouTube-only focus) — schedules off.
+  # To resume: uncomment the three crons below.
+  # schedule:
+  #   - cron: '20 11 * * *'   # 07:20 New York — US morning scroll
+  #   - cron: '20 15 * * *'   # 11:20 New York — US lunch
+  #   - cron: '20 22 * * *'   # 18:20 New York — US evening prime
+  workflow_dispatch:
+
+concurrency:
+  #63: one shared group — both workflows write the same outbox cache;
+  # parallel runs overwrote each other's save, resurrecting posted reels
+  group: outbox-drain
+  cancel-in-progress: false
+
+# State commits below need write access (default-token restrictions would silently break them — see issue #70)
+permissions:
+  contents: write
+
+jobs:
+  post:
+    name: Post one queued reel per channel
+    runs-on: ubuntu-latest
+    timeout-minutes: 40
+    steps:
+      - name: 📥 Checkout
+        uses: actions/checkout@v4
+
+      - name: ⚙️ Setup Node.js 20
+        uses: actions/setup-node@v4
+        with:
+          node-version: 24
+
+      - name: 📦 Install Dependencies
+        run: npm install
+
+      - name: ♻️ Restore quotequarry reels
+        uses: actions/cache@v4
+        with:
+          path: fb-outbox/quotequarry
+          key: ig-outbox-quotequarry-${{ github.run_id }}
+          restore-keys: ig-outbox-quotequarry-
+
+      - name: ♻️ Restore investors-compass reels
+        uses: actions/cache@v4
+        with:
+          path: fb-outbox/investors-compass
+          key: ig-outbox-investors-compass-${{ github.run_id }}
+          restore-keys: ig-outbox-investors-compass-
+
+      - name: ♻️ Restore money-rulebook reels
+        uses: actions/cache@v4
+        with:
+          path: fb-outbox/money-rulebook
+          key: ig-outbox-money-rulebook-${{ github.run_id }}
+          restore-keys: ig-outbox-money-rulebook-
+
+      - name: ♻️ Restore debt-free-doctrine reels
+        uses: actions/cache@v4
+        with:
+          path: fb-outbox/debt-free-doctrine
+          key: ig-outbox-debt-free-doctrine-${{ github.run_id }}
+          restore-keys: ig-outbox-debt-free-doctrine-
+
+      - name: 📸 Post one reel per channel
+        env:
+          FB_PAGE_TOKEN: ${{ secrets.FB_PAGE_TOKEN }}
+        run: |
+          mkdir -p fb-outbox
+          node ig-crosspost.mjs --one
+
+      - name: 🧵 Threads — one QQ reel per day (restored 09-20; died with content-machine on 09-15)
+        env:
+          THREADS_TOKEN_JSON: ${{ secrets.THREADS_TOKEN_JSON }}
+        run: node threads-daily.mjs
+
+      - name: 💾 Commit IG slot state
+        run: |
+          git config user.name "quarry-bot"
+          git config user.email "bot@quotequarry.local"
+          git add yt-mcp/ig-state.json yt-mcp/state/ || true
+          git diff --cached --quiet || git commit -m "ig slot state [skip ci]"
+          git push || true

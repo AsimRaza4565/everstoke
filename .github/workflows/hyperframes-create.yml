@@ -1,0 +1,112 @@
+name: hyperframes-create
+
+on:
+  workflow_dispatch:
+    inputs:
+      job_id:
+        description: 'Unique job id (slug-safe)'
+        required: true
+      brief_b64:
+        description: 'Base64-encoded brief JSON'
+        required: true
+
+permissions:
+  contents: write
+
+concurrency:
+  group: hyperframes-create
+  cancel-in-progress: false
+
+jobs:
+  render:
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+    env:
+      # #56: dispatch inputs pass through env — never interpolated into run shell
+      JOB_ID: ${{ inputs.job_id }}
+      BRIEF_B64: ${{ inputs.brief_b64 }}
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Validate job id (#56 — the Studio route sanitizes; the workflow must not trust it)
+        run: '[[ "$JOB_ID" =~ ^[a-z0-9-]+$ ]] || { echo "job_id must match ^[a-z0-9-]+$"; exit 1; }' 
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+
+      - name: Install ffmpeg + edge-tts
+        run: sudo apt-get update -qq && sudo apt-get install -y -qq ffmpeg && python3 -m pip install --quiet --break-system-packages edge-tts || python3 -m pip install --quiet edge-tts
+
+      - name: Decode brief
+        working-directory: hyperframes
+        run: |
+          mkdir -p work   # work/ is gitignored — every dispatch runs on a fresh checkout (issue #70)
+          printf '%s' "$BRIEF_B64" | base64 -d > "work/$JOB_ID.brief.json"
+          python3 -c "import json;json.load(open('work/$JOB_ID.brief.json'))" && echo "brief JSON valid"
+
+      - name: Generate video (script -> design brain -> check gate -> render -> frame validation)
+        working-directory: hyperframes
+        env:
+          GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
+          GROQ_API_KEY: ${{ secrets.GROQ_API_KEY }}
+          CEREBRAS_API_KEY: ${{ secrets.CEREBRAS_API_KEY }}
+          MISTRAL_API_KEY: ${{ secrets.MISTRAL_API_KEY }}
+          HF_TOKEN: ${{ secrets.HF_TOKEN }}
+        run: node generate.mjs "work/$JOB_ID.brief.json"
+
+      - name: Locate output
+        id: out
+        working-directory: hyperframes/work/${{ env.JOB_ID }}
+        run: |
+          MP4=$(ls gen/renders/*.mp4 fallback/renders/*.mp4 2>/dev/null | head -1)
+          echo "mp4=$MP4" >> "$GITHUB_OUTPUT"
+          echo "rendered: $MP4"
+
+      - name: Publish result to hf-out/
+        working-directory: hyperframes/work/${{ env.JOB_ID }}
+        run: |
+          ID="$JOB_ID"
+          ROOT="$GITHUB_WORKSPACE"
+          mkdir -p "$ROOT/hf-out/$ID"
+          cp "${{ steps.out.outputs.mp4 }}" "$ROOT/hf-out/$ID/video.mp4"
+          ffmpeg -y -v quiet -ss 1.2 -i "$ROOT/hf-out/$ID/video.mp4" -frames:v 1 -vf scale=360:-1 "$ROOT/hf-out/$ID/frame-a.jpg"
+          ffmpeg -y -v quiet -ss 8 -i "$ROOT/hf-out/$ID/video.mp4" -frames:v 1 -vf scale=360:-1 "$ROOT/hf-out/$ID/frame-b.jpg" || true
+          python3 - "$ID" <<'PY'
+          import json, sys, os, datetime
+          vid = sys.argv[1]
+          bp = os.path.join(os.environ['GITHUB_WORKSPACE'], f'hyperframes/work/{vid}.brief.json')
+          brief = json.load(open(bp)) if os.path.exists(bp) else {}
+          dp = f'voice/durations.json'
+          dur = json.load(open(dp))['total'] if os.path.exists(dp) else 0
+          json.dump({
+            'id': vid, 'state': 'done', 'topic': brief.get('topic',''), 'dna': brief.get('dna',''),
+            'brand': brief.get('brand',''), 'durationSec': round(dur,1),
+            'finishedAt': datetime.datetime.utcnow().isoformat() + 'Z',
+          }, open(os.path.join(os.environ['GITHUB_WORKSPACE'], f'hf-out/{vid}/status.json'),'w'), indent=1)
+          PY
+          cd "$ROOT"
+          git config user.name "quarry-bot"
+          git config user.email "bot@quarry.studio"
+          git add "hf-out/$ID"
+          git pull --rebase --autostash || true
+          git commit -m "hf-out: $ID rendered" || echo "nothing to commit"
+          git push || (git pull --rebase --autostash && git push)
+
+      - name: Mark failed (if generate step failed)
+        if: failure()
+        working-directory: .
+        run: |
+          ID="$JOB_ID"
+          mkdir -p "hf-out/$ID"
+          python3 - "$ID" <<'PY'
+          import json, sys, datetime
+          json.dump({'id': sys.argv[1], 'state': 'failed', 'finishedAt': datetime.datetime.utcnow().isoformat() + 'Z'},
+                    open(f'hf-out/{sys.argv[1]}/status.json','w'), indent=1)
+          PY
+          git config user.name "quarry-bot"
+          git config user.email "bot@quarry.studio"
+          git add "hf-out/$ID"
+          git pull --rebase --autostash || true
+          git commit -m "hf-out: $ID FAILED" || echo "nothing to commit"
+          git push || (git pull --rebase --autostash && git push)

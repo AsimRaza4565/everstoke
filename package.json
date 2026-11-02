@@ -1,0 +1,25 @@
+{
+  "name": "youtube-automation",
+  "version": "1.0.0",
+  "description": "Autonomous Multi-Brand Content Machine & YouTube Automation",
+  "main": "channel-pipeline.mjs",
+  "type": "module",
+  "scripts": {
+    "start": "node channel-pipeline.mjs",
+    "test": "node --test \"tests/**/*.test.mjs\"",
+    "ci-doctor": "node ci-doctor.mjs",
+    "image-tools": "node image-tools/server.js"
+  },
+  "dependencies": {
+    "exceljs": "^4.4.0",
+    "googleapis": "^176.0.0",
+    "js-yaml": "^5.4.1",
+    "libsodium-wrappers": "^0.7.15",
+    "pdfkit": "^0.20.2",
+    "postgres": "^3.4.7",
+    "playwright-core": "^1.63.0",
+    "sharp": "^0.33.5",
+    "undici": "^8.10.2",
+    "puppeteer-core": "^25.12.0"
+  }
+}
