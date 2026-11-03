@@ -602,7 +602,9 @@ export async function renderYouTubeScriptShort(page, script, musicOverride = nul
       // strip AI-included numbering ("1." / "Point 2:") — we add our own number,
       // otherwise the narration says the number twice ("1, 1, …")
       const clean = String(p.title || '').replace(/^\s*(?:\d+\s*[.)]|point\s*\d+\s*[.:)]?)\s*/i, '').trim();
-      return { text: `${i + 1}. ${clean}. ${p.line}`, num: String(i + 1), big: clean, sub: p.line };
+      // sub line dropped: the karaoke ASS captions already carry p.line synced
+      // to the voice — a second small static copy read as clutter (2026-11-03)
+      return { text: `${i + 1}. ${clean}. ${p.line}`, num: String(i + 1), big: clean };
     }),
     { text: script.closing, kicker: 'REMEMBER THIS', big: script.closing }
   ].filter((s) => s.text);

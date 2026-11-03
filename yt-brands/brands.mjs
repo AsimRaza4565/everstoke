@@ -20,7 +20,7 @@ export const BRANDS = [
     accent: '#FF6B1A', bg: '#0C0A08', ink: '#FFFFFF',
     eyebrow: 'DAILY DISCIPLINE // EVERSTOKE',
     tagline: 'Stoke the fire within.',
-    keyword: 'daily motivation', kwShort: 'daily motivation', theme: 'Motivation',
+    keyword: 'daily motivation', kwShort: 'motivation', theme: 'Motivation',
     niches: [
       'stoic discipline & marcus aurelius',
       'morning discipline rituals',

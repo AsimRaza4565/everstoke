@@ -304,7 +304,8 @@ if (RUN_SHORTS) {
     state[slug] = state[slug] || {};
     state[slug].uploadsToday = nextCounter(state[slug].uploadsToday);
     console.log(`  ✓ queued ${videoId} → https://youtube.com/shorts/${videoId}`);
-    if (out.thumb) { try { await yt.thumbnails.set({ videoId, media: { body: Readable.from(out.thumb) } }); console.log('  ✓ thumbnail set'); } catch { } }
+    if (out.thumb) { try { await yt.thumbnails.set({ videoId, media: { body: Readable.from(out.thumb) } }); console.log('  ✓ thumbnail set'); } catch (e) { console.log(`  ⚠ thumbnail set FAILED (${String(e?.message || e).slice(0, 120)})`); } }
+    else console.log('  ⚠ no thumbnail rendered — video keeps its auto frame');
     try {
       await yt.commentThreads.insert({ part: 'snippet', requestBody: { snippet: { videoId, topLevelComment: { snippet: { textOriginal: `Which one hit hardest? 👇 Subscribe for daily ${b.kwShort}.` } } } } });
     } catch { }
