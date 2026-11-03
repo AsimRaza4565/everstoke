@@ -13,11 +13,14 @@ name: 🏭 Channel Autopilot — all channels
 on:
   schedule:
     - cron: '07 1 * * *' # everstoke (01:07)
-    - cron: '13 2 * * *' # quotequarry (02:13)
-    - cron: '47 2 * * *' # investors-compass (02:47)
-    - cron: '21 3 * * *' # money-rulebook (03:21)
-    - cron: '53 3 * * *' # debt-free-doctrine (03:53)
-    - cron: '33 2 * * *' # wizard channels (02:33)
+    # Dormant fleet (everstoke adoption 11-03): these channels are inactive in
+    # the registry, so their cron windows produced empty no-op runs. Uncomment
+    # a line when its channel is reactivated (registry cron must match).
+    # - cron: '13 2 * * *' # quotequarry (02:13)
+    # - cron: '47 2 * * *' # investors-compass (02:47)
+    # - cron: '21 3 * * *' # money-rulebook (03:21)
+    # - cron: '53 3 * * *' # debt-free-doctrine (03:53)
+    # - cron: '33 2 * * *' # wizard channels (02:33)
   workflow_dispatch:
     inputs:
       channel:
