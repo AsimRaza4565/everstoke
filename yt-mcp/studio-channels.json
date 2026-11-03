@@ -7,7 +7,7 @@
       "cron": "07 1 * * *",
       "active": true,
       "autopilot": true,
-      "tokenSecretSaved": false,
+      "tokenSecretSaved": true,
       "niche": "Daily motivation, discipline & stoic self-mastery",
       "kit": {
         "niches": [
