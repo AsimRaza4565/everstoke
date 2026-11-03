@@ -1,18 +1,19 @@
 {
   "uploadsToday": {
     "date": "2026-11-03",
-    "count": 1
+    "count": 2
   },
   "lastRunDate": "2026-11-03",
   "usedTrendSeeds": [
     "5 Lessons From History's Greatest Warriors💀 #mindset",
-    "La Disciplina Humana (Marco Aurelio)"
+    "La Disciplina Humana (Marco Aurelio)",
+    "the hard truth that was told By Marcus Aurelius #shorts#quotes#marcusaurelius#stoicism"
   ],
   "cooldownSeeds": [],
   "todayTopics": [
     {
       "at": "2026-11-03",
-      "topic": "La Disciplina Humana (Marco Aurelio)"
+      "topic": "the hard truth that was told By Marcus Aurelius #shorts#quotes#marcusaurelius#stoicism"
     }
   ],
   "titleHistory": [
@@ -23,13 +24,17 @@
     {
       "t": "Marcus' Daily Discipline Rule | Discipline & Stoicism",
       "at": "2026-11-03T22:35:00Z"
+    },
+    {
+      "t": "The Stoic Rule | Discipline & Stoicism",
+      "at": "2026-11-03T22:35:00Z"
     }
   ],
   "lastVideos": [
     {
-      "videoId": "YsQyMYVcfJA",
+      "videoId": "4IPJ4KajZYI",
       "publishAt": "2026-11-03T22:35:00Z",
-      "title": "Marcus' Daily Discipline Rule | Discipline & Stoicism"
+      "title": "The Stoic Rule | Discipline & Stoicism"
     }
   ],
   "deepdiveDate": null,
