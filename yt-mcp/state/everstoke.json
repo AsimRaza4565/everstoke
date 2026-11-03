@@ -1,31 +1,38 @@
 {
   "uploadsToday": {
-    "date": "2026-11-02",
+    "date": "2026-11-03",
     "count": 1
   },
   "lastRunDate": "2026-11-03",
   "usedTrendSeeds": [
-    "5 Lessons From History's Greatest Warriors💀 #mindset"
+    "5 Lessons From History's Greatest Warriors💀 #mindset",
+    "La Disciplina Humana (Marco Aurelio)"
   ],
   "cooldownSeeds": [],
   "todayTopics": [
     {
       "at": "2026-11-03",
-      "topic": "5 Lessons From History's Greatest Warriors💀 #mindset"
+      "topic": "La Disciplina Humana (Marco Aurelio)"
     }
   ],
   "titleHistory": [
     {
       "t": "Marcus' Stoic Rule | Discipline & Stoicism",
       "at": "2026-11-03T22:35:00Z"
+    },
+    {
+      "t": "Marcus' Daily Discipline Rule | Discipline & Stoicism",
+      "at": "2026-11-03T22:35:00Z"
     }
   ],
   "lastVideos": [
     {
-      "videoId": "xGwqUakbLC8",
+      "videoId": "YsQyMYVcfJA",
       "publishAt": "2026-11-03T22:35:00Z",
-      "title": "Marcus' Stoic Rule | Discipline & Stoicism"
+      "title": "Marcus' Daily Discipline Rule | Discipline & Stoicism"
     }
   ],
-  "deepdiveDate": null
+  "deepdiveDate": null,
+  "healedDate": "2026-11-03",
+  "healedCount": 1
 }
