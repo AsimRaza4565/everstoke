@@ -565,12 +565,15 @@ async function renderSectionCard(pageId, accent, section, handle, kwShort) {
   if (section.kicker) {
     els.push(`<text ${anchor} y="330" font-family="'Oswald', 'Arial Narrow', sans-serif" font-weight="600" font-size="38" letter-spacing="6" fill="${accent}">${escapeXml(section.kicker)}</text>`);
   }
-  let y = section.kicker ? 560 : 480;
+  // 2026-11-03 rebalance: with the sub line gone, number+title hugged the top
+  // edge and left a hole above the caption band (y≈1260) — the block now sits
+  // in the visual center; point titles cap at 3 lines to clear the band.
+  let y = section.kicker ? 640 : 560;
   if (section.num) {
-    els.push(`<text ${anchor} y="430" font-family="'Anton', 'Impact', 'Arial Black', sans-serif" font-size="200" fill="${accent}">${section.num}</text>`);
-    y = 640;
+    els.push(`<text ${anchor} y="520" font-family="'Anton', 'Impact', 'Arial Black', sans-serif" font-size="200" fill="${accent}">${escapeXml(section.num)}</text>`);
+    y = 740;
   }
-  const bigLines = wrapTextToLines((section.big || '').toUpperCase(), 14).slice(0, 4);
+  const bigLines = wrapTextToLines((section.big || '').toUpperCase(), 14).slice(0, section.num ? 3 : 4);
   const bSize = bigLines.some((l) => l.length > 11) ? 76 : 96;
   bigLines.forEach((l, i) => els.push(
     `<text ${anchor} y="${y + i * (bSize + 12)}" font-family="'Anton', 'Impact', 'Arial Black', sans-serif" font-size="${bSize}" fill="#FFFFFF" stroke="#000000" stroke-width="8" stroke-linejoin="round" paint-order="stroke">${escapeXml(l)}</text>`));
@@ -602,9 +605,13 @@ export async function renderYouTubeScriptShort(page, script, musicOverride = nul
       // strip AI-included numbering ("1." / "Point 2:") — we add our own number,
       // otherwise the narration says the number twice ("1, 1, …")
       const clean = String(p.title || '').replace(/^\s*(?:\d+\s*[.)]|point\s*\d+\s*[.:)]?)\s*/i, '').trim();
-      // sub line dropped: the karaoke ASS captions already carry p.line synced
-      // to the voice — a second small static copy read as clutter (2026-11-03)
-      return { text: `${i + 1}. ${clean}. ${p.line}`, num: String(i + 1), big: clean };
+      return {
+        text: `${i + 1}. ${clean}. ${p.line}`,
+        num: String(i + 1), big: clean,
+        // captions start at p.line — the card already shows "N clean" in huge
+        // type, so karaoke-ing the title again duplicated it on screen (2026-11-03)
+        capSkip: `${i + 1}. ${clean}.`.split(/\s+/).filter(Boolean).length,
+      };
     }),
     { text: script.closing, kicker: 'REMEMBER THIS', big: script.closing }
   ].filter((s) => s.text);
@@ -637,7 +644,7 @@ export async function renderYouTubeScriptShort(page, script, musicOverride = nul
     if (narration) {
       // relative path only — a Windows drive colon breaks the filtergraph parser
       const assFile = `${buildDir}/cap-${i}.ass`;
-      fs.writeFileSync(assFile, buildAssCaptions(narration.words), 'utf8');
+      fs.writeFileSync(assFile, buildAssCaptions(sec.capSkip ? narration.words.slice(sec.capSkip) : narration.words), 'utf8');
       filter = chain + `;[ov]ass=${assFile}:fontsdir=image-tools/fonts[v];[2:a]apad=pad_dur=1,atrim=0:${dur}[a]`;
       inputs = ['-i', narration.file];
     } else {
@@ -676,7 +683,18 @@ export async function renderYouTubeScriptShort(page, script, musicOverride = nul
   let thumb = null;
   try {
     const frameFile = `${POOL_DIR}/yt-thumb-frame-${page.id}.jpg`;
-    execFileSync(FF, ['-y', '-v', 'error', '-ss', String(clip.start + 3), '-i', clip.file, '-frames:v', '1', frameFile]);
+    // b-roll windows can end before start+3 — seeking past the clip end yields
+    // no frame and killed the thumbnail on the 11-03 runs. Step the seek
+    // offset back until a frame actually lands (2026-11-03).
+    let extracted = false;
+    for (const off of [3, 1, 0]) {
+      try {
+        execFileSync(FF, ['-y', '-v', 'error', '-ss', String(clip.start + off), '-i', clip.file, '-frames:v', '1', frameFile]);
+        extracted = fs.existsSync(frameFile) && fs.statSync(frameFile).size > 0;
+      } catch { extracted = false; }
+      if (extracted) break;
+    }
+    if (!extracted) throw new Error('no frame extracted from b-roll clip');
     thumb = await renderYouTubeThumbnail(script.thumbHeadline || script.hook, frameFile, { accent: brand.accent, eyebrow: brand.eyebrow || `QUOTE QUARRY // ${brand.label}` });
     fs.rmSync(frameFile, { force: true });
   } catch (e) { console.log(`      [YT Script] Thumbnail skipped (${String(e.message).slice(0, 80)})`); }
