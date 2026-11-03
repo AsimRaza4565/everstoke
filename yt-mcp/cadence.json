@@ -72,7 +72,9 @@
     "updatedBy": "owner go — #101 flip completion (all 4 channels, 2 doc-days/week)"
   },
   "everstoke": {
-    "docDays": [],
+    "docDays": [
+      "Sun"
+    ],
     "shortDays": [
       "Mon",
       "Tue",
@@ -83,7 +85,7 @@
       "Sun"
     ],
     "shortsSource": "generated",
-    "updated": "2026-11-02T09:29:03.631Z",
-    "updatedBy": "everstoke adoption — daily generated Shorts; longform off initially"
+    "updated": "2026-11-03T12:03:55.341Z",
+    "updatedBy": "everstoke: enable weekly long-form (yt-deepdive) on Sundays"
   }
 }
