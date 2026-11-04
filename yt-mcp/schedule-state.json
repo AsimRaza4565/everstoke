@@ -2,19 +2,20 @@
   "everstoke": {
     "uploadsToday": {
       "date": "2026-11-03",
-      "count": 2
+      "count": 3
     },
-    "lastRunDate": "2026-11-03",
+    "lastRunDate": "2026-11-04",
     "usedTrendSeeds": [
       "5 Lessons From History's Greatest Warriors💀 #mindset",
       "La Disciplina Humana (Marco Aurelio)",
-      "the hard truth that was told By Marcus Aurelius #shorts#quotes#marcusaurelius#stoicism"
+      "the hard truth that was told By Marcus Aurelius #shorts#quotes#marcusaurelius#stoicism",
+      "##Early Morning Cleaning of the Golden Temple##"
     ],
     "cooldownSeeds": [],
     "todayTopics": [
       {
-        "at": "2026-11-03",
-        "topic": "the hard truth that was told By Marcus Aurelius #shorts#quotes#marcusaurelius#stoicism"
+        "at": "2026-11-04",
+        "topic": "##Early Morning Cleaning of the Golden Temple##"
       }
     ],
     "titleHistory": [
@@ -29,13 +30,17 @@
       {
         "t": "The Stoic Rule | Discipline & Stoicism",
         "at": "2026-11-03T22:35:00Z"
+      },
+      {
+        "t": "Do This Every Morning | Discipline & Stoicism",
+        "at": "2026-11-04T22:35:00Z"
       }
     ],
     "lastVideos": [
       {
-        "videoId": "4IPJ4KajZYI",
-        "publishAt": "2026-11-03T22:35:00Z",
-        "title": "The Stoic Rule | Discipline & Stoicism"
+        "videoId": "Pk4oC1q0iRo",
+        "publishAt": "2026-11-04T22:35:00Z",
+        "title": "Do This Every Morning | Discipline & Stoicism"
       }
     ],
     "deepdiveDate": null,
