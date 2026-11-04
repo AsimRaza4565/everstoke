@@ -70,6 +70,9 @@ if (sundayBreak) log(`🛌 Sunday break day — shorts production and healing pa
 for (const slug of CHANNEL_SLUGS) {
   const b = brands[slug] || (REG[slug] ? { slots: REG[slug].slots || ['22:35'], handle: REG[slug].handle || '', label: REG[slug].label || slug } : null);
   if (!b) { log(`✗ [${slug}] no brand kit found — skipped`); continue; }
+  // everstoke adoption: kits parked with active:false are skipped cleanly —
+  // their tokens don't exist in this repo, so sweeping them only made noise.
+  if (brands[slug] && brands[slug].active === false) { log(`⏸ [${slug}] dormant kit — skipped`); continue; }
   const want = (b.slots || []).length;
   if (sundayBreak) continue;
   // 10-05: respect pausedUntil (feed-collapse cooldown — Quote Quarry Oct-1
@@ -159,7 +162,10 @@ if (process.env.PLATFORMS_PAUSED !== '0') {
 }
 
 // ---- 3. Daily long-form (compilation on the main channel) -------------------
-let hasLong = false;
+// everstoke adoption: if the shared YOUTUBE_REFRESH_TOKEN isn't configured,
+// this lane isn't in use here — skip the check AND the re-dispatch (a failed
+// check must not poke the disabled compilation workflow every day).
+let hasLong = false, longCheckOk = false;
 try {
   const y = google.youtube({ version: 'v3', auth: oauth(envOf('YOUTUBE_REFRESH_TOKEN')) });
   const ch = await y.channels.list({ part: 'contentDetails', mine: true });
@@ -169,11 +175,12 @@ try {
   const vs = await y.videos.list({ part: 'snippet', id: ids.join(',') });
   const cutoff = Date.now() - 30 * 3600000;
   hasLong = (vs.data.items || []).some(v => /compilation/i.test(v.snippet.title || '') && new Date(v.snippet.publishedAt).getTime() >= cutoff);
+  longCheckOk = true;
   log(hasLong ? '✓ Daily long-form is live.' : '⚠ No daily long-form in the last 30h.');
-} catch (e) { log(`[long-form] check failed: ${String(e.message).slice(0, 80)}`); }
+} catch (e) { log('[long-form] lane not configured (no shared refresh token) — check skipped'); }
 
 const utcHour = new Date().getUTCHours();
-if (!hasLong && utcHour >= 13 && utcHour < 21) {
+if (longCheckOk && !hasLong && utcHour >= 13 && utcHour < 21) {
   if (DRY) {
     log('(dry-run) would re-dispatch weekly-compilation.yml');
   } else {
