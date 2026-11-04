@@ -1,0 +1,34 @@
+# Publish Ping — the positive buzz. 10-minute grace after the last publish
+# slot (22:35 UTC daily; Sunday docs land 21:00 UTC), then verify today's
+# scheduled videos are actually PUBLIC on YouTube and ntfy the phone.
+# No npm install needed — plain Node builtins only.
+name: 🔔 Publish Ping — live confirmation
+
+on:
+  schedule:
+    - cron: '45 22 * * *' # 22:45 UTC daily
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  ping:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - name: 📥 Checkout
+        uses: actions/checkout@v4
+
+      - name: ⚙️ Setup Node.js 24
+        uses: actions/setup-node@v4
+        with:
+          node-version: 24
+
+      - name: 🔔 Confirm today's publishes + buzz the phone
+        env:
+          YOUTUBE_CLIENT_ID: ${{ secrets.YOUTUBE_CLIENT_ID }}
+          YOUTUBE_CLIENT_SECRET: ${{ secrets.YOUTUBE_CLIENT_SECRET }}
+          YT_TOKEN_EVERSTOKE: ${{ secrets.YT_TOKEN_EVERSTOKE }}
+          NTFY_TOPIC: ${{ secrets.NTFY_TOPIC }}
+        run: node publish-ping.mjs
