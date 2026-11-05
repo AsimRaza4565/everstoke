@@ -1,6 +1,11 @@
 name: "🛠️ Daily Sweeper — self-healing, re-runs anything missing"
 
 on:
+  # cron-job.org external trigger (everstoke adoption) — same pattern as
+  # channel-autopilot. The schedule stays as a redundant layer; the sweep is
+  # idempotent (a second run sees everything healthy and does nothing).
+  repository_dispatch:
+    types: [sweep]
   schedule:
     # everstoke adoption: moved from 20:15 to 12:15 UTC — GitHub cron delivery
     # on this repo runs hours late (observed 4-8h), and a heal must land well

@@ -11,6 +11,11 @@
 name: 🏭 Channel Autopilot — all channels
 
 on:
+  # cron-job.org external trigger (everstoke adoption: GitHub cron delivery
+  # ran 4-8h late on this repo). The schedule below stays as a redundant
+  # second layer — the daily guard in yt-daily makes a double-fire a no-op.
+  repository_dispatch:
+    types: [autopilot]
   schedule:
     - cron: '07 1 * * *' # everstoke (01:07)
     # Dormant fleet (everstoke adoption 11-03): these channels are inactive in

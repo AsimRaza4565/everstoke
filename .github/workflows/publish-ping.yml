@@ -5,8 +5,10 @@
 name: 🔔 Publish Ping — live confirmation
 
 on:
-  schedule:
-    - cron: '45 22 * * *' # 22:45 UTC daily
+  # cron-job.org external trigger only — the 24h-lookback ping fired by two
+  # sources would buzz the phone twice, so the GitHub schedule is retired.
+  repository_dispatch:
+    types: [publish-ping]
   workflow_dispatch:
 
 permissions:
