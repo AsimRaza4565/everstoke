@@ -303,7 +303,7 @@ export default function AppShell({ children }) {
                 aria-label="Account menu"
                 title="Asim — owner"
               >
-                MH
+                AR
               </button>
               {userOpen ? (
                 <>
