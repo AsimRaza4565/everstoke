@@ -86,7 +86,7 @@ jobs:
           }, open(os.path.join(os.environ['GITHUB_WORKSPACE'], f'hf-out/{vid}/status.json'),'w'), indent=1)
           PY
           cd "$ROOT"
-          git config user.name "quarry-bot"
+          git config user.name "everstoke-bot"
           git config user.email "bot@quarry.studio"
           git add "hf-out/$ID"
           git pull --rebase --autostash || true
@@ -104,7 +104,7 @@ jobs:
           json.dump({'id': sys.argv[1], 'state': 'failed', 'finishedAt': datetime.datetime.utcnow().isoformat() + 'Z'},
                     open(f'hf-out/{sys.argv[1]}/status.json','w'), indent=1)
           PY
-          git config user.name "quarry-bot"
+          git config user.name "everstoke-bot"
           git config user.email "bot@quarry.studio"
           git add "hf-out/$ID"
           git pull --rebase --autostash || true

@@ -63,8 +63,8 @@ jobs:
 
       - name: 💾 Commit stats history back to repo
         run: |
-          git config user.name "quarry-bot"
-          git config user.email "bot@quotequarry.local"
+          git config user.name "everstoke-bot"
+          git config user.email "bot@everstoke.local"
           git add state/ logs/ || true
           git diff --cached --quiet || git commit -m "report state: $(date -u -d '+5 hours' +%F)"
           git push || true

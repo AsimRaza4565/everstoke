@@ -123,8 +123,8 @@ jobs:
 
       - name: 💾 Commit logs back
         run: |
-          git config user.name "quarry-bot"
-          git config user.email "bot@quotequarry.local"
+          git config user.name "everstoke-bot"
+          git config user.email "bot@everstoke.local"
           git add logs/ state/ yt-mcp/state/ yt-mcp/schedule-state.json || true
           git diff --cached --quiet || git commit -m "sweeper log: $(date -u +%F)"
           git push || true

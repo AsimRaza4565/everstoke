@@ -182,8 +182,8 @@ jobs:
 
       - name: 💾 Commit publishing state
         run: |
-          git config user.name "quarry-bot"
-          git config user.email "bot@quotequarry.local"
+          git config user.name "everstoke-bot"
+          git config user.email "bot@everstoke.local"
           git add yt-mcp/state/ yt-mcp/schedule-state.json yt-mcp/studio-channels.json || true
           git diff --cached --quiet || git commit -m "autopilot ${SLUG} daily state [skip ci]"
           git pull --rebase --autostash origin main || true

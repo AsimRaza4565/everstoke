@@ -39,8 +39,8 @@ jobs:
 
       - name: 💾 Commit test state
         run: |
-          git config user.name "quarry-bot"
-          git config user.email "bot@quotequarry.local"
+          git config user.name "everstoke-bot"
+          git config user.email "bot@everstoke.local"
           git add yt-mcp/thumb-tests.json || true
           git diff --cached --quiet || git commit -m "thumb-ab state [skip ci]"
           git pull --rebase --autostash origin main || true

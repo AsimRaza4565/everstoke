@@ -115,7 +115,7 @@ jobs:
                     open(f'hf-out/tech/{sys.argv[1]}/status.json', 'w'), indent=1)
           PY
           cd "$ROOT"
-          git config user.name "quarry-bot"
+          git config user.name "everstoke-bot"
           git config user.email "bot@quarry.studio"
           git add "hf-out/tech/$ID"
           git pull --rebase --autostash || true
