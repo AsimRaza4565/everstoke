@@ -1,4 +1,4 @@
-// Server-side data loaders for the Quarry Studio command center.
+// Server-side data loaders for the Everstoke Studio command center.
 // Works in TWO modes automatically:
 //  - LOCAL:  running on the PC (repo files exist) — reads yt-mcp/ + fb-outbox/ + .env
 //  - CLOUD:  running on Vercel — reads state files from the GitHub repo API
@@ -23,7 +23,7 @@ const envFromFile = (() => {
 })();
 export const ENV = { ...process.env, ...envFromFile };
 
-const GITHUB_REPO = ENV.GITHUB_REPO || 'muzzamilhassan/automation';
+const GITHUB_REPO = ENV.GITHUB_REPO || 'AsimRaza4565/everstoke';
 const GH_TOKEN = ENV.GITHUB_TOKEN || ENV.GITHUB_PAT || '';
 const HAS_LOCAL_REPO = fs.existsSync(path.resolve(ROOT, 'yt-mcp'));
 const CLOUD = ENV.FORCE_GITHUB === '1' || !HAS_LOCAL_REPO;

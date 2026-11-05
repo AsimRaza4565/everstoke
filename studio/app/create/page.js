@@ -146,7 +146,7 @@ export default function CreatePage() {
               <video src={j.videoUrl} controls autoPlay className="w-full aspect-[9/16] max-h-[480px] bg-black object-contain" />
             ) : j.state === 'done' ? (
               <button onClick={() => setPlaying(j.id)} className="relative block w-full">
-                <img src={`https://raw.githubusercontent.com/muzzamilhassan/automation/main/hf-out/${j.id}/frame-a.jpg`} alt="" className="w-full aspect-[9/16] max-h-[480px] object-cover opacity-90" />
+                <img src={`https://raw.githubusercontent.com/AsimRaza4565/everstoke/main/hf-out/${j.id}/frame-a.jpg`} alt="" className="w-full aspect-[9/16] max-h-[480px] object-cover opacity-90" />
                 <span className="absolute inset-0 flex items-center justify-center">
                   <PlayCircle className="w-14 h-14 text-white drop-shadow-lg" />
                 </span>

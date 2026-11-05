@@ -20,10 +20,11 @@ const args = process.argv.slice(2);
 const ONLY = args.find(a => !a.startsWith('--'));
 
 const MAP = [
-  { slug: 'investors-compass', pageId: '116157974886564', hashtags: '#InvestingPsychology #StockMarket #WealthBuilding' },
-  { slug: 'money-rulebook', pageId: '1077306835630491', hashtags: '#MoneyRules #PersonalFinance #FinancialFreedom' },
-  { slug: 'debt-free-doctrine', pageId: '106473735839651', hashtags: '#DebtFree #MoneyTips #FinancialFreedom' },
-  { slug: 'quotequarry', pageId: '114550268199751', hashtags: '#Stoicism #DailyWisdom #Mindset' }
+  // everstoke adoption: previous owner's FB pages removed.
+  // TO ENABLE Facebook posters: create an FB page for the channel, paste its
+  // numeric page ID below, set the FB_PAGE_TOKEN secret (page access token
+  // with pages_manage_posts), then run the fb-now.yml "posters" job.
+  { slug: 'everstoke', pageId: '', hashtags: '#Motivation #Discipline #Stoicism' }
 ];
 
 function llmJSON(prompt) {

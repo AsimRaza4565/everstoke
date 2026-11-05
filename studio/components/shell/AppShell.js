@@ -112,7 +112,7 @@ function NavGroups({ collapsed, onNavigate }) {
       ))}
       <div className={cn('mt-5 pt-4 border-t border-white/10', collapsed ? 'flex justify-center' : '')}>
         <a
-          href="https://muzzamilhassan.github.io/quarrystudio/dashboard.html"
+          href="https://github.com/AsimRaza4565/everstoke"
           target="_blank"
           rel="noreferrer"
           className="flex items-center gap-2 px-2 text-[12px] text-[#6b7671] hover:text-[#98a2a7] transition-colors"
@@ -137,7 +137,7 @@ function Brand({ collapsed }) {
       </span>
       {!collapsed ? (
         <span className="min-w-0">
-          <span className="block font-display font-bold text-[15px] tracking-tight text-white leading-none">Quarry Studio</span>
+          <span className="block font-display font-bold text-[15px] tracking-tight text-white leading-none">Everstoke Studio</span>
           <span className="block text-[10.5px] text-[#6b7671] mt-0.5">Command Center</span>
         </span>
       ) : null}
@@ -190,7 +190,7 @@ export default function AppShell({ children }) {
   };
 
   const current = NAV.flatMap((g) => g.items).find((i) => i.href === pathname);
-  const pageTitle = current ? current.label : 'Quarry Studio';
+  const pageTitle = current ? current.label : 'Everstoke Studio';
 
   const sidebarInner = (collapsedState, isMobile = false) => (
     <>
@@ -252,7 +252,7 @@ export default function AppShell({ children }) {
 
             <div className="hidden md:flex items-center gap-2 text-[13px] min-w-0">
               <Activity size={13} className="text-fg-quaternary" />
-              <span className="text-fg-quaternary">Quarry Studio</span>
+              <span className="text-fg-quaternary">Everstoke Studio</span>
               <span className="text-fg-quaternary">/</span>
               <span className="font-semibold text-fg-primary truncate">{pageTitle}</span>
             </div>
@@ -301,7 +301,7 @@ export default function AppShell({ children }) {
                 style={{ background: 'var(--accent)', color: 'var(--accent-ink)' }}
                 onClick={() => setUserOpen((o) => !o)}
                 aria-label="Account menu"
-                title="Muzzamil — owner"
+                title="Asim — owner"
               >
                 MH
               </button>
@@ -310,7 +310,7 @@ export default function AppShell({ children }) {
                   <div className="fixed inset-0 z-40" onClick={() => setUserOpen(false)} />
                   <div className="absolute right-0 top-[calc(100%+10px)] w-[220px] rounded-lg border border-border-secondary bg-bg-primary shadow-xl overflow-hidden z-50 pop-in">
                     <div className="px-4 py-3 border-b border-border-tertiary">
-                      <p className="text-[12.5px] font-semibold text-fg-primary">Muzzamil Hassan</p>
+                      <p className="text-[12.5px] font-semibold text-fg-primary">Asim Raza</p>
                       <p className="text-[11px] text-fg-quaternary mt-0.5">Studio owner · trusted 30 days</p>
                     </div>
                     <button
@@ -333,7 +333,7 @@ export default function AppShell({ children }) {
             {children}
           </div>
           <footer className="mt-14 pb-6 flex items-center justify-between text-[11px] text-fg-quaternary">
-            <span>Quarry Studio · runs on GitHub Actions · nothing lives on this PC</span>
+            <span>Everstoke Studio · runs on GitHub Actions · nothing lives on this PC</span>
             <span className="font-mono">v4.0 · Dreams UI</span>
           </footer>
         </main>

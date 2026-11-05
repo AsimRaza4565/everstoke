@@ -28,7 +28,7 @@ import { recentUploadTitles } from '../lib/dup-gate.mjs';
 import { nextCounter } from '../lib/quota-ledger.mjs';
 
 loadEnv();
-const REPO = process.env.GH_REPO || 'muzzamilhassan/automation';
+const REPO = process.env.GH_REPO || 'AsimRaza4565/everstoke';
 // Actions pass the workflow token as GH_TOKEN; local runs use GITHUB_TOKEN/GITHUB_PAT
 const TOK = process.env.GITHUB_TOKEN || process.env.GITHUB_PAT || process.env.GH_TOKEN || '';
 const FFMPEG = process.env.FFMPEG_PATH || 'ffmpeg';

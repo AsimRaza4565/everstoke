@@ -6,7 +6,7 @@ import path from 'node:path';
 import { ENV } from './data.mjs';
 
 const ROOT = path.resolve(process.cwd(), '..');
-const REPO = ENV.GITHUB_REPO || 'muzzamilhassan/automation';
+const REPO = ENV.GITHUB_REPO || 'AsimRaza4565/everstoke';
 const CLOUD = ENV.FORCE_GITHUB === '1' || !fs.existsSync(path.resolve(ROOT, 'yt-mcp'));
 
 const ghHeaders = (extra = {}) => ({

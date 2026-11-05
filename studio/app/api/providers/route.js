@@ -72,13 +72,13 @@ async function probeCatalogOnly(providerId, k) {
     r = await withTimeout(fetch('https://api.tavily.com/search', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ api_key: k, query: 'quarry vault probe', max_results: 1 }),
+      body: JSON.stringify({ api_key: k, query: 'everstoke vault probe', max_results: 1 }),
     }), 12000);
   } else { // serper
     r = await withTimeout(fetch('https://google.serper.dev/search', {
       method: 'POST',
       headers: { 'X-API-KEY': k, 'Content-Type': 'application/json' },
-      body: JSON.stringify({ q: 'quarry vault probe' }),
+      body: JSON.stringify({ q: 'everstoke vault probe' }),
     }), 12000);
   }
   if (r.ok) return { ok: true, detail: '' };

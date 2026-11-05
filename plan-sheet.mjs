@@ -46,7 +46,7 @@ const STYLE = {
 };
 
 const wb = new ExcelJS.Workbook();
-wb.creator = 'Quarry Studio';
+wb.creator = 'Everstoke Studio';
 const ws = wb.addWorksheet('MASTER PLAN');
 ws.columns = [
   { header: 'Status', key: 'status', width: 14 },

@@ -1,4 +1,4 @@
-# Studio Buttons — manual FB runs from the Quarry Studio dashboard (or Actions tab).
+# Studio Buttons — manual FB runs from the Everstoke Studio dashboard (or Actions tab).
 # reels   = drain queued FB reels from the channel-workflow outbox caches
 # posters = daily niche poster images per FB page
 # Everything else (shorts, episodes, IG slots) has its own workflow — this file

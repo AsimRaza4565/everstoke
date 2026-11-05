@@ -1,6 +1,6 @@
 'use client';
 // PUBLIC sales page — /proof. No login, no app shell (AppShell skips this path).
-// Shows the live, real numbers of the channels running on Quarry Studio.
+// Shows the live, real numbers of the channels running on Everstoke Studio.
 import { useEffect, useState } from 'react';
 import { BadgeCheck, Radio, Loader2, ArrowRight } from 'lucide-react';
 
@@ -29,7 +29,7 @@ export default function ProofPage() {
           The machine behind<br />the channels.
         </h1>
         <p className="mt-4 text-[15px] text-muted max-w-xl leading-relaxed">
-          Quarry Studio runs faceless YouTube channels on autopilot — research, scripts, voice,
+          Everstoke Studio runs faceless YouTube channels on autopilot — research, scripts, voice,
           footage, thumbnails, uploads and safety gates. These are the channels it runs right now,
           with their live stats.
         </p>
@@ -97,7 +97,7 @@ export default function ProofPage() {
             Studio login <ArrowRight size={13} />
           </a>
         </div>
-        <p className="mt-6 text-[11px] text-faint">Powered by Quarry Studio · automated with human supervision · stats pulled live from YouTube</p>
+        <p className="mt-6 text-[11px] text-faint">Powered by Everstoke Studio · automated with human supervision · stats pulled live from YouTube</p>
       </div>
     </main>
   );

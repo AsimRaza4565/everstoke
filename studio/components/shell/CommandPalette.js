@@ -167,7 +167,7 @@ export default function CommandPalette({ open, onClose }) {
         <div className="flex items-center gap-3 px-4 h-9 border-t border-line text-[10.5px] text-faint">
           <span className="flex items-center gap-1"><span className="kbd">↑</span><span className="kbd">↓</span> move</span>
           <span className="flex items-center gap-1"><span className="kbd">↵</span> run</span>
-          <span className="ml-auto">Quarry Studio command</span>
+          <span className="ml-auto">Everstoke Studio command</span>
         </div>
       </div>
     </div>

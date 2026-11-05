@@ -51,7 +51,7 @@ let recentTitles = history.slice(-25).map((h) => h.title);
 // channels can never tell the same story in the same week.
 import { LEGACY_SLUGS as ALL_SLUGS } from "../lib/registry.mjs";
 const ghTok = process.env.GITHUB_TOKEN || process.env.GITHUB_PAT || "";
-const ghRepo = process.env.GH_REPO || "muzzamilhassan/quarry-render";
+const ghRepo = process.env.GH_REPO || "AsimRaza4565/everstoke";
 if (ghTok) {
   for (const other of ALL_SLUGS) {
     if (other === SLUG) continue;

@@ -117,8 +117,10 @@ for (const u of access.users || []) {
 }
 
 console.log('3. seeding channels from studio-channels registry…');
+// everstoke adoption: dormant (active:false) channels stay in the registry file
+// but are not seeded into the Studio database.
 const reg = JSON.parse(fs.readFileSync(path.join(HERE, '..', 'yt-mcp', 'studio-channels.json'), 'utf8'));
-for (const c of reg.channels || []) {
+for (const c of (reg.channels || []).filter((c) => c.active !== false)) {
   await sql`
     INSERT INTO channels (slug, owner_email, label, handle, channel_id, niche, style, voice, accent, slots, doc_day, autopilot, kit, yt_description, yt_keywords, token_enc, token_secret, subs, connected_at, status)
     VALUES (${c.slug}, ${c.ownerEmail || ''}, ${c.label || c.slug}, ${c.handle || ''}, ${c.channelId || ''}, ${c.niche || ''}, ${c.style || ''}, ${c.voice || ''}, ${c.accent || '#38BDF8'},

@@ -187,7 +187,7 @@ if (longCheckOk && !hasLong && utcHour >= 13 && utcHour < 21) {
     log('Re-dispatching compilation workflow...');
     try {
       const token = envOf('GITHUB_PAT') || envOf('SECRET_WRITER_PAT');
-      const repo = process.env.GITHUB_REPOSITORY || 'muzzamilhassan/automation';
+      const repo = process.env.GITHUB_REPOSITORY || 'AsimRaza4565/everstoke';
       execFileSync('curl', ['-s', '-X', 'POST',
         '-H', `Authorization: token ${token}`,
         `https://api.github.com/repos/${repo}/actions/workflows/weekly-compilation.yml/dispatches`,

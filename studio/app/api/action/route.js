@@ -9,10 +9,10 @@ import { appendAudit } from '../../../lib/audit.js';
 
 export const dynamic = 'force-dynamic';
 
-const REPO = ENV.GITHUB_REPO || 'muzzamilhassan/automation';
+const REPO = ENV.GITHUB_REPO || 'AsimRaza4565/everstoke';
 const TOKEN = ENV.GITHUB_TOKEN || ENV.GITHUB_PAT || '';
 
-const SLUGS = ['quotequarry', 'investors-compass', 'money-rulebook', 'debt-free-doctrine'];
+const SLUGS = ['everstoke', 'quotequarry', 'investors-compass', 'money-rulebook', 'debt-free-doctrine'];
 
 // action (+ optional slug) → workflow file + inputs
 const MAP = {
@@ -71,7 +71,7 @@ export async function POST(req) {
     headers: {
       Authorization: `Bearer ${TOKEN}`,
       Accept: 'application/vnd.github+json',
-      'User-Agent': 'quarry-studio',
+      'User-Agent': 'everstoke-studio',
       'X-GitHub-Api-Version': '2022-11-28',
       'Content-Type': 'application/json',
     },

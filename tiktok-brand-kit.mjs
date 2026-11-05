@@ -1,4 +1,4 @@
-// TikTok branding kit for @muzzamilhassan16
+// TikTok branding kit for @everstoke-a5h
 // Generates 4 circle-safe 1080x1080 profile pictures + preview sheet + copy doc.
 import sharp from 'sharp';
 import fs from 'node:fs';
@@ -29,14 +29,14 @@ function frame(inner) {
 </svg>`;
 }
 
-// ---------- V1: Quote Quarry gold monogram ----------
+// ---------- V1: Everstoke gold monogram ----------
 const v1 = frame(`
   <circle cx="540" cy="452" r="292" fill="none" stroke="url(#gold)" stroke-width="5" opacity="0.95"/>
   <circle cx="540" cy="452" r="322" fill="none" stroke="#c9962e" stroke-width="1.6" opacity="0.45"/>
   <circle cx="540" cy="452" r="262" fill="none" stroke="#c9962e" stroke-width="1.2" opacity="0.3"/>
   <text x="540" y="596" text-anchor="middle" font-family="Cinzel" font-weight="bold" font-size="380" fill="url(#gold)">Q</text>
   <rect x="360" y="812" width="360" height="2.5" fill="#c9962e" opacity="0.6"/>
-  <text x="540" y="880" text-anchor="middle" font-family="Oswald" font-weight="500" font-size="52" letter-spacing="20" fill="#e8d9a8">QUOTE QUARRY</text>
+  <text x="540" y="880" text-anchor="middle" font-family="Oswald" font-weight="500" font-size="52" letter-spacing="20" fill="#e8d9a8">QUOTE EVERSTOKE</text>
   <text x="551" y="944" text-anchor="middle" font-family="Oswald" font-weight="400" font-size="30" letter-spacing="9" fill="#9d9478">DAILY MOTIVATION</text>
 `);
 
@@ -71,7 +71,7 @@ const v4 = frame(`
 
 // ---------- render ----------
 const variants = [
-  ['1-quote-quarry-gold', v1],
+  ['1-quote-everstoke-ember', v1],
   ['2-reliq-north', v2],
   ['3-daily-motivation', v3],
   ['4-mindset-minimal', v4],
@@ -96,9 +96,9 @@ console.log(`✓ ${OUT}/preview-sheet.jpg`);
 
 // ---------- copy doc ----------
 const nameOpts = [
-  ['Quote Quarry | Motivation', 'RECOMMENDED — matches your YouTube (@quotequarry302) + IG (@quotequarry8) brand'],
+  ['Everstoke | Motivation', 'RECOMMENDED — matches your YouTube (@everstoke-a5h) brand'],
   ['Daily Motivation Quotes', 'pure-search option, no brand tie'],
-  ['Muzzamil | Daily Motivation', 'keeps your personal name + keyword'],
+  ['Asim | Daily Motivation', 'keeps your personal name + keyword'],
 ];
 const bioOpts = [
   'Daily motivational quotes & cinematic reels to sharpen your mindset 🔥',
@@ -107,7 +107,7 @@ const bioOpts = [
   'New motivational reel every day 👇 Full videos on YouTube',
 ];
 const lines = [];
-lines.push(`# TikTok Branding Kit — @muzzamilhassan16`);
+lines.push(`# TikTok Branding Kit — @everstoke-a5h`);
 lines.push('');
 lines.push(`Generated ${new Date().toISOString().slice(0, 10)}. Everything below is copy-paste ready.`);
 lines.push('');
@@ -115,7 +115,7 @@ lines.push(`## What TikTok's profile asks for (full checklist)`);
 lines.push('');
 lines.push(`| Field | Limit / spec | Your value |`);
 lines.push(`|---|---|---|`);
-lines.push(`| Username | ≤24 chars, lowercase letters/numbers/._ | keep \`muzzamilhassan16\` |`);
+lines.push(`| Username | ≤24 chars, lowercase letters/numbers/._ | keep \`everstoke-a5h\` |`);
 lines.push(`| Name (nickname) | ≤30 chars — SEARCHABLE, put keywords here | see options below |`);
 lines.push(`| Bio | ≤80 chars | see options below |`);
 lines.push(`| Profile photo | JPG/PNG, shows as a CIRCLE | use any png in tiktok-kit/ (1080×1080, circle-safe) |`);
@@ -134,7 +134,7 @@ lines.push(`## Profile pictures`);
 lines.push('');
 lines.push(`Open each PNG in tiktok-kit/ and pick one (they render as a circle on TikTok):`);
 lines.push('');
-lines.push(`1. \`1-quote-quarry-gold.png\` — gold Q monogram, matches your YouTube/IG brand`);
+lines.push(`1. \`1-quote-everstoke-ember.png\` — gold Q monogram, matches your YouTube/IG brand`);
 lines.push(`2. \`2-reliq-north.png\` — silver R monogram, matches your Facebook page brand`);
 lines.push(`3. \`3-daily-motivation.png\` — lightning bolt, boldest at small sizes`);
 lines.push(`4. \`4-mindset-minimal.png\` — MINDSET wordmark, cleanest look`);
@@ -156,7 +156,7 @@ lines.push(`- **Post windows (PKT)**: ~2pm, ~9pm, and the 5–7am US-audience sl
 lines.push('');
 lines.push(`## Connect auto-posting`);
 lines.push('');
-lines.push(`Your Zernio TikTok integration auto-discovers accounts. Log into @muzzamilhassan16 in Zernio once and it joins the same posting flow as @munnabhai3483 (with the +3h reschedule safety net).`);
+lines.push(`Your Zernio TikTok integration auto-discovers accounts. Log into @everstoke-a5h in Zernio once and it joins the same posting flow as @munnabhai3483 (with the +3h reschedule safety net).`);
 lines.push('');
 await fs.promises.writeFile('tiktok-brand-kit.md', lines.join('\n'));
 console.log('✓ tiktok-brand-kit.md');

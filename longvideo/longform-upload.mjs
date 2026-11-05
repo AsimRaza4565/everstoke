@@ -1,5 +1,5 @@
 // LONG-FORM uploader (PRIVATE repo — the only place YouTube tokens live).
-// Finds the latest successful render in muzzamilhassan/quarry-render (public),
+// Finds the latest successful render in AsimRaza4565/everstoke (public),
 // downloads its artifact, and schedules the upload at the channel's ET slot.
 // Idempotent: an artifact (by id) is never uploaded twice.
 //   node longform-upload.mjs [--channel investors-compass]
@@ -15,7 +15,7 @@ loadEnv();
 
 const DIR = import.meta.dirname;
 const ROOT = path.resolve(DIR, "..");
-const RENDER_REPO = "muzzamilhassan/quarry-render";
+const RENDER_REPO = "AsimRaza4565/everstoke";
 const GH_TOKEN = process.env.GITHUB_PAT || process.env.GH_TOKEN || "";
 const ONLY = process.argv.indexOf("--channel");
 const ONLY_SLUG = ONLY > 0 ? process.argv[ONLY + 1] : null;

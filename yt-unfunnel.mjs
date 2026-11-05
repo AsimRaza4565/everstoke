@@ -1,4 +1,4 @@
-// 10-05: pause the cross-channel funnel — the "More From Quarry Studios"
+// 10-05: pause the cross-channel funnel — the "More From Everstoke Studios"
 // channelSections (multipleChannels) linking all 4 channels to each other.
 // Part of the Oct-1 feed-collapse recovery: YouTube scored the network as one
 // mass-production cluster, so the links are coming OFF until the network is

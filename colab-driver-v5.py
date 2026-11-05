@@ -5,7 +5,7 @@ import subprocess, json, sys, os, time, re, threading, queue, urllib.request
 
 UVX = r"C:\Users\Revnix\AppData\Roaming\Python\Python314\Scripts\uvx.exe"
 LOG = r"C:\Users\Revnix\Documents\youtube-automation\colab-run.log"
-REPO = "muzzamilhassan/automation"
+REPO = "AsimRaza4565/everstoke"
 TAG = "own-music-v1"
 pat = ""
 for line in open(r"C:\Users\Revnix\Documents\youtube-automation\.env", encoding="utf-8"):
@@ -143,7 +143,7 @@ log("install -> " + out[-120:])
 # ---- 2. write the generation script (with per-track upload) ----
 gen_py = r'''
 import os, json, subprocess, time, torch, soundfile as sf
-REPO = "muzzamilhassan/automation"
+REPO = "AsimRaza4565/everstoke"
 TAG = "own-music-v1"
 GH = os.environ.get("GITHUB_TOKEN", "")
 os.makedirs("/content/own-music", exist_ok=True)
@@ -292,7 +292,7 @@ log(f"tracks generated: {done_n}/{total_n}")
 # ---- 4. upload any tracks not yet uploaded (belt) + summary ----
 log("final upload sweep")
 upload_sweep = ("import os, glob, json, urllib.request\n"
-                "REPO='muzzamilhassan/automation'; TAG='own-music-v1'; GH=os.environ.get('GITHUB_TOKEN','')\n"
+                "REPO='AsimRaza4565/everstoke'; TAG='own-music-v1'; GH=os.environ.get('GITHUB_TOKEN','')\n"
                 "h={'Authorization': f'Bearer {GH}', 'User-Agent': 'colab-gen'}\n"
                 "try:\n    rel=json.load(urllib.request.urlopen(urllib.request.Request(f'https://api.github.com/repos/{REPO}/releases/tags/{TAG}', headers=h)))\n"
                 "except Exception:\n"

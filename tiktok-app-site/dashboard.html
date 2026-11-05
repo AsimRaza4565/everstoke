@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
 <meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Dashboard — Quarry Studio</title>
+<title>Dashboard — Everstoke Studio</title>
 <style>
   body{font-family:Segoe UI,sans-serif;margin:0;background:#0d1117;color:#e6edf3;line-height:1.6}
   main{max-width:640px;margin:0 auto;padding:50px 24px}
@@ -20,11 +20,11 @@
 </head>
 <body>
 <main>
-  <div class="tag">Quarry Studio</div>
+  <div class="tag">Everstoke Studio</div>
   <h1>Publish to TikTok</h1>
   <div id="step1" class="box">
     <b>Step 1 — Connect your TikTok account</b>
-    <p style="color:#8b949e;font-size:14px">You'll approve Quarry Studio on TikTok's official consent screen. Requested permissions: upload and publish videos to your account.</p>
+    <p style="color:#8b949e;font-size:14px">You'll approve Everstoke Studio on TikTok's official consent screen. Requested permissions: upload and publish videos to your account.</p>
     <a id="connectBtn" class="btn" href="#">Connect with TikTok</a>
     <div id="connStatus" class="status"></div>
   </div>
@@ -45,7 +45,7 @@
     <p style="margin-top:14px"><button class="btn" id="pub">Publish now</button></p>
     <div id="pubStatus" class="status"></div>
   </div>
-  <p style="margin-top:22px;font-size:13px"><a href="index.html">← Quarry Studio home</a></p>
+  <p style="margin-top:22px;font-size:13px"><a href="index.html">← Everstoke Studio home</a></p>
 </main>
 <script src="api-config.js"></script>
 <script>
@@ -63,7 +63,7 @@ async function checkConn() {
       document.getElementById('step2').style.display = 'block';
     }
   } catch (e) {
-    document.getElementById('connStatus').innerHTML = '<span class="err">⚠ backend unreachable — is the Quarry Studio server + tunnel running?</span>';
+    document.getElementById('connStatus').innerHTML = '<span class="err">⚠ backend unreachable — is the Everstoke Studio server + tunnel running?</span>';
   }
 }
 checkConn();

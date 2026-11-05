@@ -20,6 +20,12 @@ const KEY = envOf('PIXABAY_API_KEY');
 // Brand cinematic configs — keyed by FB page id (same keys as BRAND_POSTER_CONFIGS)
 // fonts: poster = CSS family (SVG/librsvg), reel = TTF file (ffmpeg drawtext)
 // ----------------------------------------------------------------------------
+// everstoke adoption NOTE: the entries below are the previous owner's FB page
+// design kits, KEPT as working reference templates for when the Facebook /
+// Instagram lane is re-enabled. To use them for Everstoke: copy one entry,
+// key it with YOUR new FB page id, and set label/eyebrow/footer to the
+// Everstoke identity (accent #FF6B1A, Anton headline + Oswald body).
+// ----------------------------------------------------------------------------
 const BRANDS = {
   '116157974886564': { // Silent Wealth — black / yellow, Anton centred
     label: 'Silent Wealth', align: 'center', ink: '#FFFFFF',

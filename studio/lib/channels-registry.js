@@ -11,7 +11,7 @@ import { ENV } from './data.mjs';
 import { db, dbReady } from './db.mjs';
 
 const REG_PATH = 'yt-mcp/studio-channels.json';
-const REPO = ENV.GITHUB_REPO || 'muzzamilhassan/automation';
+const REPO = ENV.GITHUB_REPO || 'AsimRaza4565/everstoke';
 const TOKEN = ENV.GITHUB_TOKEN || ENV.GITHUB_PAT || '';
 const ROOT = path.resolve(process.cwd(), '..');
 const CLOUD = ENV.FORCE_GITHUB === '1' || !fs.existsSync(path.resolve(ROOT, 'yt-mcp'));

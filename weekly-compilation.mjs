@@ -138,7 +138,7 @@ async function outroCard() {
 
 async function renderSegment(quote, index, outDir) {
   const out = `${outDir}/seg-${String(index).padStart(3, '0')}.mp4`;
-  const clip = await ensurePoolClip(['116157974886564', '108044922375174', '1077306835630491', '114550268199751', '106473735839651'][index % 5]);
+  const clip = await ensurePoolClip(['everstoke-comp-1', 'everstoke-comp-2', 'everstoke-comp-3', 'everstoke-comp-4', 'everstoke-comp-5'][index % 5]);
   const postData = { headline: quote.headline, insight_body: quote.insight, takeaway: quote.takeaway };
 
   // narration (Edge TTS via the shared narrate.py chain)
@@ -304,7 +304,7 @@ const description = [
 // premium thumbnail from a CLEAN pool-clip frame (no on-screen text)
 let thumbBuffer = null;
 try {
-  const thumbClip = await ensurePoolClip('114550268199751');
+  const thumbClip = await ensurePoolClip('everstoke-comp-thumb');
   const tFrame = `${POOL_DIR}/comp-thumb-frame.jpg`;
   execFileSync(FF, ['-y', '-v', 'error', '-ss', String(thumbClip.start + 3), '-i', thumbClip.file, '-frames:v', '1', tFrame]);
   thumbBuffer = await renderYouTubeThumbnail(`${quotes.length} QUOTES TO CHANGE YOUR WEEK`, tFrame, {});
@@ -343,8 +343,11 @@ console.log(`✓ Compilation LIVE 👉 https://youtube.com/watch?v=${res.data.id
 // native page video (IG can't take >3min content — IG gets its 3 Shorts/day).
 // ---------------------------------------------------------------------------
 if (DAILY) {
-  const PAGES = ['116157974886564', '108044922375174', '1077306835630491', '114550268199751', '106473735839651'];
-  const PAGE_NAMES = { '116157974886564': 'Silent Wealth', '108044922375174': 'Strategic Silence', '1077306835630491': 'Eon Ventures', '114550268199751': 'Reliq North', '106473735839651': 'The Boundaries Club' };
+  // everstoke adoption: previous owner's FB pages removed.
+  // TO ENABLE compilation cross-posting: list your FB page ids here plus a
+  // name map for the posts log, set FB_PAGE_TOKEN, then re-enable this workflow.
+  const PAGES = [];
+  const PAGE_NAMES = {};
   const envOf2 = (k) => process.env[k] || '';
   const FB_TOKEN = envOf2('FB_PAGE_TOKEN');
   for (const pageId of PAGES) {

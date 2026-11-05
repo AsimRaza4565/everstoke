@@ -4,7 +4,7 @@ import { slugsForUser } from '@/lib/access';
 
 export const dynamic = 'force-dynamic';
 
-const FB_MAP = { 'investors-compass': '116157974886564', 'money-rulebook': '1077306835630491', 'debt-free-doctrine': '106473735839651', quotequarry: '114550268199751' };
+const FB_MAP = {}; // everstoke adoption: no FB pages configured (lane paused)
 
 export async function GET(req) {
   const fresh = new URL(req.url).searchParams.get('fresh') === '1';
@@ -19,7 +19,7 @@ export async function GET(req) {
     const s = st[slug] || {};
     return {
       slug, ...k,
-      active: slug === 'quotequarry' ? true : k.active,
+      active: k.active,
         yt: ytRow ? (ytRow.error ? { error: ytRow.error } : { title: ytRow.ytTitle, handle: ytRow.ytCustomUrl, subs: ytRow.subs, views: ytRow.views, videos: ytRow.videos, error: null }) : null,
       fb: fbRow ? { name: fbRow.name, username: fbRow.username, followers: fbRow.followers } : null,
       ig: ig ? { username: ig.username, followers: ig.followers, posts: ig.posts } : null,

@@ -1,4 +1,4 @@
-# MOVED 09-19: the upload flow now lives in the PUBLIC muzzamilhassan/quarry-render
+# MOVED 09-19: the upload flow now lives in the PUBLIC AsimRaza4565/everstoke
 # (workflow longform-upload, cron 20:30 UTC) — free minutes, no private quota.
 # This file stays for emergency manual dispatch ONLY. Do NOT re-enable its schedule:
 # two uploaders = duplicate documentaries (that bug already cost 8 deleted dups).

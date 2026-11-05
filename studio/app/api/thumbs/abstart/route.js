@@ -19,8 +19,8 @@ const DIR = 'thumbnails/tests';
 async function putRepoFile(path, buffer, message) {
   const { ENV } = await import('@/lib/data.mjs');
   const token = ENV.GITHUB_TOKEN || ENV.GITHUB_PAT || '';
-  const headers = { Authorization: `Bearer ${token}`, Accept: 'application/vnd.github+json', 'User-Agent': 'quarry-studio' };
-  const repo = ENV.GITHUB_REPO || 'muzzamilhassan/automation';
+  const headers = { Authorization: `Bearer ${token}`, Accept: 'application/vnd.github+json', 'User-Agent': 'everstoke-studio' };
+  const repo = ENV.GITHUB_REPO || 'AsimRaza4565/everstoke';
   const body = { message, content: buffer.toString('base64'), branch: 'main' };
   const cur = await fetch(`https://api.github.com/repos/${repo}/contents/${path}?ref=main`, { headers });
   if (cur.ok) body.sha = (await cur.json()).sha;

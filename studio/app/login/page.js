@@ -55,7 +55,7 @@ export default function LoginPage() {
             <Pickaxe size={18} color="var(--accent-ink)" strokeWidth={2.4} />
           </span>
           <div>
-            <h1 className="font-display font-bold text-[17px] tracking-tight text-ink leading-none">Quarry Studio</h1>
+            <h1 className="font-display font-bold text-[17px] tracking-tight text-ink leading-none">Everstoke Studio</h1>
             <p className="text-[11px] text-faint mt-1">Command Center · private</p>
           </div>
         </div>

@@ -9,10 +9,8 @@ loadEnv();
 const FB_PAGE_TOKEN = process.env.FB_PAGE_TOKEN || '';
 const APPLY = process.argv.includes('--apply');
 const PAGES = {
-  'Silent Wealth (IC)': '116157974886564',
-  'Reliq North (QQ)': '114550268199751',
-  'Eon Ventures (MR)': '1077306835630491',
-  'The Boundaries Club (DFD)': '106473735839651'
+  // everstoke adoption: previous owner's pages removed.
+  // TO ENABLE: list your FB pages as 'Name': '<pageId>' when cross-posting starts.
 };
 
 (async () => {

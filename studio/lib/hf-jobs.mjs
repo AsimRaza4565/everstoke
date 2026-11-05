@@ -1,9 +1,9 @@
-// HyperFrames job bridge for Quarry Studio.
+// HyperFrames job bridge for Everstoke Studio.
 // Jobs live in the automation repo under hf-out/<id>/status.json (queued -> done|failed).
 // Rendering runs on GitHub Actions (hyperframes-create.yml), results commit back to hf-out/.
 import { ENV } from './data.mjs';
 
-const GITHUB_REPO = ENV.GITHUB_REPO || 'muzzamilhassan/automation';
+const GITHUB_REPO = ENV.GITHUB_REPO || 'AsimRaza4565/everstoke';
 const GH_TOKEN = ENV.GITHUB_TOKEN || ENV.GITHUB_PAT || '';
 const GH_HEADERS = {
   Authorization: `Bearer ${GH_TOKEN}`,

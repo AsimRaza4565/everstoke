@@ -11,12 +11,14 @@ loadEnv();
 const FB_PAGE_TOKEN = process.env.FB_PAGE_TOKEN || '';
 
 const PAGE_MAP = {
-  'quotequarry': '114550268199751',  // Reliq North — owns IG @quotequarry8 (Strategic Silence had NO IG: QQ reels could never post)
-  'investors-compass': '116157974886564',
-  'money-rulebook': '1077306835630491',
-  'debt-free-doctrine': '106473735839651'
+  // everstoke adoption: previous owner's pages removed.
+  // TO ENABLE Instagram reels: the FB page must have a linked business IG
+  // account; put its page ID here, set FB_PAGE_TOKEN, then re-enable the
+  // schedules in ig-slot-poster.yml (commented out 10-23, YouTube-only focus).
+  'everstoke': ''
 };
 const HASHTAGS = {
+  'everstoke': '#motivation #discipline #stoicism #mindset #selfimprovement',
   'quotequarry': '#stoicism #dailymotivation #mindset #wisdom #selfimprovement',
   'investors-compass': '#investingpsychology #stockmarket #wealthbuilding #investing #moneymindset',
   'money-rulebook': '#moneyrules #personalfinance #financialfreedom #moneytips #wealth',

@@ -219,7 +219,7 @@ if (PLATFORMS_PAUSED) {
 // times, pulling the produced reels from the run's saved outbox cache.
 // ---- Phase 2b: TikTok — PAUSED (10-17 owner decision) ----
 // Zernio removed (issue #89 comment + owner go): publishing moves to the
-// Quarry Studio TikTok app once its developer approval lands (docs staged in
+// Everstoke Studio TikTok app once its developer approval lands (docs staged in
 // tt-lf/ + artifacts by Phase 6; quarry-studio-server + tiktok-app-site are
 // the future publisher). Until then this phase is intentionally a no-op.
 

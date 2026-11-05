@@ -50,12 +50,12 @@ export async function DELETE(req) {
   // 2. delete the GitHub token secret (best-effort)
   let secretDeleted = false;
   const TOKEN = ENV.GITHUB_TOKEN || ENV.GITHUB_PAT || '';
-  const REPO = ENV.GITHUB_REPO || 'muzzamilhassan/automation';
+  const REPO = ENV.GITHUB_REPO || 'AsimRaza4565/everstoke';
   if (TOKEN && entry.tokenSecret) {
     try {
       const dr = await fetch(`https://api.github.com/repos/${REPO}/actions/secrets/${entry.tokenSecret}`, {
         method: 'DELETE',
-        headers: { Authorization: `Bearer ${TOKEN}`, 'User-Agent': 'quarry-studio' },
+        headers: { Authorization: `Bearer ${TOKEN}`, 'User-Agent': 'everstoke-studio' },
       });
       secretDeleted = dr.ok || dr.status === 404;
     } catch { }

@@ -1,4 +1,4 @@
-// Quarry Studio backend — token exchange + direct-post publishing.
+// Everstoke Studio backend — token exchange + direct-post publishing.
 // The ONLY place the TikTok client secret lives (never in the public site).
 // Run: node quarry-studio-server.mjs   (port 8787)
 import http from 'node:http';
@@ -14,7 +14,7 @@ const TOKEN_FILE = 'quarry-studio-token.json';
 // New app keys take priority: put the NEW app's key/secret in .env as TIKTOK_APP_KEY / TIKTOK_APP_SECRET
 const CLIENT_KEY = process.env.TIKTOK_APP_KEY || process.env.TIKTOK_CLIENT_KEY || '';
 const CLIENT_SECRET = process.env.TIKTOK_APP_SECRET || process.env.TIKTOK_CLIENT_SECRET || '';
-const REDIRECT_URI = 'https://muzzamilhassan.github.io/quarrystudio/callback.html';
+const REDIRECT_URI = 'https://asimraza4565.github.io/quarrystudio/callback.html';
 let account = null; // { access_token, refresh_token, open_id, scope, expires_in, at }
 
 // #61: the persisted token is LOADED at startup — a server restart no longer
@@ -59,7 +59,7 @@ async function ensureFresh() {
 // #61: CORS allowlist + Origin check — the old `*` with no auth let any
 // website fire a cross-origin POST at /api/publish and push arbitrary bytes
 // to the connected account.
-const ALLOWED_ORIGINS = ['https://muzzamilhassan.github.io', /^http:\/\/(localhost|127\.0\.0\.1)(:\d+)?$/];
+const ALLOWED_ORIGINS = ['https://asimraza4565.github.io', /^http:\/\/(localhost|127\.0\.0\.1)(:\d+)?$/];
 function originAllowed(req) {
   const o = req.headers.origin;
   if (!o) return true; // same-machine tools (curl) send no Origin

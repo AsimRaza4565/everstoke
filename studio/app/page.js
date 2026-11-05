@@ -82,7 +82,7 @@ export default function Overview() {
       <div className="flex flex-wrap items-start justify-between gap-4 mb-7">
         <div>
           <h1 className="font-display text-display-md font-semibold tracking-tight text-fg-primary leading-tight text-balance">
-            {greet}, Muzzamil
+            {greet}, Asim
           </h1>
           <p className="text-[13px] text-fg-tertiary mt-0.5 flex items-center gap-1.5 text-pretty">
             <CalendarDays size={13} className="text-muted" />
@@ -109,58 +109,21 @@ export default function Overview() {
         <StatCard delay={4} icon={InstagramIcon} label="IG followers" value={totals.igFollowers > 0 ? totals.igFollowers : null} fmt={fmt} color="#ec4899" iconBg="color-mix(in srgb, #ec4899 12%, transparent)" />
       </div>
 
-      {/* chart + alerts */}
-      <div className="grid lg:grid-cols-3 gap-4 mb-5">
-        <Card className="lg:col-span-2 overflow-hidden">
-          <CardHead
-            title="Views per day"
-            sub={analytics ? 'Real YouTube Analytics · all channels · last 14 of 28 days' : 'Loading real YouTube Analytics…'}
-            icon={Radar}
-            right={<Chip tone="ok">real data</Chip>}
-          />
-          <div className="px-3 pb-3">
-            {analytics ? (
-              <>
-                {/* div-based bars ONLY — the SVG MultiChart + real data combo crashed
-                    tabs before (a7c4a8c); do not reintroduce it here */}
-                <MiniBars data={daily.map((d) => d.views)} labels={labels.length ? labels : ['-']} color="var(--accent)" height={170} />
-                <div className="grid grid-cols-2 sm:grid-cols-4 gap-2 mt-3">
-                  {active.map((c) => {
-                    const t = analytics.channels?.[c.slug]?.totals;
-                    return (
-                      <div key={c.slug} className="inset-tile p-2.5">
-                        <div className="flex items-center gap-1.5 mb-1">
-                          <span className="w-2 h-2 rounded-full" style={{ background: c.accent }} />
-                          <span className="overline truncate">{BRAND_META[c.slug]?.short}</span>
-                        </div>
-                        <div className="tnum text-[13px] font-bold text-ink">{fmt(t?.views || 0)}</div>
-                        <div className="text-[10px] text-faint">views · 28d</div>
-                      </div>
-                    );
-                  })}
-                </div>
-              </>
-            ) : (
-              <div className="px-4 py-10 space-y-3">{[...Array(4)].map((_, i) => <div key={i} className="skeleton h-5" />)}</div>
-            )}
-          </div>
-        </Card>
-
-        <Card>
-          <CardHead title="Needs attention" sub={`${ALERTS.length} open alerts`} icon={Flame} right={<Link href="/tasks" className="text-[11.5px] text-accent hover:underline">all tasks →</Link>} />
-          <div className="px-2 pb-2">
-            {ALERTS.map((a) => (
-              <Link key={a.title} href={a.href} className="flex gap-3 px-3 py-2.5 rounded-xl hover:bg-surface-2 transition-colors">
-                <span className="w-1.5 h-1.5 rounded-full mt-1.5 shrink-0" style={{ background: ALERT_ICON[a.level] }} />
-                <span className="min-w-0">
-                  <span className="block text-[12.5px] font-semibold text-ink leading-snug">{a.title}</span>
-                  <span className="block text-[11px] text-faint mt-0.5 leading-snug ">{a.body}</span>
-                </span>
-              </Link>
-            ))}
-          </div>
-        </Card>
-      </div>
+      {/* alerts — views-per-day chart removed 11-05: analytics feed unreliable here */}
+      <Card className="mb-5 overflow-hidden">
+        <CardHead title="Needs attention" sub={`${ALERTS.length} open alerts`} icon={Flame} right={<Link href="/tasks" className="text-[11.5px] text-accent hover:underline">all tasks →</Link>} />
+        <div className="px-2 pb-2">
+          {ALERTS.map((a) => (
+            <Link key={a.title} href={a.href} className="flex gap-3 px-3 py-2.5 rounded-xl hover:bg-surface-2 transition-colors">
+              <span className="w-1.5 h-1.5 rounded-full mt-1.5 shrink-0" style={{ background: ALERT_ICON[a.level] }} />
+              <span className="min-w-0">
+                <span className="block text-[12.5px] font-semibold text-ink leading-snug">{a.title}</span>
+                <span className="block text-[11px] text-faint mt-0.5 leading-snug ">{a.body}</span>
+              </span>
+            </Link>
+          ))}
+        </div>
+      </Card>
 
       {/* production line */}
       <Card className="mb-5 overflow-hidden">

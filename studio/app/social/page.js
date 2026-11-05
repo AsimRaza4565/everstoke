@@ -111,7 +111,7 @@ export default function Social() {
                   </span>
                   <div className="min-w-0">
                     <p className="text-[13.5px] font-bold text-ink">@arzo22345 · “Poetic Home”</p>
-                    <p className="text-[11.5px] text-faint">UK account · posts as Quarry Studio app</p>
+                    <p className="text-[11.5px] text-faint">UK account · posts as Everstoke Studio app</p>
                   </div>
                   <Chip tone="ok" dot>LIVE</Chip>
                 </div>

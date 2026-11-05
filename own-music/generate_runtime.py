@@ -58,7 +58,7 @@ MOOD_PLAN = [
 ]
 print('plan:', len(MOOD_PLAN), 'tracks', flush=True)
 
-REPO = 'muzzamilhassan/automation'
+REPO = 'AsimRaza4565/everstoke'
 RELEASE_TAG = 'own-music-v1'
 GH_TOKEN = os.environ.get('GITHUB_TOKEN', '')
 _rel = None

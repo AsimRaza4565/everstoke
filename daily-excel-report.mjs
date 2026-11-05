@@ -216,7 +216,7 @@ function styleHeader(ws) {
 
 async function buildExcel(ytData, fbPages, threads) {
   const wb = new ExcelJS.Workbook();
-  wb.creator = 'Quarry Studio';
+  wb.creator = 'Everstoke Studio';
 
   const ws1 = wb.addWorksheet('Overview');
   ws1.columns = [

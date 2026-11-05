@@ -7,7 +7,7 @@ import { requireRole } from '@/lib/route-auth';
 
 export const dynamic = 'force-dynamic';
 
-const REPO = ENV.GITHUB_REPO || 'muzzamilhassan/automation';
+const REPO = ENV.GITHUB_REPO || 'AsimRaza4565/everstoke';
 const GH_TOKEN = ENV.GITHUB_TOKEN || ENV.GITHUB_PAT || '';
 
 export async function GET(req) {
@@ -34,7 +34,7 @@ export async function GET(req) {
       headers: {
         Authorization: `Bearer ${GH_TOKEN}`,
         Accept: 'application/vnd.github+json',
-        'User-Agent': 'quarry-studio',
+        'User-Agent': 'everstoke-studio',
         'X-GitHub-Api-Version': '2022-11-28',
       },
     });

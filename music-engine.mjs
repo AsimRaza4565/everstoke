@@ -95,7 +95,7 @@ function slugify(title) {
 // populated, these tracks are ALWAYS picked before any third-party music;
 // credit line needs no attribution. Empty/missing library = zero behavior
 // change (MacLeod flow as before). Kill switch: OWN_MUSIC_DISABLE=1.
-const OWN_BASE = process.env.OWN_MUSIC_BASE || 'https://github.com/muzzamilhassan/automation/releases/download/own-music-v1';
+const OWN_BASE = process.env.OWN_MUSIC_BASE || 'https://github.com/AsimRaza4565/everstoke/releases/download/own-music-v1';
 let _ownLib = undefined;
 async function ownLibrary() {
   if (process.env.OWN_MUSIC_DISABLE) return null;
@@ -136,7 +136,7 @@ async function pickOwnTrack(feels = []) {
     file,
     title: String(pick.title || 'Quarry Original').trim(),
     feel: pick.mood || '',
-    credit: `"${String(pick.title || 'Quarry Original').trim()}" — Quarry Studio Original (self-produced, royalty-free)`,
+    credit: `"${String(pick.title || 'Quarry Original').trim()}" — Everstoke Studio Original (self-produced, royalty-free)`,
   };
   try { fs.writeFileSync(lastFile, JSON.stringify({ file: pick.file, at: Date.now() })); } catch { }
   return info;

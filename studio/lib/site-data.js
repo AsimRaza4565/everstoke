@@ -2,6 +2,7 @@
 // Real numbers come from the repo's audits + state files (Sep 2026).
 
 export const BRAND_META = {
+  'everstoke': { short: 'ES', accent: '#FF6B1A' },
   'quotequarry': { short: 'QQ', accent: '#F5E31C' },
   'investors-compass': { short: 'IC', accent: '#E8C15A' },
   'money-rulebook': { short: 'MR', accent: '#3DDC97' },
@@ -21,31 +22,10 @@ export const BRAND_META = {
 };
 
 // Avg % watched — Analytics audit, Sep 19 2026
-export const RETENTION = [
-  { slug: 'quotequarry', pct: 86.3 },
-  { slug: 'money-rulebook', pct: 53.5 },
-  { slug: 'investors-compass', pct: 51.7 },
-  { slug: 'debt-free-doctrine', pct: 35.1 },
-];
+export const RETENTION = []; // everstoke adoption: friend-era audit data removed
 export const RETENTION_GOAL = 70;
 
-export const ALERTS = [
-  {
-    level: 'bad',
-    title: 'Script brain still fragile',
-    body: 'Groq 429 + Gemini 403 still cause ~1 channel/day to skip. Fix is planned — waiting for your go.',
-    when: 'Sep 27',
-    href: '/production',
-  },
-  {
-    level: 'info',
-    title: 'Facebook reels blackout plan waiting',
-    body: '~60 reels across 4 pages got 2 views total. Native re-render + page rename plan awaits your go.',
-    when: 'Sep 20',
-    href: '/social',
-  },
-];
-
+export const ALERTS = []; // everstoke adoption: friend-era alerts cleared
 export const PIPELINES = [
   {
     id: 'yt-daily',
@@ -214,7 +194,7 @@ export const INTEGRATIONS = [
   { name: 'Instagram Graph', status: 'ok', note: '4 legacy accounts · reels daily', icon: 'instagram' },
   { name: 'TikTok (Zernio)', status: 'ok', note: '@arzo22345 · 4 slots/day + clips (QQ)', icon: 'music2' },
   { name: 'Threads', status: 'warn', note: 'Token valid until ~Oct 29', icon: 'at-sign' },
-  { name: 'Roles (Google sign-in)', status: 'ok', note: 'owner: muzzamilhassan302 · staff/client via access.json', icon: 'zap' },
+  { name: 'Roles (Google sign-in)', status: 'ok', note: 'owner: asimr4558 · staff/client via access.json', icon: 'zap' },
   { name: 'Script brain', status: 'bad', note: 'Groq 429 bursts — fallback fix pending', icon: 'sparkles' },
   { name: 'ntfy alerts', status: 'ok', note: 'quarry-x7f2k-reports topic', icon: 'bell' },
 ];

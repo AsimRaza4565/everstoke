@@ -12,7 +12,7 @@ const inter = Inter({
 const jetbrainsMono = JetBrains_Mono({ variable: "--font-jetbrains-mono", subsets: ["latin"], display: "swap" });
 
 export const metadata = {
-  title: "Quarry Studio — Command Center",
+  title: "Everstoke Studio — Command Center",
   description: "Multi-platform content empire control room · 4 channels, 16 brands, 6 platforms",
 };
 

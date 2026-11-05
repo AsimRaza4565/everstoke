@@ -15,7 +15,7 @@ const ROOT = path.resolve(DIR, "..");
 // 10-09: longforms render INSIDE this repo now (channel workflows Phase 5,
 // quarry-render is retired). The doc render is uploaded as artifacts by
 // channel-quotequarry.yml on docDay (Tue).
-const REPO = process.env.GH_REPO || "muzzamilhassan/automation";
+const REPO = process.env.GH_REPO || "AsimRaza4565/everstoke";
 const SRC_WORKFLOW = process.env.TT_SRC_WORKFLOW || "channel-quotequarry.yml";
 const SLUG = "quotequarry";
 const BRAND = "QUOTE QUARRY";

@@ -3,7 +3,7 @@
 @custom-variant dark (&:where(.dark, .dark *));
 
 /* ---------------------------------------------------------------------------
-   Quarry Studio design system — Zernio-style
+   Everstoke Studio design system — Zernio-style
    Tokens live on :root (light) and .dark (dark). Tailwind v4 @theme inline
    maps them to utilities (bg-surface, text-ink, border-line, ...).
 --------------------------------------------------------------------------- */

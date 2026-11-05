@@ -7,7 +7,7 @@ process.env.DATABASE_URL = process.env.DATABASE_URL || '';
 const { BRANDS } = await import('./yt-brands/brands.mjs');
 const { upsertChannel } = await import('./studio/lib/channels-registry.js');
 
-const OWNER = 'muzzamilhassan302@gmail.com';
+const OWNER = 'asimr4558@gmail.com';
 let n = 0;
 for (const b of BRANDS) {
   if (b.active === false) { console.log(`skip ${b.slug} (inactive)`); continue; }

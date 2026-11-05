@@ -1,4 +1,4 @@
-// Complete Video Templates Catalog for Quarry Studio
+// Complete Video Templates Catalog for Everstoke Studio
 // Incorporating 100+ modular Remotion template families (Documentary, Kinetic, Tech, Finance, Podcasts, Shorts, VFX).
 // Every template is parameter-driven with live simulation props, color palettes, and variant styles.
 
@@ -238,7 +238,7 @@ export const TEMPLATES_DATA = [
     previewTheme: 'ocean',
     sampleProps: {
       url: 'https://quarry.studio/dashboard',
-      pageTitle: 'Quarry Studio — Autonomous Channel Control Room',
+      pageTitle: 'Everstoke Studio — Autonomous Channel Control Room',
     },
     accentColor: '#38BDF8',
   },

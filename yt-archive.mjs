@@ -5,7 +5,7 @@
 // view suppression. Fresh production only; a skipped slot is free.)
 import fs from 'node:fs';
 
-function ghRepo() { return process.env.GH_REPO || 'muzzamilhassan/automation'; }
+function ghRepo() { return process.env.GH_REPO || 'AsimRaza4565/everstoke'; }
 function ghToken() { return process.env.GH_TOKEN || process.env.GITHUB_PAT || ''; }
 
 async function ghApi(pathname) {
