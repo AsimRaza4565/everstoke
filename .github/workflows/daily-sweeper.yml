@@ -2,8 +2,11 @@ name: "🛠️ Daily Sweeper — self-healing, re-runs anything missing"
 
 on:
   schedule:
-    # 20:15 UTC = 01:15 PKT — after all 3 content slots had their chance
-    - cron: '15 20 * * *'
+    # everstoke adoption: moved from 20:15 to 12:15 UTC — GitHub cron delivery
+    # on this repo runs hours late (observed 4-8h), and a heal must land well
+    # before the 22:35 UTC publish slot. 12:15 + worst-case delay still heals
+    # same-day.
+    - cron: '15 12 * * *'
   workflow_dispatch:
     inputs:
       dry_run:

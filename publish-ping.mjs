@@ -12,7 +12,10 @@ import { loadEnv } from './lib/env.mjs';
 loadEnv();
 
 const DRY = process.argv.includes('--dry');
-const today = new Date().toISOString().slice(0, 10);
+// 24h lookback, not same-UTC-date: GitHub cron delivery can be hours late
+// (observed 4-8h on this repo) — a same-date match made late runs silent
+// no-ops. Anything published in the last 24h is buzz-worthy.
+const DAY_MS = 24 * 3600 * 1000;
 const log = (m) => console.log(m);
 
 async function ntfy(title, body) {
@@ -55,8 +58,11 @@ const slugs = fs.existsSync(stateDir)
 let live = 0, problems = 0;
 for (const slug of slugs) {
   const st = JSON.parse(fs.readFileSync(path.join(stateDir, `${slug}.json`), 'utf8'));
-  const due = (st.lastVideos || []).filter((v) => v && v.videoId && String(v.publishAt || '').slice(0, 10) === today);
-  if (!due.length) { log(`[${slug}] nothing scheduled for today — quiet`); continue; }
+  const due = (st.lastVideos || []).filter((v) => {
+    const at = v.publishAt ? new Date(v.publishAt).getTime() : NaN;
+    return v && v.videoId && Number.isFinite(at) && at > Date.now() - DAY_MS;
+  });
+  if (!due.length) { log(`[${slug}] nothing published in the last 24h — quiet`); continue; }
   const refresh = channelToken(slug);
   if (!refresh) { log(`[${slug}] no token — skipped`); continue; }
   const tok = await accessToken(refresh);
