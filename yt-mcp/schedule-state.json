@@ -1,22 +1,23 @@
 {
   "everstoke": {
     "uploadsToday": {
-      "date": "2026-11-04",
+      "date": "2026-11-05",
       "count": 1
     },
-    "lastRunDate": "2026-11-05",
+    "lastRunDate": "2026-11-06",
     "usedTrendSeeds": [
       "5 Lessons From History's Greatest Warriors💀 #mindset",
       "La Disciplina Humana (Marco Aurelio)",
       "the hard truth that was told By Marcus Aurelius #shorts#quotes#marcusaurelius#stoicism",
       "##Early Morning Cleaning of the Golden Temple##",
-      "Joe Rogan on The Mark of a Real Man 🔥 #shorts"
+      "Joe Rogan on The Mark of a Real Man 🔥 #shorts",
+      "Flute Music for a Calm Mind 🌿 | Dopamine Reset, Deep Focus & Relaxation"
     ],
     "cooldownSeeds": [],
     "todayTopics": [
       {
-        "at": "2026-11-05",
-        "topic": "Joe Rogan on The Mark of a Real Man 🔥 #shorts"
+        "at": "2026-11-06",
+        "topic": "Flute Music for a Calm Mind 🌿 | Dopamine Reset, Deep Focus & Relaxation"
       }
     ],
     "titleHistory": [
@@ -39,13 +40,17 @@
       {
         "t": "Do Hard Things Daily | Discipline & Stoicism",
         "at": "2026-11-05T22:35:00Z"
+      },
+      {
+        "t": "Do This Dopamine Detox | Discipline & Stoicism",
+        "at": "2026-11-06T22:35:00Z"
       }
     ],
     "lastVideos": [
       {
-        "videoId": "hv-oEbwPLZo",
-        "publishAt": "2026-11-05T22:35:00Z",
-        "title": "Do Hard Things Daily | Discipline & Stoicism"
+        "videoId": "KhIdcrnG25s",
+        "publishAt": "2026-11-06T22:35:00Z",
+        "title": "Do This Dopamine Detox | Discipline & Stoicism"
       }
     ],
     "deepdiveDate": null,
