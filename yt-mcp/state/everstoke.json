@@ -1,22 +1,23 @@
 {
   "uploadsToday": {
-    "date": "2026-11-05",
+    "date": "2026-11-06",
     "count": 1
   },
-  "lastRunDate": "2026-11-06",
+  "lastRunDate": "2026-11-07",
   "usedTrendSeeds": [
     "5 Lessons From History's Greatest Warriors💀 #mindset",
     "La Disciplina Humana (Marco Aurelio)",
     "the hard truth that was told By Marcus Aurelius #shorts#quotes#marcusaurelius#stoicism",
     "##Early Morning Cleaning of the Golden Temple##",
     "Joe Rogan on The Mark of a Real Man 🔥 #shorts",
-    "Flute Music for a Calm Mind 🌿 | Dopamine Reset, Deep Focus & Relaxation"
+    "Flute Music for a Calm Mind 🌿 | Dopamine Reset, Deep Focus & Relaxation",
+    "Failure Fueled Eminem's Rise: Meet Slim Shady! #shorts"
   ],
   "cooldownSeeds": [],
   "todayTopics": [
     {
-      "at": "2026-11-06",
-      "topic": "Flute Music for a Calm Mind 🌿 | Dopamine Reset, Deep Focus & Relaxation"
+      "at": "2026-11-07",
+      "topic": "Failure Fueled Eminem's Rise: Meet Slim Shady! #shorts"
     }
   ],
   "titleHistory": [
@@ -43,13 +44,17 @@
     {
       "t": "Do This Dopamine Detox | Discipline & Stoicism",
       "at": "2026-11-06T22:35:00Z"
+    },
+    {
+      "t": "Rise Like A Samurai | Discipline & Stoicism",
+      "at": "2026-11-07T22:35:00Z"
     }
   ],
   "lastVideos": [
     {
-      "videoId": "KhIdcrnG25s",
-      "publishAt": "2026-11-06T22:35:00Z",
-      "title": "Do This Dopamine Detox | Discipline & Stoicism"
+      "videoId": "WiKSUwPWsH8",
+      "publishAt": "2026-11-07T22:35:00Z",
+      "title": "Rise Like A Samurai | Discipline & Stoicism"
     }
   ],
   "deepdiveDate": null,
