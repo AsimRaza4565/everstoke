@@ -1,7 +1,7 @@
 {
   "everstoke": {
     "uploadsToday": {
-      "date": "2026-11-06",
+      "date": "2026-11-07",
       "count": 1
     },
     "lastRunDate": "2026-11-07",
@@ -58,8 +58,20 @@
         "title": "Rise Like A Samurai | Discipline & Stoicism"
       }
     ],
-    "deepdiveDate": null,
+    "deepdiveDate": "2026-11-08",
     "healedDate": "2026-11-03",
-    "healedCount": 1
+    "healedCount": 1,
+    "usedLongSeeds": [
+      "El SECRETO bíblico de Pedro: cómo TÚ puedes levantarte después de fallar 🤯"
+    ],
+    "todayTopic": {
+      "at": "2026-11-08",
+      "topic": "El SECRETO bíblico de Pedro: cómo TÚ puedes levantarte después de fallar 🤯"
+    },
+    "deepdiveVideo": {
+      "videoId": "4IwaSak-IJg",
+      "publishAt": "2026-11-08T21:00:00Z",
+      "title": "The Stoic Art of Rising After Utter Ruin | Discipline & Stoicism"
+    }
   }
 }
