@@ -73,7 +73,8 @@
   },
   "everstoke": {
     "docDays": [
-      "Sun"
+      "Sun",
+      "Tue"
     ],
     "shortDays": [
       "Mon",
@@ -85,7 +86,7 @@
       "Sun"
     ],
     "shortsSource": "generated",
-    "updated": "2026-11-03T12:03:55.341Z",
-    "updatedBy": "everstoke: enable weekly long-form (yt-deepdive) on Sundays"
+    "updated": "2026-11-10T05:52:47.904Z",
+    "updatedBy": "everstoke: add Tuesday — make-up run for the 11-08 black-frame doc (fixed)"
   }
 }
