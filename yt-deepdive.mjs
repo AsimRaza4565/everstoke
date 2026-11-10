@@ -120,7 +120,7 @@ async function introCard(title) {
   const inner = `
   <text x="960" y="360" text-anchor="middle" font-family="Oswald" font-weight="500" font-size="38" letter-spacing="14" fill="${b.accent}">${esc(b.eyebrow)}</text>
   <rect x="810" y="400" width="300" height="6" fill="${b.accent}"/>
-  ${wrapCenter(title, 92, 24, 470, 106, 3)}
+  ${wrapCenter(title, 92, 24, 545, 106, 3)}
   <text x="960" y="930" text-anchor="middle" font-family="Oswald" font-weight="400" font-size="32" letter-spacing="6" fill="#FFFFFF" fill-opacity="0.65">${esc(b.label.toUpperCase())} • DAILY EPISODE</text>`;
   const f = `demos/deepdive-${slug}/card-intro.png`;
   await sharp(Buffer.from(frameSvg(inner))).png().toFile(f);
@@ -132,11 +132,17 @@ async function chapterLowerThird(num, title) {
   <rect x="0" y="872" width="14" height="208" fill="${b.accent}"/>
   <text x="70" y="948" font-family="Oswald" font-weight="600" font-size="30" letter-spacing="8" fill="${b.accent}">CHAPTER ${String(num).padStart(2, '0')} / 08</text>
   <text x="70" y="1028" font-family="Oswald" font-weight="700" font-size="56" fill="#FFFFFF">${esc(String(title).slice(0, 46).toUpperCase())}</text>`;
+  // 2026-11-10 FIX: the lower-third MUST render on a transparent canvas.
+  // Routing it through frameSvg() painted an opaque full-frame gradient that
+  // covered the chapter b-roll completely (the "no content in chapters" bug).
+  const svg = `<svg xmlns="http://www.w3.org/2000/svg" width="1920" height="1080">
+  <defs><style>${EMBEDDED_FONTS_CSS}</style></defs>
+  ${inner}
+</svg>`;
   const f = `demos/deepdive-${slug}/lt-${num}.png`;
-  await sharp(Buffer.from(svg2png(inner))).png().toFile(f);
+  await sharp(Buffer.from(svg)).png().toFile(f);
   return f;
 }
-function svg2png(inner) { return frameSvg(inner); }
 async function endCard() {
   const inner = `
   <text x="960" y="420" text-anchor="middle" font-family="Oswald" font-weight="500" font-size="36" letter-spacing="12" fill="${b.accent}">DAILY EPISODES</text>
