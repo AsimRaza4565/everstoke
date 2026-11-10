@@ -1,0 +1,156 @@
+﻿2026-11-08T01:07:19.6837274Z Current runner version: '2.338.2'
+2026-11-08T01:07:19.6856596Z ##[group]Runner Image Provisioner
+2026-11-08T01:07:19.6857616Z Hosted Compute Agent
+2026-11-08T01:07:19.6858145Z Version: 20261028.624
+2026-11-08T01:07:19.6858654Z Commit: 54898b74c23fde5556c9b3c3a2290865feef0dfe
+2026-11-08T01:07:19.6859227Z Build Date: 2026-10-28T21:51:42Z
+2026-11-08T01:07:19.6859826Z Worker ID: {12a6ec2f-d7d8-45d9-a7e6-ae8f2fcd42d7}
+2026-11-08T01:07:19.6860408Z Region: centralus
+2026-11-08T01:07:19.6860856Z Cloud: Azure
+2026-11-08T01:07:19.6861301Z ##[endgroup]
+2026-11-08T01:07:19.6862425Z ##[group]Operating System
+2026-11-08T01:07:19.6862936Z Ubuntu
+2026-11-08T01:07:19.6863412Z 26.04.1
+2026-11-08T01:07:19.6863826Z LTS
+2026-11-08T01:07:19.6864254Z ##[endgroup]
+2026-11-08T01:07:19.6864697Z ##[group]Runner Image
+2026-11-08T01:07:19.6865274Z Image: ubuntu-26.04
+2026-11-08T01:07:19.6865797Z Version: 20261101.186.1
+2026-11-08T01:07:19.6866846Z Included Software: https://github.com/actions/runner-images/blob/ubuntu26/20261101.186/images/ubuntu/Ubuntu2604-Readme.md
+2026-11-08T01:07:19.6868250Z Image Release: https://github.com/actions/runner-images/releases/tag/ubuntu26%2F20261101.186
+2026-11-08T01:07:19.6869037Z ##[endgroup]
+2026-11-08T01:07:19.6870023Z ##[group]GITHUB_TOKEN Permissions
+2026-11-08T01:07:19.6871703Z Contents: write
+2026-11-08T01:07:19.6872168Z Issues: write
+2026-11-08T01:07:19.6872603Z Metadata: read
+2026-11-08T01:07:19.6873108Z ##[endgroup]
+2026-11-08T01:07:19.6874737Z Secret source: Actions
+2026-11-08T01:07:19.6875466Z Cache mode: write
+2026-11-08T01:07:19.6876015Z Prepare workflow directory
+2026-11-08T01:07:19.7150047Z Prepare all required actions
+2026-11-08T01:07:19.7190753Z Getting action download info
+2026-11-08T01:07:19.9543009Z Download action repository 'actions/checkout@v4' (SHA:11d5960a326750d5838078e36cf38b85af677262)
+2026-11-08T01:07:20.1441573Z Complete job name: discover
+2026-11-08T01:07:20.2203702Z ##[group]Run actions/checkout@v4
+2026-11-08T01:07:20.2204408Z with:
+2026-11-08T01:07:20.2204852Z   repository: AsimRaza4565/everstoke
+2026-11-08T01:07:20.2208792Z   token: ***
+2026-11-08T01:07:20.2209250Z   ssh-strict: true
+2026-11-08T01:07:20.2209695Z   ssh-user: git
+2026-11-08T01:07:20.2210140Z   persist-credentials: true
+2026-11-08T01:07:20.2210613Z   clean: true
+2026-11-08T01:07:20.2211065Z   sparse-checkout-cone-mode: true
+2026-11-08T01:07:20.2211620Z   fetch-depth: 1
+2026-11-08T01:07:20.2212053Z   fetch-tags: false
+2026-11-08T01:07:20.2212502Z   show-progress: true
+2026-11-08T01:07:20.2212944Z   lfs: false
+2026-11-08T01:07:20.2213367Z   submodules: false
+2026-11-08T01:07:20.2213826Z   set-safe-directory: true
+2026-11-08T01:07:20.2214296Z   allow-unsafe-pr-checkout: false
+2026-11-08T01:07:20.2215014Z ##[endgroup]
+2026-11-08T01:07:20.4653383Z Syncing repository: AsimRaza4565/everstoke
+2026-11-08T01:07:20.4655261Z ##[group]Getting Git version info
+2026-11-08T01:07:20.4656168Z Working directory is '/home/runner/work/everstoke/everstoke'
+2026-11-08T01:07:20.4657634Z [command]/usr/bin/git version
+2026-11-08T01:07:20.4658257Z git version 2.56.0
+2026-11-08T01:07:20.4671787Z ##[endgroup]
+2026-11-08T01:07:20.4683857Z Temporarily overriding HOME='/home/runner/work/_temp/b49553de-ab92-419c-a389-44ec088f2f53' before making global git config changes
+2026-11-08T01:07:20.4686154Z Adding repository directory to the temporary git global config as a safe directory
+2026-11-08T01:07:20.4689192Z [command]/usr/bin/git config --global --add safe.directory /home/runner/work/everstoke/everstoke
+2026-11-08T01:07:20.4911986Z Deleting the contents of '/home/runner/work/everstoke/everstoke'
+2026-11-08T01:07:20.4919853Z ##[group]Initializing the repository
+2026-11-08T01:07:20.4931579Z [command]/usr/bin/git init /home/runner/work/everstoke/everstoke
+2026-11-08T01:07:20.5682822Z hint: Using 'master' as the name for the initial branch. This default branch name
+2026-11-08T01:07:20.5684074Z hint: will change to "main" in Git 3.0. To configure the initial branch name
+2026-11-08T01:07:20.5685846Z hint: to use in all of your new repositories, which will suppress this warning,
+2026-11-08T01:07:20.5686936Z hint: call:
+2026-11-08T01:07:20.5687871Z hint:
+2026-11-08T01:07:20.5688513Z hint: 	git config --global init.defaultBranch <name>
+2026-11-08T01:07:20.5689175Z hint:
+2026-11-08T01:07:20.5689773Z hint: Names commonly chosen instead of 'master' are 'main', 'trunk' and
+2026-11-08T01:07:20.5690990Z hint: 'development'. The just-created branch can be renamed via this command:
+2026-11-08T01:07:20.5691748Z hint:
+2026-11-08T01:07:20.5692230Z hint: 	git branch -m <name>
+2026-11-08T01:07:20.5692809Z hint:
+2026-11-08T01:07:20.5693689Z hint: Disable this message with "git config set advice.defaultBranchName false"
+2026-11-08T01:07:20.5695402Z Initialized empty Git repository in /home/runner/work/everstoke/everstoke/.git/
+2026-11-08T01:07:20.5705690Z [command]/usr/bin/git remote add origin https://github.com/AsimRaza4565/everstoke
+2026-11-08T01:07:20.5749031Z ##[endgroup]
+2026-11-08T01:07:20.5750254Z ##[group]Disabling automatic garbage collection
+2026-11-08T01:07:20.5751247Z [command]/usr/bin/git config --local gc.auto 0
+2026-11-08T01:07:20.5776871Z ##[endgroup]
+2026-11-08T01:07:20.5778056Z ##[group]Setting up auth
+2026-11-08T01:07:20.5782423Z [command]/usr/bin/git config --local --name-only --get-regexp core\.sshCommand
+2026-11-08T01:07:20.5805763Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'core\.sshCommand' && git config --local --unset-all 'core.sshCommand' || :"
+2026-11-08T01:07:20.6143643Z [command]/usr/bin/git config --local --name-only --get-regexp http\.https\:\/\/github\.com\/\.extraheader
+2026-11-08T01:07:20.6170261Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'http\.https\:\/\/github\.com\/\.extraheader' && git config --local --unset-all 'http.https://github.com/.extraheader' || :"
+2026-11-08T01:07:20.6355725Z [command]/usr/bin/git config --local --name-only --get-regexp ^includeIf\.gitdir:
+2026-11-08T01:07:20.6379268Z [command]/usr/bin/git submodule foreach --recursive git config --local --show-origin --name-only --get-regexp remote.origin.url
+2026-11-08T01:07:20.6598367Z [command]/usr/bin/git config --local http.https://github.com/.extraheader AUTHORIZATION: basic ***
+2026-11-08T01:07:20.6632938Z ##[endgroup]
+2026-11-08T01:07:20.6634336Z ##[group]Fetching the repository
+2026-11-08T01:07:20.6642143Z [command]/usr/bin/git -c protocol.version=2 fetch --no-tags --prune --no-recurse-submodules --depth=1 origin +ddbe58f97908b28fca191938625538c2d32fd39f:refs/remotes/origin/main
+2026-11-08T01:07:21.3919573Z From https://github.com/AsimRaza4565/everstoke
+2026-11-08T01:07:21.3921995Z  * [new ref]         ddbe58f97908b28fca191938625538c2d32fd39f -> origin/main
+2026-11-08T01:07:21.3926788Z ##[endgroup]
+2026-11-08T01:07:21.3928468Z ##[group]Determining the checkout info
+2026-11-08T01:07:21.3930457Z ##[endgroup]
+2026-11-08T01:07:21.3931980Z [command]/usr/bin/git sparse-checkout disable
+2026-11-08T01:07:21.3974771Z [command]/usr/bin/git config --local --unset-all extensions.worktreeConfig
+2026-11-08T01:07:21.4000341Z ##[group]Checking out the ref
+2026-11-08T01:07:21.4002924Z [command]/usr/bin/git checkout --progress --force -B main refs/remotes/origin/main
+2026-11-08T01:07:21.4961939Z Switched to a new branch 'main'
+2026-11-08T01:07:21.4965660Z branch 'main' set up to track 'origin/main'.
+2026-11-08T01:07:21.4972519Z ##[endgroup]
+2026-11-08T01:07:21.5009697Z [command]/usr/bin/git log -1 --format=%H
+2026-11-08T01:07:21.5029339Z ddbe58f97908b28fca191938625538c2d32fd39f
+2026-11-08T01:07:21.5278241Z ##[group]Run node -e "
+2026-11-08T01:07:21.5279476Z [36;1mnode -e "[0m
+2026-11-08T01:07:21.5280491Z [36;1m  const fs = require('fs');[0m
+2026-11-08T01:07:21.5281696Z [36;1m  let chans = [];[0m
+2026-11-08T01:07:21.5282747Z [36;1m  try {[0m
+2026-11-08T01:07:21.5284269Z [36;1m    const reg = JSON.parse(fs.readFileSync('yt-mcp/studio-channels.json', 'utf8'));[0m
+2026-11-08T01:07:21.5286160Z [36;1m    const all = (reg.channels || [])[0m
+2026-11-08T01:07:21.5288163Z [36;1m      .filter(c => c.autopilot !== false && c.active !== false && c.tokenSecretSaved !== false)[0m
+2026-11-08T01:07:21.5290206Z [36;1m      .map(c => ({[0m
+2026-11-08T01:07:21.5291294Z [36;1m        slug: c.slug,[0m
+2026-11-08T01:07:21.5292612Z [36;1m        envSlug: c.slug.toUpperCase().replace(/-/g, '_'),[0m
+2026-11-08T01:07:21.5294092Z [36;1m        cron: c.cron || '33 2 * * *'[0m
+2026-11-08T01:07:21.5295305Z [36;1m      }));[0m
+2026-11-08T01:07:21.5296657Z [36;1m    const target = (process.env.INPUT_CHANNEL || '').trim();[0m
+2026-11-08T01:07:21.5298484Z [36;1m    const sched = (process.env.EVENT_SCHEDULE || '').trim();[0m
+2026-11-08T01:07:21.5299986Z [36;1m    if (target) {[0m
+2026-11-08T01:07:21.5301225Z [36;1m      chans = all.filter(c => c.slug === target);[0m
+2026-11-08T01:07:21.5302568Z [36;1m    } else if (sched) {[0m
+2026-11-08T01:07:21.5303803Z [36;1m      chans = all.filter(c => c.cron === sched);[0m
+2026-11-08T01:07:21.5305102Z [36;1m    } else {[0m
+2026-11-08T01:07:21.5306110Z [36;1m      chans = all;[0m
+2026-11-08T01:07:21.5307224Z [36;1m    }[0m
+2026-11-08T01:07:21.5308440Z [36;1m  } catch (e) { console.log('registry unreadable:', e.message); }[0m
+2026-11-08T01:07:21.5310048Z [36;1m  console.log(JSON.stringify(chans));[0m
+2026-11-08T01:07:21.5312271Z [36;1m  fs.writeFileSync(process.env.GITHUB_OUTPUT, 'channels=' + JSON.stringify(chans));[0m
+2026-11-08T01:07:21.5314121Z [36;1m"[0m
+2026-11-08T01:07:21.5348683Z shell: /usr/bin/bash -e {0}
+2026-11-08T01:07:21.5349929Z env:
+2026-11-08T01:07:21.5350844Z   EVENT_SCHEDULE: 
+2026-11-08T01:07:21.5351865Z   INPUT_CHANNEL: 
+2026-11-08T01:07:21.5352877Z ##[endgroup]
+2026-11-08T01:07:23.8966389Z [{"slug":"everstoke","envSlug":"EVERSTOKE","cron":"07 1 * * *"}]
+2026-11-08T01:07:23.9254185Z Post job cleanup.
+2026-11-08T01:07:23.9953892Z [command]/usr/bin/git version
+2026-11-08T01:07:23.9985645Z git version 2.56.0
+2026-11-08T01:07:24.0014086Z Temporarily overriding HOME='/home/runner/work/_temp/2bd1c3ee-9dce-49c0-94c3-cc3ee8d3ec0b' before making global git config changes
+2026-11-08T01:07:24.0015539Z Adding repository directory to the temporary git global config as a safe directory
+2026-11-08T01:07:24.0019346Z [command]/usr/bin/git config --global --add safe.directory /home/runner/work/everstoke/everstoke
+2026-11-08T01:07:24.0058325Z [command]/usr/bin/git config --local --name-only --get-regexp core\.sshCommand
+2026-11-08T01:07:24.0079919Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'core\.sshCommand' && git config --local --unset-all 'core.sshCommand' || :"
+2026-11-08T01:07:24.0315322Z [command]/usr/bin/git config --local --name-only --get-regexp http\.https\:\/\/github\.com\/\.extraheader
+2026-11-08T01:07:24.0336509Z http.https://github.com/.extraheader
+2026-11-08T01:07:24.0345316Z [command]/usr/bin/git config --local --unset-all http.https://github.com/.extraheader
+2026-11-08T01:07:24.0372121Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'http\.https\:\/\/github\.com\/\.extraheader' && git config --local --unset-all 'http.https://github.com/.extraheader' || :"
+2026-11-08T01:07:24.0586672Z [command]/usr/bin/git config --local --name-only --get-regexp ^includeIf\.gitdir:
+2026-11-08T01:07:24.0614676Z [command]/usr/bin/git submodule foreach --recursive git config --local --show-origin --name-only --get-regexp remote.origin.url
+2026-11-08T01:07:24.0922722Z Evaluate and set job outputs
+2026-11-08T01:07:24.0929106Z Set output 'channels'
+2026-11-08T01:07:24.0930994Z Cleaning up orphan processes
+2026-11-08T01:07:24.1253029Z ##[warning]Node.js 20 is deprecated. The following actions target Node.js 20 but are being forced to run on Node.js 24: actions/checkout@v4. For more information see: https://github.blog/changelog/2025-09-19-deprecation-of-node-20-on-github-actions-runners/

@@ -123,7 +123,7 @@ async function introCard(title) {
   ${wrapCenter(title, 92, 24, 470, 106, 3)}
   <text x="960" y="930" text-anchor="middle" font-family="Oswald" font-weight="400" font-size="32" letter-spacing="6" fill="#FFFFFF" fill-opacity="0.65">${esc(b.label.toUpperCase())} • DAILY EPISODE</text>`;
   const f = `demos/deepdive-${slug}/card-intro.png`;
-  await sharp(Buffer.from(frameSvg(inner)), { density: 96 }).png().toFile(f);
+  await sharp(Buffer.from(frameSvg(inner))).png().toFile(f);
   return f;
 }
 async function chapterLowerThird(num, title) {
@@ -133,7 +133,7 @@ async function chapterLowerThird(num, title) {
   <text x="70" y="948" font-family="Oswald" font-weight="600" font-size="30" letter-spacing="8" fill="${b.accent}">CHAPTER ${String(num).padStart(2, '0')} / 08</text>
   <text x="70" y="1028" font-family="Oswald" font-weight="700" font-size="56" fill="#FFFFFF">${esc(String(title).slice(0, 46).toUpperCase())}</text>`;
   const f = `demos/deepdive-${slug}/lt-${num}.png`;
-  await sharp(Buffer.from(svg2png(inner)), { density: 96 }).png().toFile(f);
+  await sharp(Buffer.from(svg2png(inner))).png().toFile(f);
   return f;
 }
 function svg2png(inner) { return frameSvg(inner); }
@@ -144,7 +144,7 @@ async function endCard() {
   <text x="960" y="880" text-anchor="middle" font-family="Oswald" font-weight="700" font-size="52" letter-spacing="6" fill="${b.accent}">${esc(b.label.toUpperCase())}</text>
   <text x="960" y="960" text-anchor="middle" font-family="Oswald" font-weight="400" font-size="30" letter-spacing="4" fill="#FFFFFF" fill-opacity="0.6">${esc(b.handle)} • ${esc(b.kwShort.toUpperCase())}</text>`;
   const f = `demos/deepdive-${slug}/card-end.png`;
-  await sharp(Buffer.from(frameSvg(inner)), { density: 96 }).png().toFile(f);
+  await sharp(Buffer.from(frameSvg(inner))).png().toFile(f);
   return f;
 }
 async function renderCard(cardPng, audioFile, outFile, dur) {
@@ -206,6 +206,10 @@ if (state[slug]?.deepdiveDate === today() && !FORCE) {
 function today() { return new Date().toISOString().slice(0, 10); }
 
 console.log(`[long] ${b.label} — premium daily episode`);
+// 2026-11-10 FIX: page() was never defined in this file — the ReferenceError
+// was swallowed by an empty catch and every chapter rendered with the black
+// fallback background instead of b-roll. getTopicClip needs { id, ytBrand }.
+const clipPage = { id: slug, ytBrand: b };
 // 09-30: episode topics are RESEARCH-LED too (static banks removed). The
 // topic comes from the strongest current story in the niche; seeds already
 // used are skipped so episodes never circle the same subject.
@@ -249,7 +253,8 @@ for (let i = 0; i < script.chapters.length; i++) {
   const dur = Math.max(14, probeDur(narr) + 1.4);
   const seg = `${work}/seg-${String(i + 1).padStart(2, '0')}.mp4`;
   let clip = null;
-  try { clip = await getTopicClip(page(), { headline: ch.title }); } catch { }
+  try { clip = await getTopicClip(clipPage, { headline: ch.title }); }
+  catch (e) { console.log(`  [broll] clip fetch failed: ${String(e?.message || e).slice(0, 90)} — dark fallback`); }
   const lt = await chapterLowerThird(i + 1, ch.title);
   segment(lt, clip?.file || null, narr, seg, dur, true);
   segs.push({ file: seg, dur });
