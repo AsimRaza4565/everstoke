@@ -12,6 +12,7 @@ import { google } from 'googleapis';
 import { loadAllStates, saveChannelState } from './lib/state.mjs';
 import { isDocDay, docDaysOf } from './lib/doc-days.mjs';
 import { cuesFromWords, toSrt } from './lib/srt.mjs';
+import { buildAssCaptions } from './youtube-engine.mjs';
 import { nextCounter } from './lib/quota-ledger.mjs';
 import { EMBEDDED_FONTS_CSS } from './typography-poster-engine.mjs';
 import { getTopicClip } from './youtube-clips.mjs';
@@ -173,17 +174,20 @@ function narrate(text, num) {
   }
   return audio;
 }
-function segment(cardPng, clipFile, audioFile, outFile, dur, drift = false) {
+function segment(cardPng, clipFile, audioFile, outFile, dur, drift = false, assFile = null) {
   const pan = drift ? `crop=1920:1080:x='(in_w-1920)*min(t/${(dur / 2).toFixed(1)},1)':y=0,` : '';
   const filters = clipFile
     ? `[0:v]scale=2304:-2,${pan}fps=30,format=yuv420p[bg]`
     : `[0:v]fps=30,format=yuv420p[bg]`;
+  // optional karaoke caption burn (2026-11-10): relative ass path only — a
+  // Windows drive colon breaks the filtergraph parser (same rule as yt-daily)
+  const assChain = assFile ? `;[v]ass=${assFile.replace(/\\/g, '/')}[vc]` : '';
   const inputs = clipFile
     ? ['-stream_loop', '-1', '-i', clipFile, '-i', audioFile, '-i', cardPng]
     : ['-f', 'lavfi', '-i', `color=c=0x0c0c0e:s=1920x1080:r=30`, '-i', audioFile, '-i', cardPng];
   sh([...inputs,
-    '-filter_complex', `${filters};[bg][2:v]overlay=0:0[v]`,
-    '-map', '[v]', '-map', '1:a', '-t', String(dur),
+    '-filter_complex', `${filters};[bg][2:v]overlay=0:0[v]${assChain}`,
+    '-map', assFile ? '[vc]' : '[v]', '-map', '1:a', '-t', String(dur),
     '-c:v', 'libx264', '-preset', 'veryfast', '-crf', '21', '-c:a', 'aac', '-b:a', '160k', '-ar', '44100', '-ac', '2', outFile]);
 }
 
@@ -251,21 +255,36 @@ await renderCard(await introCard(script.title), introNarr, `${work}/seg-00.mp4`,
 segs.push({ file: `${work}/seg-00.mp4`, dur: introDur });
 total += introDur;
 
-// chapters: b-roll + lower-third + narration
+// chapters: b-roll + lower-third + karaoke captions + narration
 for (let i = 0; i < script.chapters.length; i++) {
   const ch = script.chapters[i];
   console.log(`[long] chapter ${i + 1}/${script.chapters.length}: ${ch.title}`);
   const narr = narrate(ch.text, i + 1);
   const dur = Math.max(14, probeDur(narr) + 1.4);
   const seg = `${work}/seg-${String(i + 1).padStart(2, '0')}.mp4`;
+  // 2026-11-10 STUTTER FIX: request a clip at least as long as the chapter —
+  // shorter clips were -stream_loop'ed and the loop restart read as a stutter
+  // every few seconds. minDur filter keeps the footage continuous.
   let clip = null;
-  try { clip = await getTopicClip(clipPage, { headline: ch.title }); }
+  try { clip = await getTopicClip(clipPage, { headline: ch.title }, Math.ceil(dur) + 1); }
   catch (e) { console.log(`  [broll] clip fetch failed: ${String(e?.message || e).slice(0, 90)} — dark fallback`); }
+  if (!clip) console.log(`  [broll] no clip ≥ ${Math.ceil(dur) + 1}s — loop/dark fallback`);
+  // 2026-11-10 CAPTIONS: burn word-synced captions (same engine as Shorts).
+  // The word timings already exist for the SRT (narr-*.mp3.meta.json) — they
+  // were generated but never painted into the picture.
+  let assFile = null;
+  try {
+    const metaWords = JSON.parse(fs.readFileSync(path.join(work, `narr-${i + 1}.mp3.meta.json`), 'utf8')).words || [];
+    if (metaWords.length) {
+      assFile = path.join(work, `cap-${i + 1}.ass`);
+      fs.writeFileSync(assFile, buildAssCaptions(metaWords, { y: 700 }), 'utf8');
+    }
+  } catch { assFile = null; }
   const lt = await chapterLowerThird(i + 1, ch.title);
-  segment(lt, clip?.file || null, narr, seg, dur, true);
+  segment(lt, clip?.file || null, narr, seg, dur, true, assFile);
   segs.push({ file: seg, dur });
   total += dur;
-  console.log(`  ✓ ${dur.toFixed(0)}s`);
+  console.log(`  ✓ ${dur.toFixed(0)}s${assFile ? ' +captions' : ''}`);
 }
 
 // end card with outro narration
@@ -297,7 +316,12 @@ console.log(`[long] SRT: ${srtCues.length} cues -> ${work}/episode.srt`);
 const list = `${work}/concat.txt`;
 fs.writeFileSync(list, segs.map(s => `file '${path.resolve(s.file).replace(/\\/g, '/')}'`).join('\n'));
 const joined = `${work}/joined.mp4`;
-sh(['-y', '-f', 'concat', '-safe', '0', '-i', list, '-c', 'copy', joined]);
+// 2026-11-10 STUTTER FIX: re-encode the concat instead of -c copy — per-segment
+// encodes carried slight timestamp discontinuities that read as periodic stutter.
+sh(['-y', '-f', 'concat', '-safe', '0', '-i', list,
+  '-c:v', 'libx264', '-preset', 'veryfast', '-crf', '21',
+  '-c:a', 'aac', '-b:a', '160k', '-ar', '44100', '-ac', '2',
+  '-video_track_timescale', '15360', joined]);
 let music = null;
 // 10-03: channel's own approved pool only. The -stream_loop -1 below already
 // restarts THIS track when it ends — never a second track (user rule).

@@ -1,0 +1,16 @@
+[Script Info]
+ScriptType: v4.00+
+PlayResX: 1080
+PlayResY: 1920
+WrapStyle: 2
+ScaledBorderAndShadow: yes
+
+[V4+ Styles]
+Format: Name, Fontname, Fontsize, PrimaryColour, SecondaryColour, OutlineColour, BackColour, Bold, Italic, Underline, StrikeOut, ScaleX, ScaleY, Spacing, Angle, BorderStyle, Outline, Shadow, Alignment, MarginL, MarginR, MarginV, Encoding
+Style: Hormozi,Anton,110,&HFFFFFF&,&H000000FF,&H00000000,&H00000000,-1,0,0,0,100,100,0,0,1,8,0,5,60,60,640,1
+
+[Events]
+Format: Layer, Start, End, Style, Name, MarginL, MarginR, MarginV, Effect, Text
+Dialogue: 0,0:00:00.20,0:00:01.10,Hormozi,,0,0,0,,{\an5\pos(540,700)\fad(30,30)\t(0,90,\fscx114\fscy114)\t(90,240,\fscx100\fscy100)}{\c&H3DD9FF&}DISCIPLINE{\c&HFFFFFF&} IS THE
+Dialogue: 0,0:00:01.10,0:00:02.70,Hormozi,,0,0,0,,{\an5\pos(540,700)\fad(30,30)\t(0,90,\fscx114\fscy114)\t(90,240,\fscx100\fscy100)}BRIDGE {\c&H3DD9FF&}BETWEEN{\c&HFFFFFF&} GOALS
+Dialogue: 0,0:00:02.70,0:00:03.80,Hormozi,,0,0,0,,{\an5\pos(540,700)\fad(30,30)\t(0,90,\fscx114\fscy114)\t(90,240,\fscx100\fscy100)}AND {\c&H3DD9FF&}ACCOMPLISHMENT{\c&HFFFFFF&}
