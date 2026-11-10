@@ -259,7 +259,10 @@ total += introDur;
 for (let i = 0; i < script.chapters.length; i++) {
   const ch = script.chapters[i];
   console.log(`[long] chapter ${i + 1}/${script.chapters.length}: ${ch.title}`);
-  const narr = narrate(ch.text, i + 1);
+  // 2026-11-10 SIGNPOSTING: the voice announces the chapter title before the
+  // body (was visual-only — audio-only listeners got no chapter structure,
+  // inconsistent with the Shorts where every rule title is spoken).
+  const narr = narrate(`${ch.title}. ${ch.text}`, i + 1);
   const dur = Math.max(14, probeDur(narr) + 1.4);
   const seg = `${work}/seg-${String(i + 1).padStart(2, '0')}.mp4`;
   // 2026-11-10 STUTTER FIX: request a clip at least as long as the chapter —
@@ -275,9 +278,12 @@ for (let i = 0; i < script.chapters.length; i++) {
   let assFile = null;
   try {
     const metaWords = JSON.parse(fs.readFileSync(path.join(work, `narr-${i + 1}.mp3.meta.json`), 'utf8')).words || [];
-    if (metaWords.length) {
+    // captions start at the body — the lower-third already displays the title
+    const titleWordCount = String(ch.title || '').split(/\s+/).filter(Boolean).length;
+    const capWords = metaWords.slice(titleWordCount);
+    if (capWords.length) {
       assFile = path.join(work, `cap-${i + 1}.ass`);
-      fs.writeFileSync(assFile, buildAssCaptions(metaWords, { y: 700 }), 'utf8');
+      fs.writeFileSync(assFile, buildAssCaptions(capWords, { y: 700 }), 'utf8');
     }
   } catch { assFile = null; }
   const lt = await chapterLowerThird(i + 1, ch.title);
