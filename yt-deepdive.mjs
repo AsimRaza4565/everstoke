@@ -35,6 +35,7 @@ const HERE = path.dirname(new URL(import.meta.url).pathname.replace(/^\/([A-Za-z
 
 const slug = process.argv[2];
 const FORCE = process.argv.includes('--force');
+const NO_UPLOAD = process.argv.includes('--no-upload');
 const b = (await resolveBrand(slug)) || bySlug[slug];
 if (!b) { console.error('unknown slug (no legacy kit and no registry entry):', slug); process.exit(1); }
 // #102 BYOK: this channel's own provider keys (encrypted yt-mcp/channel-keys.json)
@@ -156,8 +157,12 @@ async function endCard() {
 }
 async function renderCard(cardPng, audioFile, outFile, dur) {
   sh(['-y', '-loop', '1', '-i', cardPng, '-i', audioFile,
-    '-filter_complex', `[0:v]scale=1920:1080,fps=30,format=yuv420p,fade=t=in:st=0:d=0.5,fade=t=out:st=${Math.max(0, dur - 0.6).toFixed(2)}:d=0.6[v]`,
-    '-map', '[v]', '-map', '1:a', '-t', String(dur), '-c:v', 'libx264', '-preset', 'veryfast', '-crf', '21', '-c:a', 'aac', '-b:a', '160k', '-ar', '44100', '-ac', '2', outFile]);
+    '-filter_complex', `[0:v]scale=1920:1080,fps=30,setpts=N/(30*TB),format=yuv420p,fade=t=in:st=0:d=0.5,fade=t=out:st=${Math.max(0, dur - 0.6).toFixed(2)}:d=0.6[v]`,
+    '-map', '[v]', '-map', '1:a', '-t', String(dur),
+    '-r', '30', '-fps_mode', 'cfr',
+    '-c:v', 'libx264', '-preset', 'veryfast', '-crf', '21',
+    '-c:a', 'aac', '-b:a', '160k', '-ar', '44100', '-ac', '2',
+    '-video_track_timescale', '15360', outFile]);
 }
 function narrate(text, num) {
   const base = `demos/deepdive-${slug}/narr-${num}`;
@@ -175,10 +180,12 @@ function narrate(text, num) {
   return audio;
 }
 function segment(cardPng, clipFile, audioFile, outFile, dur, drift = false, assFile = null) {
-  const pan = drift ? `crop=1920:1080:x='(in_w-1920)*min(t/${(dur / 2).toFixed(1)},1)':y=0,` : '';
+  const pan = drift
+    ? `scale=2304:-2,crop=1920:1080:x='(in_w-1920)*min(t/${dur.toFixed(2)},1)':y='(in_h-1080)/2',`
+    : `scale=1920:1080:force_original_aspect_ratio=increase,crop=1920:1080,`;
   const filters = clipFile
-    ? `[0:v]scale=2304:-2,${pan}fps=30,format=yuv420p[bg]`
-    : `[0:v]fps=30,format=yuv420p[bg]`;
+    ? `[0:v]fps=30,setpts=N/(30*TB),${pan}format=yuv420p[bg]`
+    : `[0:v]fps=30,setpts=N/(30*TB),format=yuv420p[bg]`;
   // optional karaoke caption burn (2026-11-10): relative ass path only — a
   // Windows drive colon breaks the filtergraph parser (same rule as yt-daily)
   const assChain = assFile ? `;[v]ass=${assFile.replace(/\\/g, '/')}[vc]` : '';
@@ -188,7 +195,10 @@ function segment(cardPng, clipFile, audioFile, outFile, dur, drift = false, assF
   sh([...inputs,
     '-filter_complex', `${filters};[bg][2:v]overlay=0:0[v]${assChain}`,
     '-map', assFile ? '[vc]' : '[v]', '-map', '1:a', '-t', String(dur),
-    '-c:v', 'libx264', '-preset', 'veryfast', '-crf', '21', '-c:a', 'aac', '-b:a', '160k', '-ar', '44100', '-ac', '2', outFile]);
+    '-r', '30', '-fps_mode', 'cfr',
+    '-c:v', 'libx264', '-preset', 'veryfast', '-crf', '21',
+    '-c:a', 'aac', '-b:a', '160k', '-ar', '44100', '-ac', '2',
+    '-video_track_timescale', '15360', outFile]);
 }
 
 // ---------- main ----------
@@ -265,13 +275,27 @@ for (let i = 0; i < script.chapters.length; i++) {
   const narr = narrate(`${ch.title}. ${ch.text}`, i + 1);
   const dur = Math.max(14, probeDur(narr) + 1.4);
   const seg = `${work}/seg-${String(i + 1).padStart(2, '0')}.mp4`;
-  // 2026-11-10 STUTTER FIX: request a clip at least as long as the chapter —
-  // shorter clips were -stream_loop'ed and the loop restart read as a stutter
-  // every few seconds. minDur filter keeps the footage continuous.
+  // 2026-11-10 STUTTER & BLACK SCREEN FIX: Request clip with tiered fallback.
+  // Shorter clips loop seamlessly via continuous CFR 30fps filtergraph.
   let clip = null;
   try { clip = await getTopicClip(clipPage, { headline: ch.title }, Math.ceil(dur) + 1); }
-  catch (e) { console.log(`  [broll] clip fetch failed: ${String(e?.message || e).slice(0, 90)} — dark fallback`); }
-  if (!clip) console.log(`  [broll] no clip ≥ ${Math.ceil(dur) + 1}s — loop/dark fallback`);
+  catch (e) { console.log(`  [broll] clip fetch failed: ${String(e?.message || e).slice(0, 90)} — trying pool fallback`); }
+  if (!clip?.file) {
+    try {
+      const { ensurePoolClip } = await import('./cinematic-engine.mjs');
+      clip = await ensurePoolClip(slug);
+    } catch {}
+  }
+  if (!clip?.file) {
+    try {
+      const existing = fs.readdirSync('pixabay-pool').filter(f => f.endsWith('.mp4'));
+      if (existing.length) {
+        clip = { file: path.join('pixabay-pool', existing[Math.floor(Math.random() * existing.length)]) };
+      }
+    } catch {}
+  }
+  if (!clip?.file) console.log(`  [broll] no clip found anywhere — dark fallback`);
+  else console.log(`  [broll] b-roll: ${path.basename(clip.file)}`);
   // 2026-11-10 CAPTIONS: burn word-synced captions (same engine as Shorts).
   // The word timings already exist for the SRT (narr-*.mp3.meta.json) — they
   // were generated but never painted into the picture.
@@ -283,7 +307,7 @@ for (let i = 0; i < script.chapters.length; i++) {
     const capWords = metaWords.slice(titleWordCount);
     if (capWords.length) {
       assFile = path.join(work, `cap-${i + 1}.ass`);
-      fs.writeFileSync(assFile, buildAssCaptions(capWords, { y: 700 }), 'utf8');
+      fs.writeFileSync(assFile, buildAssCaptions(capWords, { w: 1920, h: 1080, y: 760, size: 68 }), 'utf8');
     }
   } catch { assFile = null; }
   const lt = await chapterLowerThird(i + 1, ch.title);
@@ -319,12 +343,17 @@ fs.writeFileSync(path.join(work, 'episode.srt'), toSrt(srtCues));
 console.log(`[long] SRT: ${srtCues.length} cues -> ${work}/episode.srt`);
 
 // concat + music bed
-const list = `${work}/concat.txt`;
-fs.writeFileSync(list, segs.map(s => `file '${path.resolve(s.file).replace(/\\/g, '/')}'`).join('\n'));
 const joined = `${work}/joined.mp4`;
-// 2026-11-10 STUTTER FIX: re-encode the concat instead of -c copy — per-segment
-// encodes carried slight timestamp discontinuities that read as periodic stutter.
-sh(['-y', '-f', 'concat', '-safe', '0', '-i', list,
+// 2026-11-10 STUTTER FIX: Use filtergraph concat instead of -f concat demuxer.
+// The concat demuxer introduces PTS discontinuities and drops/repeats frames
+// across chapter boundaries; filtergraph concat stitches uncompressed decoded
+// frames into a perfectly seamless, gapless 30fps stream.
+const segInputs = segs.map(s => ['-i', s.file]).flat();
+const concatFilter = `${segs.map((_, i) => `[${i}:v][${i}:a]`).join('')}concat=n=${segs.length}:v=1:a=1[v][a]`;
+sh(['-y', ...segInputs,
+  '-filter_complex', concatFilter,
+  '-map', '[v]', '-map', '[a]',
+  '-r', '30', '-fps_mode', 'cfr',
   '-c:v', 'libx264', '-preset', 'veryfast', '-crf', '21',
   '-c:a', 'aac', '-b:a', '160k', '-ar', '44100', '-ac', '2',
   '-video_track_timescale', '15360', joined]);
@@ -344,6 +373,14 @@ sh(['-y', '-v', 'error', '-ss', String(Math.round(total * 0.35)), '-i', final, '
 const thumb = await renderYouTubeThumbnail(script.title, `${work}/frame.jpg`, { accent: b.accent, eyebrow: b.eyebrow });
 
 console.log(`[long] ✅ episode rendered: ${final} (${(total / 60).toFixed(1)} min)`);
+
+if (NO_UPLOAD) {
+  console.log(`\n[long] 🧪 --no-upload flag set — skipping YouTube upload, state persistence, and outbox.`);
+  console.log(`[long] ✅ test episode ready: ${final} (${(total / 60).toFixed(1)} min)`);
+  fs.rmSync(`${work}/joined.mp4`, { force: true });
+  for (const s of segs) fs.rmSync(s.file, { force: true });
+  process.exit(0);
+}
 
 // ---------- upload scheduled ----------
 

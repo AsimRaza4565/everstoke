@@ -36,6 +36,10 @@ on:
         description: "heal N slots (blank = normal daily run)"
         required: false
         default: ""
+      no_upload:
+        description: "test doc render only, skip YouTube upload (true/blank)"
+        required: false
+        default: ""
 
 permissions:
   contents: write
@@ -147,7 +151,7 @@ jobs:
           # Template registry preflight (issue #102): unassigned channels keep the legacy
           # path (preflight degrades to legacy+ntfy warning if the DB is unreachable).
           DATABASE_URL: ${{ secrets.DATABASE_URL }}
-        run: node channel-pipeline.mjs "$SLUG" ${{ inputs.topup && format('--topup={0}', inputs.topup) || '' }}
+        run: node channel-pipeline.mjs "$SLUG" ${{ inputs.topup && format('--topup={0}', inputs.topup) || '' }} ${{ inputs.no_upload == 'true' && '--no-upload' || '' }}
 
       - name: 📦 Keep reels for IG slot poster
         if: ${{ hashFiles(format('fb-outbox/{0}/*.json*', matrix.slug.slug)) != '' }}

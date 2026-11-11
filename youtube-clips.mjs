@@ -59,34 +59,69 @@ export async function getTopicClip(page, postData, minDur = 12) {
   const geminiQ = await geminiClipQuery(postData, (brandQ[0] || '').split(' ')[0]);
   if (geminiQ) queries.push(geminiQ);
   queries.push(brandQ[Math.floor(Math.random() * brandQ.length)]);
+  for (const g of GENERIC_QUERIES) {
+    if (!queries.includes(g)) queries.push(g);
+  }
 
   const used = loadUsed();
   for (const q of queries) {
     try {
-      const res = await fetch(`https://pixabay.com/api/videos/?key=${KEY}&q=${encodeURIComponent(q)}&per_page=25&video_type=film`);
+      const res = await fetch(`https://pixabay.com/api/videos/?key=${KEY}&q=${encodeURIComponent(q)}&per_page=30&video_type=film`);
       const hits = (await res.json()).hits || [];
-      // 4K only (large stream), long enough, not used recently, decent popularity
-      const cands = hits
-        .filter((h) => h.videos?.large && h.videos.large.width >= 3500 && (h.duration || 0) >= minDur)
-        .sort((a, b) => (b.downloads || 0) - (a.downloads || 0))
-        .slice(0, 6)
-        .filter((h) => !used.includes(h.id));
+      if (!hits.length) continue;
+
+      // Tier 1: 4K (width >= 3500), duration >= minDur, not used recently
+      let cands = hits.filter((h) => h.videos?.large && h.videos.large.width >= 3500 && (h.duration || 0) >= minDur && !used.includes(h.id));
+
+      // Tier 2: 4K (width >= 3500), duration >= 10s (longest first), not used recently
+      if (!cands.length) {
+        cands = hits.filter((h) => h.videos?.large && h.videos.large.width >= 3500 && (h.duration || 0) >= 10 && !used.includes(h.id));
+      }
+
+      // Tier 3: HD/4K (large or medium stream), duration >= 8s, not used recently
+      if (!cands.length) {
+        cands = hits.filter((h) => (h.videos?.large?.url || h.videos?.medium?.url) && (h.duration || 0) >= 8 && !used.includes(h.id));
+      }
+
+      // Tier 4: If all unused exhausted, allow previously used clips (>= 8s) to avoid black screen
+      if (!cands.length) {
+        cands = hits.filter((h) => (h.videos?.large?.url || h.videos?.medium?.url) && (h.duration || 0) >= 8);
+      }
+
       if (!cands.length) continue;
+
+      // Prefer longer clips to minimize looping, then sort by popularity
+      cands.sort((a, b) => ((b.duration || 0) - (a.duration || 0)) || ((b.downloads || 0) - (a.downloads || 0)));
       const hit = cands[Math.floor(Math.random() * Math.min(3, cands.length))];
+      const videoUrl = hit.videos?.large?.url || hit.videos?.medium?.url;
+      if (!videoUrl) continue;
+
       const file = `${POOL_DIR}/yt-clip-${hit.id}.mp4`;
       fs.mkdirSync(POOL_DIR, { recursive: true });
       if (!fs.existsSync(file) || fs.statSync(file).size < 500000) {
-        console.log(`[YT Clips] Downloading 4K "${q}" clip ${hit.id} (${hit.duration}s, ${hit.downloads || 0} downloads)...`);
-        execFileSync('curl', ['-s', '--retry', '3', '--retry-delay', '2', '-L', '-o', file, hit.videos.large.url]);
+        console.log(`[YT Clips] Downloading "${q}" clip ${hit.id} (${hit.duration}s, ${hit.videos?.large?.width || 'HD'}w, ${hit.downloads || 0} downloads)...`);
+        execFileSync('curl', ['-s', '--retry', '3', '--retry-delay', '2', '-L', '-o', file, videoUrl]);
         if (fs.statSync(file).size < 500000) throw new Error('download failed');
       }
       used.push(hit.id);
       saveUsed(used);
       const start = Math.max(0, Math.min(3, (hit.duration || minDur) - 16));
-      return { file, start, maxDur: Math.min(20, (hit.duration || minDur) - start), query: q, id: hit.id };
+      return { file, start, maxDur: Math.min(20, (hit.duration || minDur) - start), query: q, id: hit.id, duration: hit.duration || 0 };
     } catch (e) {
       console.log(`[YT Clips] Query "${q}" failed: ${String(e.message).slice(0, 100)}`);
     }
   }
+
+  // Fallback: If online search failed, pick any valid mp4 from POOL_DIR
+  try {
+    const existing = fs.readdirSync(POOL_DIR).filter(f => f.startsWith('yt-clip-') && f.endsWith('.mp4'));
+    if (existing.length) {
+      const pick = existing[Math.floor(Math.random() * existing.length)];
+      const file = `${POOL_DIR}/${pick}`;
+      console.log(`[YT Clips] Pool clip fallback: ${file}`);
+      return { file, start: 0, maxDur: 20, query: 'local-pool', id: pick, duration: 20 };
+    }
+  } catch {}
+
   return null;
 }

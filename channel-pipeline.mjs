@@ -11,6 +11,7 @@ import { spawnSync } from 'node:child_process';
 const slug = process.argv[2];
 const FORCE = process.argv.includes('--force');
 const SKIP_EPISODE = process.argv.includes('--no-episode');
+const NO_UPLOAD = process.argv.includes('--no-upload');
 // --topup=N: heal/backfill mode (sweeper semantics) — produce the first N slots
 // even if today already ran; yt-daily marks the NEXT day done so the morning
 // cron can't double-produce the healed reels.
@@ -171,7 +172,9 @@ if (TEMPLATE_PREFLIGHT_ENABLED) {
 // research->script->render) or 'clips' (publisher posts one queued doc clip).
 // Flipping a channel = one kit field; rolling back = flip it back.
 const shortsSource = b.shortsSource || 'generated';
-if (shortsSource === 'clips') {
+if (NO_UPLOAD) {
+  log(`Phase 1 — Shorts skipped (--no-upload test mode)`);
+} else if (shortsSource === 'clips') {
   log(`Phase 1 — Clips lane (shortsSource=clips) for ${b.label}...`);
   if (await quotaGate('Shorts (clips)')) {
     if (run('longvideo/shorts-clips.mjs', ['post-next', slug])) { results.shorts = true; log(`✓ Clip Short processed`); }
@@ -236,9 +239,9 @@ if (PLATFORMS_PAUSED) {
 }
 
 // ---- Phase 5: Long-form episode (enable when ready) ----
-if (!SKIP_EPISODE && !episodeDone && (await quotaGate('Episode'))) {
-  log(`Phase 5 — Producing daily episode...`);
-  const ok = run('yt-deepdive.mjs', [slug, ...(FORCE ? ['--force'] : [])]);
+if (!SKIP_EPISODE && (!episodeDone || FORCE || NO_UPLOAD) && (NO_UPLOAD || await quotaGate('Episode'))) {
+  log(`Phase 5 — Producing daily episode${NO_UPLOAD ? ' (test render: --no-upload)' : ''}...`);
+  const ok = run('yt-deepdive.mjs', [slug, ...(FORCE || NO_UPLOAD ? ['--force'] : []), ...(NO_UPLOAD ? ['--no-upload'] : [])]);
   if (ok) { results.episode = true; log(`✓ Episode done`); }
   else errors.push('Episode failed');
 } else if (SKIP_EPISODE) {

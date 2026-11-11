@@ -25,6 +25,7 @@ n8n-db.sqlite
 
 # Postiz dynamic config
 dynamicconfig/
+AGENTS.md
 
 # Local artifacts & rendered outputs
 *.log
