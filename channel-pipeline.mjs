@@ -41,10 +41,14 @@ const log = (msg) => console.log(`[${slug}] ${msg}`);
 const results = { shorts: false, episode: false, fbReels: false, igReels: false, poster: false };
 const errors = [];
 
-function run(script, args = []) {
+function run(script, args = [], timeout = 900000) {
   log(`▶ ${script} ${args.join(' ')}`);
   try {
-    const r = spawnSync('node', [script, ...args], { stdio: 'inherit', timeout: 900000 });
+    const r = spawnSync('node', [script, ...args], { stdio: 'inherit', timeout });
+    if (r.error) {
+      log(`✖ ${script} error: ${r.error.message}`);
+      errors.push(`${script}: ${r.error.message}`);
+    }
     return r.status === 0;
   } catch (e) { errors.push(`${script}: ${e.message}`); return false; }
 }
@@ -241,7 +245,7 @@ if (PLATFORMS_PAUSED) {
 // ---- Phase 5: Long-form episode (enable when ready) ----
 if (!SKIP_EPISODE && (!episodeDone || FORCE || NO_UPLOAD) && (NO_UPLOAD || await quotaGate('Episode'))) {
   log(`Phase 5 — Producing daily episode${NO_UPLOAD ? ' (test render: --no-upload)' : ''}...`);
-  const ok = run('yt-deepdive.mjs', [slug, ...(FORCE || NO_UPLOAD ? ['--force'] : []), ...(NO_UPLOAD ? ['--no-upload'] : [])]);
+  const ok = run('yt-deepdive.mjs', [slug, ...(FORCE || NO_UPLOAD ? ['--force'] : []), ...(NO_UPLOAD ? ['--no-upload'] : [])], 2700000);
   if (ok) { results.episode = true; log(`✓ Episode done`); }
   else errors.push('Episode failed');
 } else if (SKIP_EPISODE) {
