@@ -179,26 +179,76 @@ function narrate(text, num) {
   }
   return audio;
 }
-function segment(cardPng, clipFile, audioFile, outFile, dur, drift = false, assFile = null) {
-  const pan = drift
-    ? `scale=2304:-2,crop=1920:1080:x='(in_w-1920)*min(t/${dur.toFixed(2)},1)':y='(in_h-1080)/2',`
-    : `scale=1920:1080:force_original_aspect_ratio=increase,crop=1920:1080,`;
-  const filters = clipFile
-    ? `[0:v]fps=30,setpts=N/(30*TB),${pan}format=yuv420p[bg]`
-    : `[0:v]fps=30,setpts=N/(30*TB),format=yuv420p[bg]`;
-  // optional karaoke caption burn (2026-11-10): relative ass path only — a
-  // Windows drive colon breaks the filtergraph parser (same rule as yt-daily)
+function segment(cardPng, clips, audioFile, outFile, dur, assFile = null) {
+  // Normalize clips: array of { file, dur } or null/empty
+  const clipList = Array.isArray(clips)
+    ? clips.filter(c => c && c.file)
+    : (clips ? [{ file: typeof clips === 'string' ? clips : clips.file, dur }] : []);
+
+  // optional karaoke caption burn: relative ass path only (Windows colon breaks filtergraph)
   const assChain = assFile ? `;[v]ass=${assFile.replace(/\\/g, '/')}[vc]` : '';
-  const inputs = clipFile
-    ? ['-stream_loop', '-1', '-i', clipFile, '-i', audioFile, '-i', cardPng]
-    : ['-f', 'lavfi', '-i', `color=c=0x0c0c0e:s=1920x1080:r=30`, '-i', audioFile, '-i', cardPng];
-  sh([...inputs,
-    '-filter_complex', `${filters};[bg][2:v]overlay=0:0[v]${assChain}`,
-    '-map', assFile ? '[vc]' : '[v]', '-map', '1:a', '-t', String(dur),
-    '-r', '30', '-fps_mode', 'cfr',
-    '-c:v', 'libx264', '-preset', 'veryfast', '-crf', '21',
-    '-c:a', 'aac', '-b:a', '160k', '-ar', '44100', '-ac', '2',
-    '-video_track_timescale', '15360', outFile]);
+
+  if (clipList.length >= 2) {
+    // 2026-11-11 MULTI-CLIP ASSEMBLY: When a clip is shorter than chapter duration,
+    // transition seamlessly between two clips instead of looping a short clip over and over.
+    // Centered 16:9 crop with zero integer-pixel judder/lag.
+    const c0 = clipList[0];
+    const c1 = clipList[1];
+    const dur0 = Math.max(5, Math.min(c0.dur, dur - 5));
+    const dur1 = dur - dur0;
+    const filter = `[0:v]trim=duration=${dur0.toFixed(2)},scale=1920:1080:force_original_aspect_ratio=increase,crop=1920:1080:(in_w-1920)/2:(in_h-1080)/2,fps=fps=30:round=near,setpts=PTS-STARTPTS,format=yuv420p[v0];` +
+      `[1:v]trim=duration=${dur1.toFixed(2)},scale=1920:1080:force_original_aspect_ratio=increase,crop=1920:1080:(in_w-1920)/2:(in_h-1080)/2,fps=fps=30:round=near,setpts=PTS-STARTPTS,format=yuv420p[v1];` +
+      `[v0][v1]concat=n=2:v=1:a=0[bg];` +
+      `[bg][3:v]overlay=0:0[v]${assChain}`;
+
+    sh([
+      '-y',
+      '-i', c0.file,
+      '-i', c1.file,
+      '-i', audioFile,
+      '-i', cardPng,
+      '-filter_complex', filter,
+      '-map', assFile ? '[vc]' : '[v]', '-map', '2:a',
+      '-t', String(dur),
+      '-r', '30', '-fps_mode', 'cfr',
+      '-c:v', 'libx264', '-preset', 'veryfast', '-crf', '21',
+      '-c:a', 'aac', '-b:a', '160k', '-ar', '44100', '-ac', '2',
+      '-video_track_timescale', '15360', outFile
+    ]);
+  } else if (clipList.length === 1) {
+    // Single clip: centered 16:9, native 30fps CFR, zero artificial integer-pixel judder
+    const c = clipList[0];
+    const filter = `[0:v]scale=1920:1080:force_original_aspect_ratio=increase,crop=1920:1080:(in_w-1920)/2:(in_h-1080)/2,fps=fps=30:round=near,setpts=PTS-STARTPTS,format=yuv420p[bg];[bg][2:v]overlay=0:0[v]${assChain}`;
+    sh([
+      '-y',
+      '-stream_loop', '-1', '-i', c.file,
+      '-i', audioFile,
+      '-i', cardPng,
+      '-filter_complex', filter,
+      '-map', assFile ? '[vc]' : '[v]', '-map', '1:a',
+      '-t', String(dur),
+      '-r', '30', '-fps_mode', 'cfr',
+      '-c:v', 'libx264', '-preset', 'veryfast', '-crf', '21',
+      '-c:a', 'aac', '-b:a', '160k', '-ar', '44100', '-ac', '2',
+      '-video_track_timescale', '15360', outFile
+    ]);
+  } else {
+    // Dark color fallback
+    const filter = `[0:v]fps=30,setpts=PTS-STARTPTS,format=yuv420p[bg];[bg][2:v]overlay=0:0[v]${assChain}`;
+    sh([
+      '-y',
+      '-f', 'lavfi', '-i', 'color=c=0x0c0c0e:s=1920x1080:r=30',
+      '-i', audioFile,
+      '-i', cardPng,
+      '-filter_complex', filter,
+      '-map', assFile ? '[vc]' : '[v]', '-map', '1:a',
+      '-t', String(dur),
+      '-r', '30', '-fps_mode', 'cfr',
+      '-c:v', 'libx264', '-preset', 'veryfast', '-crf', '21',
+      '-c:a', 'aac', '-b:a', '160k', '-ar', '44100', '-ac', '2',
+      '-video_track_timescale', '15360', outFile
+    ]);
+  }
 }
 
 // ---------- main ----------
@@ -266,6 +316,9 @@ segs.push({ file: `${work}/seg-00.mp4`, dur: introDur });
 total += introDur;
 
 // chapters: b-roll + lower-third + karaoke captions + narration
+const episodeUsedIds = [];
+const episodeClips = [];
+
 for (let i = 0; i < script.chapters.length; i++) {
   const ch = script.chapters[i];
   console.log(`[long] chapter ${i + 1}/${script.chapters.length}: ${ch.title}`);
@@ -275,34 +328,80 @@ for (let i = 0; i < script.chapters.length; i++) {
   const narr = narrate(`${ch.title}. ${ch.text}`, i + 1);
   const dur = Math.max(14, probeDur(narr) + 1.4);
   const seg = `${work}/seg-${String(i + 1).padStart(2, '0')}.mp4`;
-  // 2026-11-10 STUTTER & BLACK SCREEN FIX: Request clip with tiered fallback.
-  // Shorter clips loop seamlessly via continuous CFR 30fps filtergraph.
-  let clip = null;
-  try { clip = await getTopicClip(clipPage, { headline: ch.title }, Math.ceil(dur) + 1); }
-  catch (e) { console.log(`  [broll] clip fetch failed: ${String(e?.message || e).slice(0, 90)} — trying pool fallback`); }
-  if (!clip?.file) {
+
+  // 2026-11-11 CLIP SELECTION: Request primary clip matched to chapter title & body,
+  // strictly excluding any clips already used in this episode to guarantee uniqueness.
+  let clip1 = null;
+  try {
+    clip1 = await getTopicClip(clipPage, { headline: ch.title, insight_body: ch.text }, Math.ceil(dur) + 1, episodeUsedIds);
+  } catch (e) {
+    console.log(`  [broll] clip fetch failed: ${String(e?.message || e).slice(0, 90)} — trying pool fallback`);
+  }
+  if (!clip1?.file) {
     try {
       const { ensurePoolClip } = await import('./cinematic-engine.mjs');
-      clip = await ensurePoolClip(slug);
+      clip1 = await ensurePoolClip(slug);
     } catch {}
   }
-  if (!clip?.file) {
+  if (!clip1?.file) {
     try {
-      const existing = fs.readdirSync('pixabay-pool').filter(f => f.endsWith('.mp4'));
+      const existing = fs.readdirSync('pixabay-pool').filter(f => f.endsWith('.mp4') && !episodeUsedIds.includes(f));
       if (existing.length) {
-        clip = { file: path.join('pixabay-pool', existing[Math.floor(Math.random() * existing.length)]) };
+        const pick = existing[Math.floor(Math.random() * existing.length)];
+        clip1 = { file: path.join('pixabay-pool', pick), id: pick, duration: 25 };
       }
     } catch {}
   }
-  if (!clip?.file) console.log(`  [broll] no clip found anywhere — dark fallback`);
-  else console.log(`  [broll] b-roll: ${path.basename(clip.file)}`);
+
+  const clips = [];
+  if (clip1?.file) {
+    episodeUsedIds.push(clip1.id);
+    episodeClips.push(clip1);
+    const c1Dur = clip1.duration || 0;
+
+    // Check if clip1 covers the chapter duration without repeating
+    if (c1Dur >= dur - 2) {
+      clips.push({ file: clip1.file, dur });
+      console.log(`  [broll] b-roll (full cover): ${path.basename(clip1.file)} (${dur.toFixed(1)}s)`);
+    } else {
+      // 2026-11-11 NO-LOOP MULTI-CLIP: If clip1 is shorter than the chapter, do NOT loop it!
+      // Split duration: clip1 plays for half, fetch a second unique clip for the remainder.
+      const dur1 = Math.max(8, Math.min(Math.floor(c1Dur), Math.floor(dur / 2)));
+      const dur2 = dur - dur1;
+      clips.push({ file: clip1.file, dur: dur1 });
+
+      let clip2 = null;
+      try {
+        clip2 = await getTopicClip(clipPage, { headline: ch.title, insight_body: ch.text }, Math.ceil(dur2) + 1, episodeUsedIds);
+      } catch {}
+
+      if (!clip2?.file) {
+        // Fallback: If unique clip2 not found, reuse an older chapter's clip (e.g. Chapter 1, never the current clip!)
+        const older = episodeClips.filter(c => c.id !== clip1.id);
+        if (older.length) {
+          clip2 = older[0]; // oldest used clip from earlier in the episode
+          console.log(`  [broll] reusing older chapter clip for second half: ${path.basename(clip2.file)}`);
+        }
+      }
+
+      if (clip2?.file) {
+        if (!episodeUsedIds.includes(clip2.id)) episodeUsedIds.push(clip2.id);
+        episodeClips.push(clip2);
+        clips.push({ file: clip2.file, dur: dur2 });
+        console.log(`  [broll] b-roll (multi-clip no-loop): ${path.basename(clip1.file)} (${dur1}s) + ${path.basename(clip2.file)} (${dur2.toFixed(1)}s)`);
+      } else {
+        clips[0].dur = dur;
+        console.log(`  [broll] b-roll (single clip extended): ${path.basename(clip1.file)}`);
+      }
+    }
+  } else {
+    console.log(`  [broll] no clip found anywhere — dark fallback`);
+  }
+
   // 2026-11-10 CAPTIONS: burn word-synced captions (same engine as Shorts).
-  // The word timings already exist for the SRT (narr-*.mp3.meta.json) — they
-  // were generated but never painted into the picture.
   let assFile = null;
   try {
     const metaWords = JSON.parse(fs.readFileSync(path.join(work, `narr-${i + 1}.mp3.meta.json`), 'utf8')).words || [];
-    // captions start at the body — the lower-third already displays the title
     const titleWordCount = String(ch.title || '').split(/\s+/).filter(Boolean).length;
     const capWords = metaWords.slice(titleWordCount);
     if (capWords.length) {
@@ -310,8 +409,9 @@ for (let i = 0; i < script.chapters.length; i++) {
       fs.writeFileSync(assFile, buildAssCaptions(capWords, { w: 1920, h: 1080, y: 760, size: 68 }), 'utf8');
     }
   } catch { assFile = null; }
+
   const lt = await chapterLowerThird(i + 1, ch.title);
-  segment(lt, clip?.file || null, narr, seg, dur, true, assFile);
+  segment(lt, clips, narr, seg, dur, assFile);
   segs.push({ file: seg, dur });
   total += dur;
   console.log(`  ✓ ${dur.toFixed(0)}s${assFile ? ' +captions' : ''}`);
