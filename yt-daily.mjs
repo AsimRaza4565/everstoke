@@ -222,25 +222,41 @@ if (RUN_SHORTS) {
       console.log('  ✗ no researched topic (trend research failed) — slot skipped (fail-closed, no static fallback)');
       continue;
     }
-    let script = await generateYouTubeScript(page, themesToday[i].topic);
+    // 2026-11-11 RETRY FIX: a dup-gate rejection used to consume the slot
+    // silently — Nov 10 and 11 produced NO Shorts this way (titles kept
+    // clustering on "Stoic Rule" variants and the guard skipped every time).
+    // Now each rejection cools the seed, rotates to an unused trend topic, and
+    // retries — up to 3 scripts per slot before failing with a phone alert.
+    let script = null;
+    for (let attempt = 1; attempt <= 3 && !script; attempt++) {
+      const cand = await generateYouTubeScript(page, themesToday[i].topic);
+      const candTitle = (cand.thumbHeadline || cand.hook || '').trim();
+      const dup = findDup(candTitle, recentTitles, seenThisRun);
+      if (!dup) { script = cand; break; }
+      console.log(`  GATE (attempt ${attempt}/3): "${candTitle}" ≈ "${dup}" — cooling seed, rotating topic`);
+      if (themesToday[i]?.seed) rejectedSeeds.push(themesToday[i].seed);
+      const waves2 = (page.trend?.videos || []);
+      const alt = waves2.find((v) => v.title && !usedSeeds.includes(v.title) && !themesToday.some((x) => x.seed === v.title) && !rejectedSeeds.includes(v.title));
+      if (!alt) { console.log('  no unused trend topics left — giving up this slot'); break; }
+      themesToday[i] = {
+        seed: alt.title,
+        subNiche: themesToday[i].subNiche,
+        topic: `Sub-niche focus: "${themesToday[i].subNiche}" (Channel Niche: "${b.niche}"). Build today's video around the THEME of this proven viral video in this space right now: "${alt.title}" (${(alt.views || 0).toLocaleString('en-US')} views in the last 14 days). Reimagine it natively for ${b.label} — do NOT copy its title or wording; bring a fresh, original angle, and pick a title that does NOT repeat the words "stoic rule". Weave in what is currently working: ${(page.trend.hotKeywords.slice(0, 6)).join(', ')}.${page.viewerTerms?.length ? ` Your own viewers found this channel by searching: ${page.viewerTerms.slice(0, 8).join(' ')} — work the strongest of these real search words naturally into the hook and points.` : ''}`,
+      };
+    }
+    if (!script) {
+      console.log('  ✗ all attempts duplicate-gated — slot skipped with alert');
+      const { sendAlert: alertDup } = await import('./lib/ntfy-alert.mjs');
+      await alertDup({ text: `${slug}: ${b.slots.length - i > 1 ? 'a' : 'the daily'} Short was NOT produced — every topic attempt was rejected as a duplicate title (trend pool exhausted for today). Slot ${publishAt} will be empty. Rotate niches or research manually.`, title: `[${slug}] dup-gate exhausted — no short today` });
+      results.push({ videoId: null, publishAt, title: 'GATE-EXHAUSTED', gateRejected: true });
+      continue;
+    }
     for (let t = 0; OFF_NICHE && t < 2 && OFF_NICHE.test(JSON.stringify(script.points)); t++) {
       console.log('  off-niche drift — regenerating');
       script = await generateYouTubeScript(page, themesToday[i].topic);
     }
-    // GATE: near-duplicate of anything already on the channel (or made earlier
-    // in this run) — skip BEFORE rendering, this is what fed the Oct-1 collapse
-    // #36: scripts never had a .title — the gate read undefined and never
-    // fired. thumbHeadline is the meta title's first segment and normTitle
-    // drops everything after "|", so this is the exact meta-title verdict,
-    // one full render earlier.
-    const preTitle = script.thumbHeadline || script.hook || '';
-    const preDup = findDup(preTitle, recentTitles, seenThisRun);
-    if (preDup) {
-      console.log(`  GATE: duplicate title "${preTitle}" ≈ "${preDup}" — slot skipped before render`);
-      if (themesToday[i]?.seed) rejectedSeeds.push(themesToday[i].seed); // cool the source (#91)
-      results.push({ videoId: null, publishAt, title: preTitle, gateRejected: true });
-      continue;
-    }
+    // (the dup gate moved up into the retry loop — a rejection no longer
+    // consumes the slot silently)
     if (script.source === 'fallback') {
       // Quota out → the slot SKIPS. Recycle was REMOVED 09-18: re-uploading the
       // same file reads as reused content to YouTube and suppresses the channel

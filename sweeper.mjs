@@ -99,9 +99,13 @@ for (const slug of CHANNEL_SLUGS) {
     const up = await y.playlistItems.list({ part: 'contentDetails', playlistId: c.contentDetails.relatedPlaylists.uploads, maxResults: 15 });
     const ids = up.data.items.map(i => i.contentDetails.videoId).filter(Boolean);
     let count = 0;
+    // 2026-11-11: count only SHORTS going live today — a same-day documentary
+    // used to satisfy the check and mask a missing Short (Nov 10: docs went
+    // live, the Short was dup-gate skipped, and the sweep reported healthy).
+    const durSec = (d) => { const m = /^PT(?:(\d+)H)?(?:(\d+)M)?(?:(\d+)S)?$/.exec(d || ''); return m ? (+(m[1]||0))*3600 + (+(m[2]||0))*60 + (+(m[3]||0)) : 1e9; };
     for (let i = 0; i < ids.length; i += 50) {
-      const vs = await y.videos.list({ part: 'snippet,status', id: ids.slice(i, i + 50).join(',') });
-      count += (vs.data.items || []).filter(goesLiveToday).length;
+      const vs = await y.videos.list({ part: 'snippet,status,contentDetails', id: ids.slice(i, i + 50).join(',') });
+      count += (vs.data.items || []).filter((v) => goesLiveToday(v) && durSec(v.contentDetails?.duration) <= 62).length;
     }
     const missing = Math.max(0, want - count);
     if (missing === 0) {
@@ -110,7 +114,10 @@ for (const slug of CHANNEL_SLUGS) {
     }
     // #98 clips lane: flipped channels are healed by the clips publisher, not
     // yt-daily topups (a topup here would double-produce generated Shorts)
-    const kit = await resolveBrand(slug).catch(() => null);
+    // 2026-11-11 FIX: resolveBrand is synchronous — the old `.catch()` call
+    // threw exactly when a channel NEEDED healing (Nov-11 dry run), so the
+    // heal path had never actually executed. It only decides clips-vs-generated.
+    const kit = resolveBrand(slug) || null;
     if (kit?.shortsSource === 'clips') {
       log(`↷ [${slug}] shortsSource=clips — healing belongs to the clips lane, skipped`);
       continue;
