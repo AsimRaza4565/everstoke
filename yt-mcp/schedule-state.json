@@ -2,7 +2,7 @@
   "everstoke": {
     "uploadsToday": {
       "date": "2026-11-10",
-      "count": 2
+      "count": 3
     },
     "lastRunDate": "2026-11-11",
     "usedTrendSeeds": [
@@ -15,16 +15,19 @@
       "Failure Fueled Eminem's Rise: Meet Slim Shady! #shorts",
       "His Favorite Player Got Traded And He Didn't Believe It 😭💔",
       "Stop relying on motivation. Watch this. #shorts",
-      "El hombre más poderoso del mundo escribía un diario secreto para regañarse"
+      "El hombre más poderoso del mundo escribía un diario secreto para regañarse",
+      "Who's right: Justice or self-control? ⚖️#marcusaurelius #hammurabi #philosophy #quotes #shorts #yt"
     ],
     "cooldownSeeds": [
       "Stop relying on motivation. Watch this. #shorts",
-      "El hombre más poderoso del mundo escribía un diario secreto para regañarse"
+      "El hombre más poderoso del mundo escribía un diario secreto para regañarse",
+      "Not every offense deserves control over your mind. #stoicism #marcusaurelius #shorts",
+      "You've Mistaken Comfort for Peace. 🏛️ | Marcus Aurelius"
     ],
     "todayTopics": [
       {
         "at": "2026-11-11",
-        "topic": "El hombre más poderoso del mundo escribía un diario secreto para regañarse"
+        "topic": "Who's right: Justice or self-control? ⚖️#marcusaurelius #hammurabi #philosophy #quotes #shorts #yt"
       }
     ],
     "titleHistory": [
@@ -59,18 +62,21 @@
       {
         "t": "Stoic Discipline Daily | Discipline & Stoicism",
         "at": "2026-11-09T22:35:00Z"
+      },
+      {
+        "t": "Master Self Before Demanding Justice | Discipline & Stoicism",
+        "at": "2026-11-11T22:35:00Z"
       }
     ],
     "lastVideos": [
       {
-        "videoId": null,
+        "videoId": "BlaC2JC6aKU",
         "publishAt": "2026-11-11T22:35:00Z",
-        "title": "STOIC RULE FOR TOUGHNESS",
-        "gateRejected": true
+        "title": "Master Self Before Demanding Justice | Discipline & Stoicism"
       }
     ],
     "deepdiveDate": "2026-11-10",
-    "healedDate": "2026-11-03",
+    "healedDate": "2026-11-11",
     "healedCount": 1,
     "usedLongSeeds": [
       "El SECRETO bíblico de Pedro: cómo TÚ puedes levantarte después de fallar 🤯",
