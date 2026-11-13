@@ -23,6 +23,7 @@ const TOPUP_N = topupArg ? Math.max(0, Number(topupArg.split('=')[1]) || 0) : 0;
 // (yt-mcp/cadence.json: docDays/shortDays/shortsSource) merges there; reading
 // lib/brands.json directly would bypass scheduling for legacy channels.
 const { resolveBrand } = await import('./lib/brand-resolve.mjs');
+const { isDocDay, docDaysOf } = await import('./lib/doc-days.mjs');
 let b = await resolveBrand(slug);
 if (!b) { console.error(`[pipeline] unknown slug: ${slug}`); process.exit(1); }
 
@@ -242,14 +243,17 @@ if (PLATFORMS_PAUSED) {
   else errors.push('Poster failed');
 }
 
-// ---- Phase 5: Long-form episode (enable when ready) ----
-if (!SKIP_EPISODE && (!episodeDone || FORCE || NO_UPLOAD) && (NO_UPLOAD || await quotaGate('Episode'))) {
-  log(`Phase 5 — Producing daily episode${NO_UPLOAD ? ' (test render: --no-upload)' : ''}...`);
+// ---- Phase 5: Long-form episode (docDays only) ----
+const isDoc = isDocDay(b);
+if (!SKIP_EPISODE && (isDoc || FORCE || NO_UPLOAD) && (!episodeDone || FORCE || NO_UPLOAD) && (NO_UPLOAD || await quotaGate('Episode'))) {
+  log(`Phase 5 — Producing episode${NO_UPLOAD ? ' (test render: --no-upload)' : ''}...`);
   const ok = run('yt-deepdive.mjs', [slug, ...(FORCE || NO_UPLOAD ? ['--force'] : []), ...(NO_UPLOAD ? ['--no-upload'] : [])], 2700000);
   if (ok) { results.episode = true; log(`✓ Episode done`); }
   else errors.push('Episode failed');
 } else if (SKIP_EPISODE) {
   log(`Episode skipped (--no-episode or paused)`);
+} else if (!isDoc && !FORCE && !NO_UPLOAD) {
+  log(`Episode skipped today (docDays: [${docDaysOf(b).join(', ') || 'none'}] — today is not a scheduled doc day)`);
 }
 
 // ---- Phase 6: Stage doc render for TikTok clips (docDay only) ----
@@ -318,7 +322,7 @@ log(`  Shorts: ${results.shorts ? '✓' : '✗'}`);
 log(`  FB Reels: ${results.fbReels ? '✓' : '✗'}`);
 log(`  IG Reels: 📅 via ig-slot-poster (3x/day)`);
 log(`  Poster: ${results.poster ? '✓' : '✗'}`);
-log(`  Episode: ${results.episode ? '✓' : (SKIP_EPISODE ? '⏸ paused' : '✗')}`);
+log(`  Episode: ${results.episode ? '✓' : (SKIP_EPISODE ? '⏸ paused' : (!isDocDay(b) ? '📅 docDay only' : '✗'))}`);
 log(`  Errors: ${errors.length}`);
 if (errors.length) errors.forEach(e => log(`    ! ${e}`));
 

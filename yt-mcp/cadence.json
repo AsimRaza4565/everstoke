@@ -73,8 +73,7 @@
   },
   "everstoke": {
     "docDays": [
-      "Sun",
-      "Tue"
+      "Sun"
     ],
     "shortDays": [
       "Mon",
@@ -86,7 +85,7 @@
       "Sun"
     ],
     "shortsSource": "generated",
-    "updated": "2026-11-10T05:52:47.904Z",
-    "updatedBy": "everstoke: add Tuesday — make-up run for the 11-08 black-frame doc (fixed)"
+    "updated": "2026-11-11T12:47:00.000Z",
+    "updatedBy": "everstoke: weekly Sunday-only documentaries per owner design"
   }
 }
