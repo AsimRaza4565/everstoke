@@ -68,7 +68,7 @@ function MiniPreview({ dark }) {
 export default function SettingsPage() {
   const { theme, setTheme } = useTheme();
   const [mounted, setMounted] = useState(false);
-  const [notifs, setNotifs] = useState({ ntfy: true, fails: true, weekly: false });
+  const [notifs, setNotifs] = useState({ fails: true, weekly: false });
   // 10-08 P1 — TEAM (owner only)
   const [team, setTeam] = useState(null);
   const [teamErr, setTeamErr] = useState('');
@@ -205,10 +205,10 @@ export default function SettingsPage() {
           <div className="space-y-2.5">
             <div className="flex items-center justify-between inset-tile px-3.5 py-3">
               <div>
-                <p className="text-[12.5px] font-semibold text-ink">Phone pushes (ntfy)</p>
-                <p className="text-[11px] text-faint">Topic quarry-x7f2k-reports — milestones + daily report</p>
+                <p className="text-[12.5px] font-semibold text-ink">GitHub issue alerts</p>
+                <p className="text-[11px] text-faint">Failures auto-file issues on this repo (ntfy removed 11-11)</p>
               </div>
-              <Switch checked={notifs.ntfy} onChange={(v) => setNotifs((n) => ({ ...n, ntfy: v }))} label="ntfy pushes" />
+              <Switch checked={notifs.fails} onChange={(v) => setNotifs((n) => ({ ...n, fails: v }))} label="Failure alerts" />
             </div>
             <div className="flex items-center justify-between inset-tile px-3.5 py-3">
               <div>

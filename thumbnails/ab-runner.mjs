@@ -73,11 +73,6 @@ for (const [videoId, t] of Object.entries(state)) {
 }
 
 if (changes) save(state);
-if (errors.length && process.env.NTFY_TOPIC) {
-  fetch(`https://ntfy.sh/${process.env.NTFY_TOPIC}`, {
-    method: 'POST',
-    headers: { 'Content-Type': 'text/plain', Title: 'Thumbnail A/B errors' },
-    body: errors.join('\n').slice(0, 400),
-  }).catch(() => { });
-}
+// (ntfy error push removed 11-11 — errors surface in the run log / failed-run emails)
+if (errors.length) console.error(errors.join('\n').slice(0, 400));
 console.log(`done — ${changes} swap(s), ${errors.length} error(s)`);

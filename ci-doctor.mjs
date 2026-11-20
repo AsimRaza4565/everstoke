@@ -83,25 +83,12 @@ console.log('Report saved: ci-doctor-report.json');
 
 // ---- Alert + fail loudly (issue #69: a watchdog that can't bark) ----
 // The 10-16/17 outage proved this script finding problems changes nothing on
-// its own. problems > 0 -> ntfy push + GitHub issue (deduped) + exit 1.
+// its own. problems > 0 -> GitHub issue (deduped) + exit 1.
 const bad = results.filter((r) => r.status !== 'OK');
 if (bad.length) {
   const summary = bad.map((r) => `${r.slug}: ${r.status}${r.error ? ' — ' + r.error : ''}${r.lastUploadHours != null ? ` (last upload ${r.lastUploadHours}h ago)` : ''}`).join('\n');
-  // 1. ntfy phone push (best-effort)
-  if (process.env.NTFY_TOPIC) {
-    try {
-      const res = await fetch(`https://ntfy.sh/${process.env.NTFY_TOPIC}`, {
-        method: 'POST',
-        // #91: the raw emoji made undici reject the header ("Cannot convert
-        // argument to a ByteString", run 39055331728) — push never reached the
-        // phone. The 🏥 icon still shows via the Tags shortcode on ntfy.
-        headers: { Title: asciiHeaderValue('🏥 CI Doctor problems'), Priority: 'high', Tags: 'hospital' },
-        body: summary.slice(0, 400),
-      });
-      console.log(`[alert] ntfy push: ${res.ok ? 'sent' : 'HTTP ' + res.status}`);
-    } catch (e) { console.log('[alert] ntfy failed:', String(e.message).slice(0, 80)); }
-  }
-  // 2. GitHub issue — comment on the open doctor issue if one exists, else create
+  // (ntfy push removed 11-11 — the GitHub issue below is the alert channel)
+  // GitHub issue — comment on the open doctor issue if one exists, else create
   try {
     const { execFileSync } = await import('node:child_process');
     const listing = execFileSync('gh', ['issue', 'list', '--state', 'open', '--search', 'CI Doctor in:title', '--limit', '5'], { encoding: 'utf8', timeout: 30000 });

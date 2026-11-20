@@ -27,7 +27,6 @@ WHAT YOU NEED — ACCOUNTS (all have free tiers)
    - Cerebras / Mistral      — more free AI fallbacks
    - ElevenLabs              — paid AI voices (optional; a free local voice exists)
    - Pixabay                 — free stock clips
-   - ntfy.sh                 — free phone notifications when videos publish
 
 
 WHAT YOU NEED — KEYS & SECRETS (paste into GitHub → Settings → Secrets → Actions)
@@ -59,7 +58,6 @@ RECOMMENDED — database (schedules, templates, provider routing):
 OPTIONAL:
   PIXABAY_API_KEY            pixabay.com/api/docs (free stock clips)
   PEXELS_API_KEY             pexels.com/api (free stock photos)
-  NTFY_TOPIC                 ntfy.sh topic name (phone alerts when videos post)
   FB_PAGE_TOKEN              Facebook page token (only if auto-posting to FB)
   OPENAI_API_KEY             platform.openai.com (PAID — best quality scripts;
                              optional priority slot)

@@ -85,7 +85,6 @@ jobs:
           GROQ_API_KEY: ${{ secrets.GROQ_API_KEY }}
           CEREBRAS_API_KEY: ${{ secrets.CEREBRAS_API_KEY }}
           MISTRAL_API_KEY: ${{ secrets.MISTRAL_API_KEY }}
-          NTFY_TOPIC: ${{ secrets.NTFY_TOPIC }}
         run: |
           if [ "${{ inputs.dry_run }}" = "true" ]; then
             node sweeper.mjs --dry-run

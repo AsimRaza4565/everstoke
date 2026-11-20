@@ -196,7 +196,7 @@ export const INTEGRATIONS = [
   { name: 'Threads', status: 'warn', note: 'Token valid until ~Oct 29', icon: 'at-sign' },
   { name: 'Roles (Google sign-in)', status: 'ok', note: 'owner: asimr4558 · staff/client via access.json', icon: 'zap' },
   { name: 'Script brain', status: 'bad', note: 'Groq 429 bursts — fallback fix pending', icon: 'sparkles' },
-  { name: 'ntfy alerts', status: 'ok', note: 'quarry-x7f2k-reports topic', icon: 'bell' },
+  { name: 'GitHub issue alerts', status: 'ok', note: 'failures file issues via gh (ntfy removed 11-11)', icon: 'bell' },
 ];
 
 export const DAILY_REPORTS = [

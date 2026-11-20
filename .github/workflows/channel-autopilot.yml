@@ -143,7 +143,6 @@ jobs:
           MISTRAL_API_KEY: ${{ secrets.MISTRAL_API_KEY }}
           HF_TOKEN: ${{ secrets.HF_TOKEN }}
           PIXABAY_API_KEY: ${{ secrets.PIXABAY_API_KEY }}
-          NTFY_TOPIC: ${{ secrets.NTFY_TOPIC }}
           YOUTUBE_CLIENT_ID: ${{ secrets.YOUTUBE_CLIENT_ID }}
           YOUTUBE_CLIENT_SECRET: ${{ secrets.YOUTUBE_CLIENT_SECRET }}
           GH_TOKEN: ${{ github.token }}

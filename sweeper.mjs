@@ -9,6 +9,7 @@ import path from 'node:path';
 import { execFileSync } from 'node:child_process';
 import { google } from 'googleapis';
 import { applyChannelKeys, checkChannelKeys, dropChannelKeys } from './lib/channel-keys.mjs';
+import { sendAlert } from './lib/ntfy-alert.mjs';
 import { LEGACY_SLUGS } from './lib/registry.mjs';
 import { resolveBrand } from './lib/brand-resolve.mjs';
 import { loadEnv, envOf } from './lib/env.mjs';
@@ -137,11 +138,7 @@ for (const slug of CHANNEL_SLUGS) {
         const detail = chk.dead.map((d) => `${d.provider} (${d.detail})`).join('; ');
         log(`⚠ [keys] ${slug}: dead channel keys dropped — shared resuming: ${detail}`);
         warnings.push(`${slug}: dead channel keys dropped: ${chk.dead.map((d) => d.provider).join(', ')}`);
-        if (envOf('NTFY_TOPIC') && !DRY) {
-          await fetch(`https://ntfy.sh/${envOf('NTFY_TOPIC')}`, {
-            method: 'POST', headers: { 'Title': `[${slug}] dead API keys — shared resuming` }, body: detail,
-          }).catch(() => { });
-        }
+        if (!DRY) await sendAlert({ text: `Sweeper heal for ${slug}: dead channel keys dropped — shared resuming: ${detail}`, title: `[${slug}] dead API keys — shared resuming` });
       }
     } catch { }
     const r = execFileSync('node', ['yt-daily.mjs', slug, '--no-episode', `--topup=${missing}`], { stdio: 'inherit', timeout: 40 * 60 * 1000 });
@@ -204,16 +201,11 @@ if (longCheckOk && !hasLong && utcHour >= 13 && utcHour < 21) {
   }
 }
 
-// ---- 4. Phone alert when healing happened ----------------------------------
-if (healed.length && envOf('NTFY_TOPIC') && !DRY) {
-  const body = `Quarry sweeper healed: ${healed.join(', ')}. FB/IG cross-posts drained.`
+// ---- 4. Alert when healing happened (GitHub issue — ntfy removed 11-11) ----
+if (healed.length && !DRY) {
+  const body = `Sweeper healed: ${healed.join(', ')}. FB/IG cross-posts drained.`
     + (warnings.length ? ` Warnings: ${warnings.length}.` : '');
-  try {
-    await fetch(`https://ntfy.sh/${envOf('NTFY_TOPIC')}`, {
-      method: 'POST', headers: { 'Title': 'Quarry Sweeper Report' }, body
-    });
-    log('✓ NTFY alert sent.');
-  } catch { log('[ntfy] alert failed (non-fatal)'); }
+  await sendAlert({ text: body, title: 'Everstoke Sweeper Report', issueSearch: 'Sweeper Report in:title', issueTitle: 'Sweeper Report' });
 }
 
 log('\n══ SWEEP COMPLETE ══');

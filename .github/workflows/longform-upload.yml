@@ -43,7 +43,6 @@ jobs:
       - name: Download artifacts + schedule uploads
         env:
           GITHUB_PAT: ${{ secrets.SECRET_WRITER_PAT }}
-          NTFY_TOPIC: ${{ secrets.NTFY_TOPIC }}
           YOUTUBE_CLIENT_ID: ${{ secrets.YOUTUBE_CLIENT_ID }}
           YOUTUBE_CLIENT_SECRET: ${{ secrets.YOUTUBE_CLIENT_SECRET }}
           YT_TOKEN_INVESTORS_COMPASS: ${{ secrets.YT_TOKEN_INVESTORS_COMPASS }}

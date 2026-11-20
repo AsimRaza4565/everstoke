@@ -26,5 +26,4 @@ jobs:
       - name: 📰 Fetch daily.dev news + push digest to phone
         env:
           DAILY_DEV_TOKEN: ${{ secrets.DAILY_DEV_TOKEN }}
-          NTFY_TOPIC: ${{ secrets.NTFY_TOPIC }}
         run: node daily-dev-digest.mjs

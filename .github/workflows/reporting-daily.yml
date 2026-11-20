@@ -45,7 +45,6 @@ jobs:
           FB_PAGE_TOKEN: ${{ secrets.FB_PAGE_TOKEN }}
           THREADS_ACCESS_TOKEN: ${{ secrets.THREADS_ACCESS_TOKEN }}
           THREADS_USER_ID: ${{ secrets.THREADS_USER_ID }}
-          NTFY_TOPIC: ${{ secrets.NTFY_TOPIC }}
         run: |
           node daily-excel-report.mjs daily
           # PKT weekday: 0=Sunday → also weekly; 1st of month → also monthly

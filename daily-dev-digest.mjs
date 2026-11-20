@@ -67,25 +67,8 @@ async function main() {
   const body = sections.join('\n\n———\n\n');
   const total = popular.length + ai.length;
   log('Digest built: ' + total + ' stories');
-
-  const topic = (process.env.NTFY_TOPIC || '').trim().replace(/[^a-zA-Z0-9_-]/g, '');
-  if (!topic) {
-    log('GAP: no NTFY_TOPIC — digest not pushed to phone');
-    console.log('\n' + body);
-    return;
-  }
-  // ntfy headers must be ASCII-only (body can be UTF-8)
-  const res = await fetch('https://ntfy.sh/' + topic, {
-    method: 'POST',
-    headers: {
-      'Title': 'Daily.dev digest - ' + new Date().toISOString().slice(0, 10) + ' (' + total + ' stories)',
-      'Tags': 'newspaper',
-      'Filename': 'daily-dev-' + new Date().toISOString().slice(0, 10) + '.txt'
-    },
-    body: body
-  });
-  if (res.ok) log('NTFY: digest sent to phone OK');
-  else { log('FAIL: NTFY HTTP ' + res.status); process.exit(1); }
+  // (ntfy phone push removed 11-11 — digest prints to the run log)
+  console.log('\n' + body);
 }
 
 main().catch(e => { log('FAIL: ' + e.message); process.exit(1); });

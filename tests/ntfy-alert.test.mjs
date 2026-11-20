@@ -2,9 +2,6 @@ import { test } from 'node:test';
 import assert from 'node:assert/strict';
 import { asciiHeaderValue, sendAlert } from '../lib/ntfy-alert.mjs';
 
-const ok = () => ({ ok: true, status: 200 });
-const fail = () => ({ ok: false, status: 503 });
-
 test('asciiHeaderValue strips emoji and control chars from header values', () => {
   // run 39055331728: '🏥 CI Doctor problems' in the Title header -> undici
   // "Cannot convert argument to a ByteString" -> push never sent
@@ -13,86 +10,47 @@ test('asciiHeaderValue strips emoji and control chars from header values', () =>
   assert.equal(asciiHeaderValue('plain ASCII'), 'plain ASCII');
 });
 
-test('sendAlert delivers via ntfy and logs the outcome', async () => {
-  const calls = [];
+test('sendAlert files a GitHub issue and logs the outcome (ntfy removed 11-11)', async () => {
+  const gh = [];
   const lines = [];
   const r = await sendAlert({
-    text: 'boom', title: 'Pipeline alert', topic: 'my-topic',
-    fetchImpl: async (url, opts) => { calls.push({ url, opts }); return ok(); },
-    execImpl: () => { throw new Error('gh must not run when ntfy works'); },
+    text: 'boom', title: 'Pipeline alert',
+    execImpl: (cmd, args) => { gh.push([cmd, ...args]); return ''; },
     log: (m) => lines.push(m),
   });
-  assert.deepEqual(r, { channel: 'ntfy', ok: true });
-  assert.equal(calls.length, 1);
-  assert.match(calls[0].url, /^https:\/\/ntfy\.sh\/my-topic$/);
-  assert.equal(calls[0].opts.headers.Title, 'Pipeline alert');
-  assert.ok(lines.some((l) => /ntfy push: sent/.test(l)), 'outcome must be logged');
+  assert.deepEqual(r, { channel: 'github-issue', ok: true });
+  assert.equal(gh.length, 1, 'exactly one gh call when no issueSearch');
+  assert.deepEqual(gh[0].slice(0, 3), ['gh', 'issue', 'create']);
+  assert.equal(gh[0][3], '--title');
+  assert.equal(gh[0][4], 'Pipeline alert', 'issueTitle defaults to title');
+  assert.ok(lines.some((l) => /GitHub issue: created/.test(l)), 'outcome must be logged');
 });
 
-test('sendAlert sanitizes the ntfy Title header (ByteString class)', async () => {
-  let header;
-  await sendAlert({
-    text: 'x', title: '🚨 Upload verification FAILED: investors-compass', topic: 't',
-    fetchImpl: async (u, o) => { header = o.headers.Title; return ok(); },
-    execImpl: () => { throw new Error('no gh'); },
-    log: () => { },
-  });
-  assert.equal(header, 'Upload verification FAILED: investors-compass');
-});
-
-test('sendAlert retries ntfy then falls back to the GitHub-issue channel', async () => {
-  const fetches = [];
+test('sendAlert comments on the existing open issue when issueSearch matches', async () => {
   const gh = [];
   const r = await sendAlert({
     text: '0/1 uploads', issueSearch: 'verify-run in:title',
     issueTitle: 'verify-run: upload verification FAILED',
-    topic: 't',
-    fetchImpl: async () => { fetches.push(1); return fail(); },
-    execImpl: (cmd, args) => { gh.push([cmd, ...args]); return ''; },
-    sleep: async () => { },
+    execImpl: (cmd, args) => {
+      gh.push([cmd, ...args]);
+      if (args[1] === 'list') return '7\tsome title\tlabel\tdate';
+      return '';
+    },
     log: () => { },
   });
   assert.deepEqual(r, { channel: 'github-issue', ok: true });
-  assert.equal(fetches.length, 3, 'must retry before falling back');
-  const actions = gh.filter((c) => c[1] === 'issue' && ['comment', 'create'].includes(c[2]));
-  assert.equal(actions.length, 1, 'exactly one issue action after the search');
+  assert.equal(gh.length, 2, 'list then comment');
+  assert.deepEqual(gh[1].slice(0, 3), ['gh', 'issue', 'comment']);
+  assert.equal(gh[1][3], '7');
 });
 
-test('sendAlert with NO topic never returns silently — goes straight to fallback', async () => {
-  const gh = [];
+test('sendAlert never throws and reports ok:false when gh is unavailable', async () => {
   const lines = [];
   const r = await sendAlert({
-    text: 'alert', issueTitle: 'verify-run FAILED',
-    topic: '',
-    fetchImpl: async () => { throw new Error('fetch must not be called without a topic'); },
-    execImpl: (cmd, args) => { gh.push([cmd, ...args]); return ''; },
-    log: (m) => lines.push(m),
-  });
-  assert.deepEqual(r, { channel: 'github-issue', ok: true });
-  assert.ok(lines.some((l) => /no NTFY_TOPIC/.test(l)), 'missing topic must be logged loudly');
-});
-
-test('sendAlert returns ok:false (never throws) when every channel fails', async () => {
-  const lines = [];
-  const r = await sendAlert({
-    text: 'x', topic: 't',
-    fetchImpl: async () => { throw new Error('network down'); },
+    text: 'x', title: 'offline',
     execImpl: () => { throw new Error('gh: not logged in'); },
-    sleep: async () => { },
     log: (m) => lines.push(m),
   });
   assert.deepEqual(r, { channel: 'none', ok: false });
-  assert.ok(lines.some((l) => /all channels failed/.test(l)), 'dead end must be logged');
-
-  // fallback configured but gh itself fails -> still a logged dead end
-  const lines2 = [];
-  const r2 = await sendAlert({
-    text: 'x', topic: 't', issueTitle: 'alert',
-    fetchImpl: async () => { throw new Error('network down'); },
-    execImpl: () => { throw new Error('gh: not logged in'); },
-    sleep: async () => { },
-    log: (m) => lines2.push(m),
-  });
-  assert.deepEqual(r2, { channel: 'none', ok: false });
-  assert.ok(lines2.some((l) => /fallback failed/.test(l)), 'gh failure must be logged');
+  assert.ok(lines.some((l) => /GitHub issue failed/.test(l)), 'dead end must be logged');
 });

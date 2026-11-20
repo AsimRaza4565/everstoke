@@ -263,12 +263,7 @@ async function processChannel(slug) {
   uploads[slug] = (uploads[slug] || []).concat([{ date: new Date().toISOString().slice(0, 10), title: meta.title, videoId, publishAt, artifactId: chosen.art.id, runId: chosen.run }]).slice(-100);
   fs.mkdirSync(path.dirname(UPL), { recursive: true });
   fs.writeFileSync(UPL, JSON.stringify(uploads, null, 2));
-  try {
-    const ntopic = process.env.NTFY_TOPIC;
-    if (ntopic) {
-      await fetch(`https://ntfy.sh/${ntopic}`, { method: "POST", headers: { "Content-Type": "text/plain", Title: `Long-form uploaded: ${slug}` }, body: `${meta.title}\nGoes public ${publishAt}\nhttps://youtube.com/watch?v=${videoId}` });
-    }
-  } catch { }
+  // (ntfy push removed 11-11)
 }
 
 for (const slug of CHANNELS) {

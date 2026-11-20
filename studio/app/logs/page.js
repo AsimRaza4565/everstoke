@@ -107,7 +107,7 @@ export default function Logs() {
           <Terminal size={16} className="text-faint mt-0.5 shrink-0" />
           <div className="text-[12px] text-muted leading-relaxed">
             <span className="font-semibold text-ink">Scheduled runs.</span> GitHub Actions runs write to Actions logs, and every
-            milestone pings your phone through ntfy (topic <code className="font-mono text-accent">quarry-x7f2k-reports</code>).
+            failures are filed as GitHub issues by the pipeline (ntfy removed 11-11).
           </div>
         </Card>
       </div>

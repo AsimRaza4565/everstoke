@@ -411,10 +411,5 @@ history.push({ date: new Date().toISOString().slice(0, 10), title: script.title 
 fs.mkdirSync(path.dirname(HIST), { recursive: true });
 fs.writeFileSync(HIST, JSON.stringify(history.slice(-200), null, 2));
 
-try {
-  const ntopic = process.env.NTFY_TOPIC;
-  if (ntopic) {
-    await fetch(`https://ntfy.sh/${ntopic}`, { method: "POST", headers: { "Content-Type": "text/plain", Title: `Long-form rendered: ${SLUG}` }, body: `${script.title}\nReady for upload (goes public ${publishAt})` });
-  }
-} catch { }
+// (ntfy push removed 11-11)
 console.log("[ALL DONE]");

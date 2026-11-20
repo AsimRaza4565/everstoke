@@ -64,13 +64,10 @@ if (_keysApplied) {
   if (_check.dead.length) {
     dropChannelKeys(_check.dead.map((d) => d.provider));
     for (const d of _check.dead) log(`[keys] WARN ${d.provider} key DEAD (${d.detail}) - dropped, shared key covering`);
-    if (process.env.NTFY_TOPIC) {
-      fetch(`https://ntfy.sh/${process.env.NTFY_TOPIC}`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'text/plain', Title: `[${slug}] dead API key - shared key covering` },
-        body: `Channel keys failed validation: ${_check.dead.map((d) => `${d.provider} (${d.detail})`).join('; ')}. Replace them in Studio > API Keys.`,
-      }).catch(() => { });
-    }
+    await sendAlert({
+      text: `Channel keys failed validation: ${_check.dead.map((d) => `${d.provider} (${d.detail})`).join('; ')}. Replace them in Studio > API Keys.`,
+      title: `[${slug}] dead API key - shared key covering`,
+    });
   }
   const _alive = _check.ok.filter((x) => _keysApplied.includes(x));
   log(_alive.length ? `[keys] channel overrides active: ${_alive.join(', ')}` : '[keys] channel keys all failed validation - using shared keys');

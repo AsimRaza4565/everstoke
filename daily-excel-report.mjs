@@ -333,24 +333,7 @@ async function buildExcel(ytData, fbPages, threads) {
   const file = path.join(dir, 'daily-report-' + new Date().toISOString().slice(0, 10) + '.xlsx');
   await wb.xlsx.writeFile(file);
 
-  // NTFY push with the Excel attached (headers ASCII-only)
-  const topic = (process.env.NTFY_TOPIC || '').trim().replace(/[^a-zA-Z0-9_-]/g, '');
-  if (topic) {
-    const ntfyBody = fs.readFileSync(file);
-    const res = await fetch('https://ntfy.sh/' + topic, {
-      method: 'POST',
-      headers: {
-        'Title': 'Quarry ' + MODE + ' report - ' + ytData.length + ' YT / ' + fbPages.length + ' FB channels',
-        'Tags': 'chart',
-        'Filename': MODE + '-report-' + new Date().toISOString().slice(0, 10) + '.xlsx'
-      },
-      body: ntfyBody
-    });
-    if (res.ok) console.log('[report] NTFY: Excel sent to phone OK');
-    else console.log('[report] NTFY failed: ' + res.status);
-  } else {
-    console.log('[report] GAP: no NTFY_TOPIC — report not pushed to phone');
-  }
+  // (ntfy phone push removed 11-11 — report persists to reports/ + workflow artifact)
 
   return file;
 }
