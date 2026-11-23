@@ -211,7 +211,13 @@ if (RUN_SHORTS) {
   }
   console.log(`[topics] ${themesToday.map(t => '← ' + (t.subNiche ? `[${t.subNiche}] ` : '') + t.seed.slice(0, 40)).join(' | ') || 'none — research unavailable'}`);
   // off-niche drift guard prevents stoicism words leaking into pure finance channels
-  const OFF_NICHE = (slug === 'quotequarry' || b.fromRegistry) ? null : /\bstoic\w*|manipulat\w*|toxic|calm your mind|dark psychology\b/i;
+  // 2026-11-23: ALSO catch food/cooking/gaming/foreign-language content leaking
+  // INTO Everstoke (observed in production: kimchi omelette recipes, Telugu mantras,
+  // bansuri flute instructions scored 13-31 views by confusing YouTube's audience).
+  const OFF_NICHE_EVERSTOKE = /\b(kimchi|omelette|recipe|cooking|bansuri|flute|telugu|malayalam|tamil|bhakti|devotional|patalu|roblox|minecraft|fortnite|gaming|anime|mukbang|asmr)\b/i;
+  const OFF_NICHE = (slug === 'quotequarry' || b.fromRegistry) ? null
+    : slug === 'everstoke' ? OFF_NICHE_EVERSTOKE
+    : /\bstoic\w*|manipulat\w*|toxic|calm your mind|dark psychology\b/i;
 
   const slotLimit = TOPUP_N > 0 ? Math.min(TOPUP_N, b.slots.length) : b.slots.length;
   let slotErrors = 0; // #35: a mid-loop throw used to kill the whole run silently
@@ -228,9 +234,19 @@ if (RUN_SHORTS) {
     // Now each rejection cools the seed, rotates to an unused trend topic, and
     // retries — up to 3 scripts per slot before failing with a phone alert.
     let script = null;
+    // 2026-11-23 GENERIC TITLE GUARD: "Do This Daily", "Rise Every Morning",
+    // "Do This Every Morning" etc. consistently scored 13-53 views because they
+    // lack a character/concept anchor for YouTube's audience matching. The model
+    // is now prompted to avoid them, but this guard catches any that slip through
+    // and forces a regeneration on the next attempt.
+    const GENERIC_TITLE = /^(do this|try this|do that|rise every|do every|start every|do it|stop this|watch this)\b/i;
     for (let attempt = 1; attempt <= 3 && !script; attempt++) {
       const cand = await generateYouTubeScript(page, themesToday[i].topic);
       const candTitle = (cand.thumbHeadline || cand.hook || '').trim();
+      if (GENERIC_TITLE.test(candTitle)) {
+        console.log(`  TITLE-QUALITY (attempt ${attempt}/3): "${candTitle}" is generic — regenerating`);
+        continue;
+      }
       const dup = findDup(candTitle, recentTitles, seenThisRun);
       if (!dup) { script = cand; break; }
       console.log(`  GATE (attempt ${attempt}/3): "${candTitle}" ≈ "${dup}" — cooling seed, rotating topic`);

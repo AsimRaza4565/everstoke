@@ -526,7 +526,17 @@ Write in EASY, CLEAR, punchy English with high curiosity and immediate practical
   const pacingRule = SC ? `\nPACING RULES (viewers swipe away at the first weak line):
 • Exactly ${SC.points} points. Each point line: ${SC.lineWords} words. One concrete idea per line, opened with the payoff itself — zero filler, zero transitions, no repeating an earlier point.
 • Closing: a punchline, challenge, or mic-drop line (≤10 words) that makes the viewer rewatch or comment. NEVER a summary and never "follow for more".` : '';
-  const titleRule = SC ? `\nthumb_headline MUST use this proven ${SC.titleStyle} pattern: ${SC.titleExamples}. Max 8 words.` : '';
+  // 2026-11-23 TITLE QUALITY: generic "Do This Daily" titles consistently got
+  // 13-53 views while character-anchored titles ("Marcus Aurelius' Rule…",
+  // "Samurai Discipline Code") hit 500-1100 views. The prompt now explicitly
+  // bans generic openers and requires a named authority or concept anchor.
+  const titleRule = SC ? `\nthumb_headline MUST use this proven ${SC.titleStyle} pattern: ${SC.titleExamples}. Max 8 words.
+TITLE RULES (critical for algorithm reach — obey ALL):
+• The title MUST anchor on a specific character, philosophy, or concept (Marcus Aurelius, Samurai, Seneca, Epictetus, Bushido, Stoic, Spartan, etc.) — NEVER a generic command.
+• BANNED generic title openers: "Do This", "Do That", "Rise Every Morning", "Try This Daily", "Do This Daily", "Every Morning". These patterns consistently get buried by the algorithm.
+• The title must attack a deep emotional pain point (failure, weakness, laziness, addiction, self-doubt) — NOT describe a chore or routine.
+• Good: "Marcus Aurelius' Secret For Killing Laziness", "Samurai Discipline Code", "Rise After Failure", "Stoic Discipline Daily"
+• Bad: "Do This Every Morning", "Do This Daily — No Excuses", "Rise Every Morning"` : '';
   const structureLine = SC
     ? `Structure: hook (≤10 words), ${SC.points} numbered points (each line ${SC.lineWords} words), closing (≤10 words). Target: ~${SC.targetSeconds} seconds spoken.`
     : 'Structure: a curiosity-gap hook, 5 numbered points, a memorable closing line.';
@@ -719,7 +729,16 @@ export function buildScriptMeta(page, script, musicLabel = '') {
     visibleTags.join(' ')
   ].join('\n').slice(0, 480);
   const description = musicLabel ? `${descCore}\n🎵 ${musicLabel}`.slice(0, 4900) : descCore;
-  // the ranking tag sets these channels actually use (from competitor-scan)
-  const tags = [...(page.trend?.hotKeywords || []), ...(brand.tags || []), 'life lessons'].filter((t, i, a) => a.indexOf(t) === i).slice(0, 12);
+  // 2026-11-23 TAG PRIORITY FIX: brand tags FIRST (stoicism, discipline, etc.)
+  // so YouTube's initial test pool matches the channel's actual audience.
+  // Trend keywords fill the remaining slots (up to 12) but are filtered for
+  // off-niche contaminants that derailed audience matching (cooking, gaming,
+  // foreign-language tags from scraped viral videos).
+  const OFF_NICHE_TAGS = /^(cooking|recipe|kimchi|korean|food|chef|baking|mukbang|asmr|roblox|minecraft|fortnite|gaming|gamer|anime|telugu|malayalam|tamil|hindi|kannada|bhakti|devotional|patalu|minutos|primeros|bitos|kasadara|shamani|karka|biblia|estoicismo|disciplina|dopamina|azmaik|bansuri|flute|songs?|singer|album|playlist|spotify|ambient|vlog|haul|grwm|unboxing|travel|quibi|airlines|kingfisher|nokia|upsc)$/i;
+  const brandTags = (brand.tags || []).filter(Boolean);
+  const trendTags = (page.trend?.hotKeywords || [])
+    .filter(t => !OFF_NICHE_TAGS.test(t) && !brandTags.includes(t));
+  const tags = [...brandTags, ...trendTags, 'life lessons']
+    .filter((t, i, a) => a.indexOf(t) === i).slice(0, 12);
   return { title, description, tags, format: 'script', keyword: brand.keyword };
 }

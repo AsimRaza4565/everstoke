@@ -8,6 +8,33 @@ import { google } from 'googleapis';
 
 const STOP = new Set(['the', 'a', 'an', 'and', 'or', 'of', 'to', 'in', 'for', 'your', 'you', 'this', 'that', 'with', 'how', 'why', 'what', 'is', 'are', 'on', 'my', 'it', 'be', 'not', 'do', 'dont', 'if', 'they', 'their', 'from', 'at', 'as', 'was', 'will', 'no', 'ever', 'best', 'top', 'vs', 'new', '2024', '2025', '2026']);
 
+// 2026-11-23 OFF-NICHE FILTER: scraped trend tags from unrelated viral videos
+// (cooking vlogs, gaming, devotional music, foreign-language content) poisoned
+// YouTube's audience matching — Shorts tagged "kimchi" or "roblox" were shown
+// to cooking/gaming audiences who swiped away instantly (13-31 views).
+// This blocklist catches the most common contaminants observed in production.
+const OFF_NICHE = new Set([
+  // cooking / food
+  'cooking', 'recipe', 'recipes', 'kimchi', 'korean', 'food', 'foodie', 'chef',
+  'baking', 'mukbang', 'asmr', 'eating', 'kitchen', 'omelette',
+  // gaming / entertainment
+  'roblox', 'minecraft', 'fortnite', 'gaming', 'gamer', 'gameplay', 'xbox',
+  'playstation', 'twitch', 'streaming', 'anime', 'manga', 'cosplay',
+  // foreign-language / regional (mismatched audience)
+  'telugu', 'malayalam', 'tamil', 'hindi', 'kannada', 'marathi', 'bengali',
+  'bhakti', 'devotional', 'patalu', 'minutos', 'primeros', 'bitos',
+  'kasadara', 'shamani', 'karka', 'biblia', 'estoicismo', 'disciplina',
+  'dopamina', 'azmaik',
+  // music / instruments (unless actually niche-relevant)
+  'bansuri', 'flute', 'songs', 'song', 'singer', 'album', 'concert',
+  'playlist', 'spotify', 'ambient',
+  // vlogs / lifestyle noise
+  'vlog', 'vlogging', 'haul', 'grwm', 'ootd', 'unboxing', 'review',
+  'travel', 'tourism', 'hotel',
+  // other noise observed in production tag sets
+  'quibi', 'billion', 'airlines', 'kingfisher', 'nokia', 'upsc',
+]);
+
 export async function researchTrend(slug, auth, seeds, cacheDays = 1) {
   const file = `yt-mcp/trends-${slug}.json`;
   try {
@@ -75,7 +102,11 @@ export async function researchTrend(slug, auth, seeds, cacheDays = 1) {
       freq[t] = (freq[t] || 0) + 1;
     }
   }
-  const hotKeywords = Object.entries(freq).sort((a, b) => b[1] - a[1]).slice(0, 12).map(e => e[0]);
+  // 2026-11-23: filter OFF_NICHE contaminants before ranking — a single
+  // "kimchi" or "roblox" in the top-12 derails YouTube's audience matching.
+  const hotKeywords = Object.entries(freq)
+    .filter(([w]) => !OFF_NICHE.has(w))
+    .sort((a, b) => b[1] - a[1]).slice(0, 12).map(e => e[0]);
   const activeSubNiche = rawSubNiches.find((sn) => usedQuery.toLowerCase().includes(sn.toLowerCase())) || rawSubNiches[startIdx];
 
   const trend = {
