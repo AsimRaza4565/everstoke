@@ -78,8 +78,23 @@ async function llmScript(prompt) {
 const LONG_PROMPT = (b, theme) => `You write premium long-form YouTube documentary episodes for "${b.label}" (Niche: ${b.niche}), in the style of top ${b.authority} channels for a US audience.
 Episode theme: ${theme}.
 STRICT RULES: every chapter delivers concrete, specific ${b.niches[0]} insight — stories, mechanisms, numbers, mistakes, consequences. NO generic motivation, NO repetition between chapters. Documentary storytelling: each chapter opens a tension and closes a payoff.
+TITLE RULES (critical for search ranking & CTR — obey ALL):
+• Must use a search-driven curiosity gap or psychological pain-point pattern:
+  - "Why [Habit/Trap] Is Secretly Destroying You (Stoic Truth)"
+  - "What Stoics Know About [Failure/Pain/Doubt] That You Don't"
+  - "The [Ancient Figure/Concept] Blueprint to [Desired Outcome]"
+  - "Why Your [Habit] Is Killing Your Focus (And How to Reclaim It)"
+• BANNED: boring abstract essay titles like "The Illusion of Comfort: Why Discipline Is Freedom". Keep title <= 65 chars.
 Return ONLY valid JSON:
-{"title":"episode title <=60 chars, curiosity gap","intro":"2 sentence cold-open that sets stakes","chapters":[{"title":"<=40 chars","text":"120-150 words of spoken-style narration"}],"outro":"2 sentences with a natural subscribe push"}
+{
+  "title": "search-driven curiosity title <=65 chars",
+  "description_hook": "3-4 punchy sentences opening the description that hook the searcher, state the psychological trap, and preview the Stoic solution with high-search keywords.",
+  "tags": ["6-8 specific keywords directly relevant to this documentary theme"],
+  "pinned_comment": "Brief 1-2 sentence discussion question or poll for viewers to answer in the comments. PURELY for engagement — do NOT ask to subscribe, follow, or like.",
+  "intro": "2 sentence cold-open that sets stakes",
+  "chapters": [{"title": "<=40 chars", "text": "120-150 words of spoken-style narration"}],
+  "outro": "2 sentences with a natural subscribe push"
+}
 Exactly 8 chapters. Every chapter text MUST be 120-150 words.`;
 
 function sh(args, timeout = 900000) {
@@ -502,7 +517,34 @@ const chapters = script.chapters.map((c, i) => {
   const t = cum; cum += segs[i + 1]?.dur || 0;
   return `${String(Math.floor(t / 60)).padStart(2, '0')}:${String(Math.floor(t % 60)).padStart(2, '0')} ${c.title}`;
 });
-const description = [`"${script.title}" — a daily ${b.kwShort} episode from ${b.label}.`, '', script.intro, '', ...chapters, '', script.outro, `New episodes every day. ${b.hashtags || ''}`, ...(music ? [`🎵 ${music.credit}`] : [])].join('\n').slice(0, 4900);
+
+// 2026-11-23 SEO-OPTIMIZED DESCRIPTION:
+// - Search-driven opening hook (first 150 chars optimized for YouTube search previews)
+// - "What you'll learn" bullet points derived from chapters
+// - Explicit "Timestamps:" section
+// - Automatic "Watch next" link pointing to the previous documentary to loop views
+// - Weekly subscribe call to action
+const hookText = script.description_hook
+  || `${script.intro}\n\nIn this episode, we expose the hidden mechanisms and provide a Stoic-tested blueprint to forge mental resilience and master your daily impulses.`;
+const learnBullets = script.chapters.slice(0, 5).map(c => `→ ${c.title}`).join('\n');
+const prevDocId = state[slug]?.deepdiveVideo?.videoId || state[slug]?.lastVideos?.[0]?.videoId;
+const watchNext = prevDocId ? `🔥 Watch next: https://youtube.com/watch?v=${prevDocId}\n\n` : '';
+
+const description = [
+  hookText,
+  '',
+  "What you'll learn in this documentary:",
+  learnBullets,
+  '',
+  'Timestamps:',
+  ...chapters,
+  '',
+  script.outro,
+  '',
+  watchNext + `Subscribe for weekly Stoic discipline documentaries → ${b.handle || '@' + slug}`,
+  b.hashtags || '#stoicism #discipline #motivation #marcusaurelius',
+  ...(music ? [`🎵 ${music.credit}`] : [])
+].join('\n').slice(0, 4900);
 
 // 10-05 DUPLICATE TITLE GATE — the "Musonius Rufus" doc went out twice in two
 // days; a near-dup episode must never upload. Skip WITHOUT marking
@@ -513,15 +555,48 @@ if (docDup) {
   process.exit(0);
 }
 
+// 2026-11-23 UNIQUE EPISODE TAGS:
+// Combine episode-specific keywords from the AI with core brand tags,
+// filtered for off-niche contaminants so each doc ranks for its unique topic.
+const OFF_NICHE_TAGS = /^(cooking|recipe|kimchi|korean|food|roblox|gaming|telugu|malayalam|bhakti|devotional|patalu|minutos|primeros|vlog)$/i;
+const episodeTags = (Array.isArray(script.tags) ? script.tags : [])
+  .map(t => String(t || '').trim().toLowerCase())
+  .filter(t => t.length > 2 && !OFF_NICHE_TAGS.test(t));
+const docTags = [...episodeTags, ...(b.tags || [])]
+  .filter((t, i, a) => a.indexOf(t) === i)
+  .slice(0, 15);
+
 const res = await yt.videos.insert({
   part: ['snippet', 'status'],
   requestBody: {
-    snippet: { title: `${script.title} | ${b.authority}`.slice(0, 95), description, tags: b.tags.slice(0, 12), categoryId: '27', defaultLanguage: 'en', defaultAudioLanguage: 'en' },
+    snippet: { title: `${script.title} | ${b.authority}`.slice(0, 95), description, tags: docTags, categoryId: '27', defaultLanguage: 'en', defaultAudioLanguage: 'en' },
     status: { privacyStatus: 'private', publishAt, selfDeclaredMadeForKids: false }
   },
   media: { body: Readable.from(fs.readFileSync(final)) }
 });
 await yt.thumbnails.set({ videoId: res.data.id, media: { body: Readable.from(thumb) } }).catch(() => { });
+
+// 2026-11-23 PINNED DISCUSSION COMMENT:
+// Automatically post a brief discussion question / poll as the top-level
+// channel comment for engagement only (no subscribe asks).
+const commentText = script.pinned_comment
+  || 'Which chapter hit hardest for you? Drop your number below 👇';
+try {
+  await yt.commentThreads.insert({
+    part: ['snippet'],
+    requestBody: {
+      snippet: {
+        videoId: res.data.id,
+        topLevelComment: {
+          snippet: { textOriginal: commentText }
+        }
+      }
+    }
+  });
+  console.log(`[long] 💬 discussion comment posted on video ${res.data.id}`);
+} catch (e) {
+  console.log(`[long] comment post skipped: ${String(e.message).slice(0, 70)}`);
+}
 
 const st = loadState();
 st[slug] = st[slug] || {};
