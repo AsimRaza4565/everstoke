@@ -634,9 +634,10 @@ export async function renderYouTubeScriptShort(page, script, musicOverride = nul
 
   // 2026-11-11 VARIETY: one themed 4K clip per section (was: a single clip
   // looped for the whole Short — monotonous, with visible loop restarts).
-  // Hook keeps its own clip (it also feeds the thumbnail frame); every point
-  // gets a clip themed on its title; the closing gets one too. Failed fetches
-  // fall back to the base clip so a section is never without footage.
+  // PRIORITY CONTRACT (owner, 11-11): the clip that matches the VIDEO's topic
+  // (thumbHeadline) goes FIRST — it plays under the hook and feeds the
+  // thumbnail, so the backdrop always matches the video content. Each point
+  // then gets its own themed clip; failures fall back to the topic clip.
   const baseClip = (await getTopicClip(page, { headline: script.thumbHeadline, insight_body: script.hook })) || await ensurePoolClip(page.id);
   const sectionClips = [];
   for (let i = 0; i < sections.length; i++) {
@@ -711,11 +712,12 @@ export async function renderYouTubeScriptShort(page, script, musicOverride = nul
   let thumb = null;
   try {
     const frameFile = `${POOL_DIR}/yt-thumb-frame-${page.id}.jpg`;
-    // b-roll windows can end before start+3 — seeking past the clip end yields
-    // no frame and killed the thumbnail on the 11-03 runs. Step the seek
-    // offset back until a frame actually lands (2026-11-03).
+    // Thumbnail backdrop must represent the video's content (owner, 11-11):
+    // the frame comes from the TOPIC-matched clip, preferring a mid-clip
+    // moment (the most representative) with fixed offsets as fallback.
+    const midOffset = Math.max(1, Math.min(6, Math.round((baseClip.duration || 12) * 0.35) - 2));
     let extracted = false;
-    for (const off of [3, 1, 0]) {
+    for (const off of [midOffset, 3, 1, 0]) {
       try {
         execFileSync(FF, ['-y', '-v', 'error', '-ss', String(baseClip.start + off), '-i', baseClip.file, '-frames:v', '1', frameFile]);
         extracted = fs.existsSync(frameFile) && fs.statSync(frameFile).size > 0;
