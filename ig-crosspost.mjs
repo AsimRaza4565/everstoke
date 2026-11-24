@@ -26,9 +26,22 @@ let tokensCache = null;
 async function getPageToken(pageId) {
   if (!tokensCache) {
     tokensCache = {};
-    const res = await fetch(`https://graph.facebook.com/v20.0/me/accounts?fields=id,name,access_token,instagram_business_account{username,id}&limit=500&access_token=${encodeURIComponent(FB_PAGE_TOKEN)}`);
-    const data = await res.json();
-    for (const p of data.data || []) tokensCache[p.id] = { token: p.access_token, igId: p.instagram_business_account?.id || null };
+    try {
+      const res = await fetch(`https://graph.facebook.com/v20.0/me/accounts?fields=id,name,access_token,instagram_business_account{username,id}&limit=500&access_token=${encodeURIComponent(FB_PAGE_TOKEN)}`);
+      const data = await res.json();
+      for (const p of data.data || []) tokensCache[p.id] = { token: p.access_token, igId: p.instagram_business_account?.id || null };
+    } catch { }
+
+    // If FB_PAGE_TOKEN is a direct Page Access Token, /me IS the Page itself
+    if (!tokensCache[pageId]) {
+      try {
+        const res2 = await fetch(`https://graph.facebook.com/v20.0/me?fields=id,name,instagram_business_account{username,id}&access_token=${encodeURIComponent(FB_PAGE_TOKEN)}`);
+        const data2 = await res2.json();
+        if (data2.id && data2.instagram_business_account?.id) {
+          tokensCache[data2.id] = { token: FB_PAGE_TOKEN, igId: data2.instagram_business_account.id };
+        }
+      } catch { }
+    }
   }
   return tokensCache[pageId] || {};
 }
