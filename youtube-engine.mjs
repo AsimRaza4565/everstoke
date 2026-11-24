@@ -270,8 +270,10 @@ export async function renderYouTubeThumbnail(headline, cleanFrameFile, opts = {}
   const raw = String(headline || 'DAILY MOTIVATION')
     .replace(/#[\w]+/g, '').replace(/[—|].*$/, '').trim().toUpperCase();
   let lines = wrapTextToLines(raw, 13).slice(0, 3);
-  let size = lines.some((l) => l.length > 10) ? 128 : 150;
-  if (lines.length === 1 && lines[0].length <= 8) size = 180;
+  // 2026-11-11 THUMB BUMP: bigger title type (search/shelf/channel-grid clicks)
+  // — fits 720px: 3 lines @150 → baselines 300/464/628; 2 @175 → 300/487; 1 @210.
+  let size = lines.some((l) => l.length > 10) ? 150 : 175;
+  if (lines.length === 1 && lines[0].length <= 8) size = 210;
   const accentWord = lines.join(' ').split(/\s+/).filter((w) => w.length > 3).sort((a, b) => b.length - a.length)[0] || null;
 
   const esc = accentWord ? accentWord.replace(/[.*+?^${}()|[\]\\]/g, '\\$&') : null;
@@ -282,7 +284,7 @@ export async function renderYouTubeThumbnail(headline, cleanFrameFile, opts = {}
         ? `<tspan fill="${accent}">${escapeXml(p)}</tspan>`
         : escapeXml(p))).join('');
     }
-    const y = 330 + i * (size + 18);
+    const y = 300 + i * (size + 12);
     return `<text text-anchor="middle" x="640" y="${y}" font-family="'Anton', 'Impact', 'Arial Black', sans-serif" font-size="${size}" fill="#000000" opacity="0.65" filter="url(#soft)" transform="translate(0,10)">${inner}</text>
   <text text-anchor="middle" x="640" y="${y}" font-family="'Anton', 'Impact', 'Arial Black', sans-serif" font-size="${size}" fill="#FFFFFF">${inner}</text>`;
   }).join('\n  ');
