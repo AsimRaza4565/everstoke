@@ -11,11 +11,8 @@ loadEnv();
 const FB_PAGE_TOKEN = process.env.FB_PAGE_TOKEN || '';
 
 const PAGE_MAP = {
-  // everstoke adoption: previous owner's pages removed.
-  // TO ENABLE Instagram reels: the FB page must have a linked business IG
-  // account; put its page ID here, set FB_PAGE_TOKEN, then re-enable the
-  // schedules in ig-slot-poster.yml (commented out 10-23, YouTube-only focus).
-  'everstoke': ''
+  // everstoke adoption: Everstoke Page linked to IG @everstoke_a5h
+  'everstoke': '1454565747743660'
 };
 const HASHTAGS = {
   'everstoke': '#motivation #discipline #stoicism #mindset #selfimprovement',

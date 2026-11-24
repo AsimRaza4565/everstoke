@@ -92,6 +92,13 @@ jobs:
             node sweeper.mjs
           fi
 
+      - name: 📦 Keep healed reels for IG slot poster (everstoke)
+        if: ${{ hashFiles('fb-outbox/everstoke/*.json*') != '' }}
+        uses: actions/cache/save@v4
+        with:
+          path: fb-outbox/everstoke
+          key: ig-outbox-everstoke-sweep-${{ github.run_id }}
+
       - name: 📦 Keep healed reels for IG slot poster (quotequarry)
         if: ${{ hashFiles('fb-outbox/quotequarry/*.json*') != '' }}
         uses: actions/cache/save@v4
