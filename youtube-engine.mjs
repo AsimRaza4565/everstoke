@@ -609,8 +609,6 @@ export async function renderYouTubeScriptShort(page, script, musicOverride = nul
   const brand = resolveBrand(page);
   if (!brand) throw new Error('no YouTube config for page ' + page?.id);
   console.log(`[YouTube Script Short] ${brand.label} ("${script.thumbHeadline}", ${script.source})...`);
-  const clip = (await getTopicClip(page, { headline: script.thumbHeadline, insight_body: script.hook })) || await ensurePoolClip(page.id);
-
   const sections = [
     { text: script.hook, kicker: 'WATCH TILL THE END', big: script.hook },
     ...script.points.map((p, i) => {
@@ -633,6 +631,23 @@ export async function renderYouTubeScriptShort(page, script, musicOverride = nul
   </linearGradient></defs><rect width="1080" height="1920" fill="url(#g)"/></svg>`;
   const scrimFile = `${POOL_DIR}/yt-script-scrim-${page.id}.png`;
   await sharp(Buffer.from(scrimSvg)).png().toFile(scrimFile);
+
+  // 2026-11-11 VARIETY: one themed 4K clip per section (was: a single clip
+  // looped for the whole Short — monotonous, with visible loop restarts).
+  // Hook keeps its own clip (it also feeds the thumbnail frame); every point
+  // gets a clip themed on its title; the closing gets one too. Failed fetches
+  // fall back to the base clip so a section is never without footage.
+  const baseClip = (await getTopicClip(page, { headline: script.thumbHeadline, insight_body: script.hook })) || await ensurePoolClip(page.id);
+  const sectionClips = [];
+  for (let i = 0; i < sections.length; i++) {
+    if (i === 0) { sectionClips.push(baseClip); continue; }
+    let c = null;
+    try { c = await getTopicClip(page, { headline: sections[i].big, insight_body: sections[i].text }) || null; }
+    catch (e) { console.log(`  [broll] section ${i + 1} fetch failed: ${String(e?.message || e).slice(0, 80)} — base clip`); }
+    if (c) console.log(`  [broll] section ${i + 1}/${sections.length}: themed clip ready (${c.file})`);
+    sectionClips.push(c || baseClip);
+  }
+  sectionClips.push(baseClip); // closing safety if sections grew mid-loop
 
   const buildDir = `${POOL_DIR}/yt-script-build`;
   fs.rmSync(buildDir, { recursive: true, force: true });
@@ -663,7 +678,8 @@ export async function renderYouTubeScriptShort(page, script, musicOverride = nul
       filter = chain + `;[ov]null[v];anullsrc=r=44100:cl=stereo,atrim=0:${dur}[a]`;
       inputs = ['-f', 'lavfi', '-i', 'anullsrc=r=44100:cl=stereo'];
     }
-    execFileSync(FF, ['-y', '-stream_loop', '-1', '-ss', String(clip.start), '-i', clip.file, '-i', scrimFile,
+    const secClip = sectionClips[i] || baseClip; // per-section themed footage
+    execFileSync(FF, ['-y', '-stream_loop', '-1', '-ss', String(secClip.start), '-i', secClip.file, '-i', scrimFile,
       ...inputs, '-i', card, '-filter_complex', filter, '-map', '[v]', '-map', '[a]',
       '-t', String(dur), '-r', '30', '-pix_fmt', 'yuv420p',
       '-c:v', 'libx264', '-preset', 'veryfast', '-crf', '20',
@@ -701,7 +717,7 @@ export async function renderYouTubeScriptShort(page, script, musicOverride = nul
     let extracted = false;
     for (const off of [3, 1, 0]) {
       try {
-        execFileSync(FF, ['-y', '-v', 'error', '-ss', String(clip.start + off), '-i', clip.file, '-frames:v', '1', frameFile]);
+        execFileSync(FF, ['-y', '-v', 'error', '-ss', String(baseClip.start + off), '-i', baseClip.file, '-frames:v', '1', frameFile]);
         extracted = fs.existsSync(frameFile) && fs.statSync(frameFile).size > 0;
       } catch { extracted = false; }
       if (extracted) break;
