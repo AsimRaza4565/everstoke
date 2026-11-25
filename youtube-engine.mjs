@@ -605,6 +605,48 @@ async function renderSectionCard(pageId, accent, section, handle, kwShort) {
   return file;
 }
 
+function runFfmpeg(args, opts = {}) {
+  try {
+    return execFileSync(FF, args, { stdio: ['ignore', 'ignore', 'pipe'], ...opts });
+  } catch (e) {
+    const stderr = e.stderr ? String(e.stderr).trim().split('\n').slice(-12).join(' | ') : '';
+    if (stderr) console.error(`[ffmpeg] stderr: ${stderr}`);
+    throw new Error(stderr ? `${e.message}\n${stderr}` : e.message);
+  }
+}
+
+/**
+ * Build the per-section FFmpeg filtergraph, normalizing aspect ratio, SAR 1:1,
+ * 30fps CFR, yuv420p, and audio timing so heterogeneous clips concatenate cleanly.
+ */
+export function buildShortSegmentFilter({ index, dur, assFile = null }) {
+  // min(iw,ih*9/16) handles both landscape and narrow/portrait clips; setsar=1 +
+  // fps=30 + format=yuv420p prevent SAR/timebase mismatches in concat when sections
+  // use different source clips (yuv420p odd-width crop rounds 1215->1214 and shifts SAR).
+  const chain = `[0:v]crop='min(iw,ih*9/16)':'min(ih,iw*16/9)',scale=1080:1920,setsar=1,setpts=PTS-STARTPTS,format=yuv420p,eq=saturation=1.04:contrast=1.06` +
+    (index === 0 ? `,fade=t=in:st=0:d=0.4` : ``) + `,fade=t=out:st=${Math.max(0, dur - 0.35).toFixed(1)}:d=0.35[bv];` +
+    `[1:v]scale=1080:1920,setsar=1[sc];[bv][sc]overlay=0:0[base];[base][3:v]overlay=0:0[ov]`;
+  if (assFile) {
+    return chain + `;[ov]ass=${assFile}:fontsdir=image-tools/fonts,fps=fps=30:round=near,setsar=1,format=yuv420p[v];[2:a]apad,atrim=0:${dur},asetpts=PTS-STARTPTS[a]`;
+  }
+  return chain + `;[ov]fps=fps=30:round=near,setsar=1,format=yuv420p[v];anullsrc=r=44100:cl=stereo,atrim=0:${dur}[a]`;
+}
+
+/**
+ * Build the Short concatenation + music-bed filtergraph with belt-and-suspenders
+ * stream normalization before concat.
+ */
+export function buildShortConcatFilter({ segmentCount, total }) {
+  const normInputs = Array.from({ length: segmentCount }, (_, i) =>
+    `[${i}:v]setsar=1,fps=fps=30:round=near,setpts=PTS-STARTPTS,format=yuv420p[sv${i}];` +
+    `[${i}:a]aresample=44100,aformat=sample_fmts=fltp:channel_layouts=stereo,asetpts=PTS-STARTPTS[sa${i}];`
+  ).join('');
+  const concatStreams = Array.from({ length: segmentCount }, (_, i) => `[sv${i}][sa${i}]`).join('');
+  return `${normInputs}${concatStreams}concat=n=${segmentCount}:v=1:a=1[vc][ac];` +
+    `[vc]format=yuv420p[v];[${segmentCount}:a]aresample=44100,aformat=sample_fmts=fltp:channel_layouts=stereo,volume=0.13,atrim=0:${total},afade=t=out:st=${Math.max(0, total - 1.2).toFixed(1)}:d=1.2[am];` +
+    `[ac][am]amix=inputs=2:duration=first:normalize=0[aout]`;
+}
+
 export async function renderYouTubeScriptShort(page, script, musicOverride = null) {
   const brand = resolveBrand(page);
   if (!brand) throw new Error('no YouTube config for page ' + page?.id);
@@ -665,27 +707,23 @@ export async function renderYouTubeScriptShort(page, script, musicOverride = nul
       : 4.5;
     const card = await renderSectionCard(page.id, brand.accent, sec, brand.handle, brand.kwShort);
     const segFile = path.resolve(`${buildDir}/seg-${String(i).padStart(2, '0')}.mp4`);
-    const chain = `[0:v]crop=ih*9/16:ih,scale=1080:1920,eq=saturation=1.04:contrast=1.06` +
-      (i === 0 ? `,fade=t=in:st=0:d=0.4` : ``) + `,fade=t=out:st=${Math.max(0, dur - 0.35).toFixed(1)}:d=0.35[bv];` +
-      `[1:v]scale=1080:1920[sc];[bv][sc]overlay=0:0[base];[base][3:v]overlay=0:0[ov]`;
-    let filter, inputs;
+    let assFile = null;
+    let inputs;
     if (narration) {
       // relative path only — a Windows drive colon breaks the filtergraph parser
-      const assFile = `${buildDir}/cap-${i}.ass`;
+      assFile = `${buildDir}/cap-${i}.ass`;
       fs.writeFileSync(assFile, buildAssCaptions(sec.capSkip ? narration.words.slice(sec.capSkip) : narration.words), 'utf8');
-      filter = chain + `;[ov]ass=${assFile}:fontsdir=image-tools/fonts[v];[2:a]apad=pad_dur=1,atrim=0:${dur}[a]`;
       inputs = ['-i', narration.file];
     } else {
-      filter = chain + `;[ov]null[v];anullsrc=r=44100:cl=stereo,atrim=0:${dur}[a]`;
       inputs = ['-f', 'lavfi', '-i', 'anullsrc=r=44100:cl=stereo'];
     }
+    const filter = buildShortSegmentFilter({ index: i, dur, assFile });
     const secClip = sectionClips[i] || baseClip; // per-section themed footage
-    execFileSync(FF, ['-y', '-stream_loop', '-1', '-ss', String(secClip.start), '-i', secClip.file, '-i', scrimFile,
+    runFfmpeg(['-y', '-stream_loop', '-1', '-ss', String(secClip.start), '-i', secClip.file, '-i', scrimFile,
       ...inputs, '-i', card, '-filter_complex', filter, '-map', '[v]', '-map', '[a]',
-      '-t', String(dur), '-r', '30', '-pix_fmt', 'yuv420p',
+      '-t', String(dur), '-r', '30', '-fps_mode', 'cfr', '-pix_fmt', 'yuv420p',
       '-c:v', 'libx264', '-preset', 'veryfast', '-crf', '20',
-      '-c:a', 'aac', '-b:a', '160k', '-video_track_timescale', '15360', segFile],
-      { stdio: ['ignore', 'ignore', 'pipe'] });
+      '-c:a', 'aac', '-b:a', '160k', '-ar', '44100', '-ac', '2', '-video_track_timescale', '15360', segFile]);
     fs.rmSync(card, { force: true });
     if (narration) fs.rmSync(narration.file, { force: true });
     segFiles.push(segFile);
@@ -694,17 +732,14 @@ export async function renderYouTubeScriptShort(page, script, musicOverride = nul
 
   const total = Math.min(60, Math.round(cum * 10) / 10);
   const musicArgs = musicOverride?.file ? ['-stream_loop', '-1', '-i', musicOverride.file] : ['-f', 'lavfi', '-i', 'anullsrc=r=44100:cl=stereo'];
-  const musicIdx = segFiles.length;
-  const filter = `${segFiles.map((_, i) => `[${i}:v][${i}:a]`).join('')}concat=n=${segFiles.length}:v=1:a=1[vc][ac];` +
-    `[vc]format=yuv420p[v];[${musicIdx}:a]volume=0.13,atrim=0:${total},afade=t=out:st=${Math.max(0, total - 1.2).toFixed(1)}:d=1.2[am];` +
-    `[ac][am]amix=inputs=2:duration=first:normalize=0[aout]`;
+  const filter = buildShortConcatFilter({ segmentCount: segFiles.length, total });
   const outFile = `${POOL_DIR}/yt-script-short-${page.id}.tmp.mp4`;
-  execFileSync(FF, ['-y', ...segFiles.map((f) => ['-i', f]).flat(), ...musicArgs,
+  runFfmpeg(['-y', ...segFiles.map((f) => ['-i', f]).flat(), ...musicArgs,
     '-filter_complex', filter, '-map', '[v]', '-map', '[aout]',
-    '-t', String(total), '-r', '30', '-pix_fmt', 'yuv420p',
+    '-t', String(total), '-r', '30', '-fps_mode', 'cfr', '-pix_fmt', 'yuv420p',
     '-c:v', 'libx264', '-preset', 'medium', '-crf', '20',
-    '-c:a', 'aac', '-b:a', '192k', '-movflags', '+faststart', outFile],
-    { stdio: ['ignore', 'ignore', 'pipe'], timeout: 15 * 60 * 1000 });
+    '-c:a', 'aac', '-b:a', '192k', '-ar', '44100', '-ac', '2', '-movflags', '+faststart', outFile],
+    { timeout: 15 * 60 * 1000 });
   const buf = fs.readFileSync(outFile);
   fs.rmSync(outFile, { force: true });
   fs.rmSync(buildDir, { recursive: true, force: true });

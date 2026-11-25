@@ -29,7 +29,7 @@ const { resolveBrand } = await import('./lib/brand-resolve.mjs');
 const { researchTrend } = await import('./trend-research.mjs');
 const { archiveUpload } = await import('./yt-archive.mjs');
 const { recentUploadTitles, findDup } = await import('./lib/dup-gate.mjs');
-const { shouldSuppressNext } = await import('./lib/schedule.mjs');
+const { shouldSuppressNext, resolveLastRunDate } = await import('./lib/schedule.mjs');
 import { nextCounter } from './lib/quota-ledger.mjs';
 
 const slug = process.argv[2];
@@ -221,8 +221,10 @@ if (RUN_SHORTS) {
 
   const slotLimit = TOPUP_N > 0 ? Math.min(TOPUP_N, b.slots.length) : b.slots.length;
   let slotErrors = 0; // #35: a mid-loop throw used to kill the whole run silently
-  for (let i = 0; i < slotLimit; i++) { try {
-    const publishAt = nextSlotISO(b.slots[i]);
+  for (let i = 0; i < slotLimit; i++) {
+    let publishAt = null;
+    try {
+      publishAt = nextSlotISO(b.slots[i]);
     console.log(`\n[${slug}] short ${i + 1}/${b.slots.length} → goes public ${publishAt}`);
     if (!themesToday[i]) {
       console.log('  ✗ no researched topic (trend research failed) — slot skipped (fail-closed, no static fallback)');
@@ -392,11 +394,18 @@ if (RUN_SHORTS) {
     // causing day-on/day-off oscillation; partial tomorrow-coverage no longer
     // blanks the whole day). #35: error/gate slots never count.
     const tomorrowStr = new Date(Date.now() + 86400000).toISOString().slice(0, 10);
-    const suppressNext = TOPUP_N > 0 && shouldSuppressNext(results, b.slots.length, tomorrowStr);
+    const anyUploaded = results.some(r => r && r.videoId);
     state[slug] = {
       ...(state[slug] || {}),
-      lastRunDate: suppressNext ? new Date(Date.now() + 86400000).toISOString().slice(0, 10) : today,
-      ...(TOPUP_N > 0 ? { healedDate: today, healedCount: results.length } : {}),
+      lastRunDate: resolveLastRunDate({
+        results,
+        slotsCount: b.slots.length,
+        today,
+        tomorrowStr,
+        prevLastRunDate: state[slug]?.lastRunDate,
+        topupCount: TOPUP_N,
+      }),
+      ...(TOPUP_N > 0 && anyUploaded ? { healedDate: today, healedCount: results.length } : {}),
       usedTrendSeeds: [...usedSeeds, ...themesToday.map(t => t.seed)].slice(-40),
       cooldownSeeds: [...(state[slug]?.cooldownSeeds || []), ...rejectedSeeds].slice(-12),
       todayTopics: themesToday.map(t => ({ at: today, topic: t.seed })),

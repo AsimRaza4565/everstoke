@@ -1,6 +1,6 @@
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
-import { buildAssCaptions, buildScriptMeta } from '../youtube-engine.mjs';
+import { buildAssCaptions, buildScriptMeta, buildShortSegmentFilter, buildShortConcatFilter } from '../youtube-engine.mjs';
 
 test('buildScriptMeta formats title for mobile Shorts feed with hook first and #shorts', () => {
   const mockPage = { slug: 'stoic-habits', id: 'stoic-habits' };
@@ -39,4 +39,28 @@ test('buildAssCaptions keeps subtitles inside YouTube Shorts mobile safe zone', 
   assert.ok(posMatch, 'ASS should have positioning');
   const posY = parseInt(posMatch[1], 10);
   assert.ok(posY >= 950 && posY <= 1400, `Subtitle Y position (${posY}) must be within mobile safe zone (950-1400)`);
+});
+
+test('buildShortSegmentFilter normalizes SAR, FPS, and aspect ratio for multi-clip concat', () => {
+  const withNarration = buildShortSegmentFilter({ index: 0, dur: 6.2, assFile: 'pixabay-pool/yt-script-build/cap-0.ass' });
+  assert.ok(withNarration.includes("crop='min(iw,ih*9/16)':'min(ih,iw*16/9)'"), 'must guard narrow/portrait clips');
+  assert.ok(withNarration.includes('scale=1080:1920,setsar=1'), 'must lock output SAR to 1:1');
+  assert.ok(withNarration.includes('fps=fps=30:round=near'), 'must normalize fps to 30');
+  assert.ok(withNarration.includes('fade=t=in:st=0:d=0.4'), 'hook section fades in');
+  assert.ok(withNarration.includes('[2:a]apad,atrim=0:6.2,asetpts=PTS-STARTPTS[a]'), 'pads narration across full segment');
+
+  const withoutNarration = buildShortSegmentFilter({ index: 2, dur: 4.5, assFile: null });
+  assert.ok(!withoutNarration.includes('fade=t=in'), 'non-hook sections skip initial fade-in');
+  assert.ok(withoutNarration.includes('fps=fps=30:round=near,setsar=1,format=yuv420p[v]'), 'normalizes output fps, SAR, and format');
+  assert.ok(withoutNarration.includes('anullsrc=r=44100:cl=stereo,atrim=0:4.5[a]'), 'provides stereo silence fallback');
+});
+
+test('buildShortConcatFilter normalizes all segment streams before concat', () => {
+  const concat = buildShortConcatFilter({ segmentCount: 6, total: 36.4 });
+  for (let i = 0; i < 6; i++) {
+    assert.ok(concat.includes(`[${i}:v]setsar=1,fps=fps=30:round=near,setpts=PTS-STARTPTS,format=yuv420p[sv${i}]`));
+    assert.ok(concat.includes(`[${i}:a]aresample=44100,aformat=sample_fmts=fltp:channel_layouts=stereo,asetpts=PTS-STARTPTS[sa${i}]`));
+  }
+  assert.ok(concat.includes('[sv0][sa0][sv1][sa1][sv2][sa2][sv3][sa3][sv4][sa4][sv5][sa5]concat=n=6:v=1:a=1[vc][ac]'));
+  assert.ok(concat.includes('[6:a]aresample=44100,aformat=sample_fmts=fltp:channel_layouts=stereo,volume=0.13,atrim=0:36.4,afade=t=out:st=35.2:d=1.2[am]'));
 });
