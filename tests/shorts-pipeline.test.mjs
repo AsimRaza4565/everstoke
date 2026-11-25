@@ -1,6 +1,6 @@
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
-import { buildAssCaptions, buildScriptMeta, buildShortSegmentFilter, buildShortConcatFilter } from '../youtube-engine.mjs';
+import { buildAssCaptions, buildScriptMeta, buildShortSegmentFilter, buildShortConcatFilter, buildThumbnailSvg } from '../youtube-engine.mjs';
 
 test('buildScriptMeta formats title for mobile Shorts feed with hook first and #shorts', () => {
   const mockPage = { slug: 'stoic-habits', id: 'stoic-habits' };
@@ -63,4 +63,14 @@ test('buildShortConcatFilter normalizes all segment streams before concat', () =
   }
   assert.ok(concat.includes('[sv0][sa0][sv1][sa1][sv2][sa2][sv3][sa3][sv4][sa4][sv5][sa5]concat=n=6:v=1:a=1[vc][ac]'));
   assert.ok(concat.includes('[6:a]aresample=44100,aformat=sample_fmts=fltp:channel_layouts=stereo,volume=0.13,atrim=0:36.4,afade=t=out:st=35.2:d=1.2[am]'));
+});
+
+test('buildThumbnailSvg builds 9:16 1080x1920 for Shorts and keeps 16:9 1280x720 for landscape', () => {
+  const shortSvg = buildThumbnailSvg("SAMURAI'S CODE", 'AAAA', { accent: '#FF6B1A', eyebrow: 'DAILY DISCIPLINE // EVERSTOKE', vertical: true });
+  assert.ok(shortSvg.includes('width="1080" height="1920" viewBox="0 0 1080 1920"'), 'Shorts thumbnail must be 9:16 1080x1920');
+  assert.ok(shortSvg.includes('x="540"'), 'Shorts thumbnail elements centered at x=540');
+  assert.ok(shortSvg.includes("SAMURAI&#39;S") || shortSvg.includes("SAMURAI'S"), 'renders escaped title text');
+
+  const wideSvg = buildThumbnailSvg('MARCUS AURELIUS DAILY RULE', 'AAAA', { accent: '#FF6B1A', eyebrow: 'DAILY DISCIPLINE // EVERSTOKE' });
+  assert.ok(wideSvg.includes('width="1280" height="720" viewBox="0 0 1280 720"'), 'Long-form thumbnail remains 16:9 1280x720');
 });

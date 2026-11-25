@@ -262,21 +262,41 @@ async function renderOverlay(pageId, brand, hook, bodyLines, takeaway, withNarra
 // ---------------------------------------------------------------------------
 const capitalized = (s) => titleCase(s);
 
-export async function renderYouTubeThumbnail(headline, cleanFrameFile, opts = {}) {
+/**
+ * Build the SVG for a YouTube thumbnail (1280x720 landscape default, or 1080x1920 9:16 vertical for Shorts).
+ */
+export function buildThumbnailSvg(headline, imageB64 = '', opts = {}) {
   const accent = opts.accent || '#F5E31C';
   const eyebrow = opts.eyebrow || 'QUOTE QUARRY';
-  const b64 = await sharp(cleanFrameFile).resize(1280, 720, { fit: 'cover', position: 'attention' }).jpeg({ quality: 88 }).toBuffer();
+  const vertical = Boolean(opts.vertical);
+  const W = vertical ? 1080 : 1280;
+  const H = vertical ? 1920 : 720;
 
   const raw = String(headline || 'DAILY MOTIVATION')
     .replace(/#[\w]+/g, '').replace(/[—|].*$/, '').trim().toUpperCase();
-  let lines = wrapTextToLines(raw, 13).slice(0, 3);
-  // 2026-11-11 THUMB BUMP: bigger title type (search/shelf/channel-grid clicks)
-  // — fits 720px: 3 lines @150 → baselines 300/464/628; 2 @175 → 300/487; 1 @210.
-  let size = lines.some((l) => l.length > 10) ? 150 : 175;
-  if (lines.length === 1 && lines[0].length <= 8) size = 210;
+  const lines = wrapTextToLines(raw, vertical ? 11 : 13).slice(0, vertical ? 4 : 3);
+  let size, eyeY, barY, step, startY;
+  if (vertical) {
+    // 9:16 Shorts thumbnail: centered inside YouTube Shorts mobile/Studio safe zone.
+    size = lines.some((l) => l.length > 9) ? 140 : 165;
+    if (lines.length === 1 && lines[0].length <= 8) size = 200;
+    eyeY = 420;
+    barY = 455;
+    step = size + 16;
+    startY = lines.length === 1 ? 940 : lines.length === 2 ? 820 : lines.length === 3 ? 720 : 650;
+  } else {
+    // 2026-11-11 THUMB BUMP: bigger title type (search/shelf/channel-grid clicks)
+    // — fits 720px: 3 lines @150 → baselines 300/464/628; 2 @175 → 300/487; 1 @210.
+    size = lines.some((l) => l.length > 10) ? 150 : 175;
+    if (lines.length === 1 && lines[0].length <= 8) size = 210;
+    eyeY = 120;
+    barY = 150;
+    step = size + 12;
+    startY = 300;
+  }
   const accentWord = lines.join(' ').split(/\s+/).filter((w) => w.length > 3).sort((a, b) => b.length - a.length)[0] || null;
-
   const esc = accentWord ? accentWord.replace(/[.*+?^${}()|[\]\\]/g, '\\$&') : null;
+  const cx = W / 2;
   const lineEls = lines.map((line, i) => {
     let inner = escapeXml(line);
     if (esc && line.includes(accentWord)) {
@@ -284,25 +304,33 @@ export async function renderYouTubeThumbnail(headline, cleanFrameFile, opts = {}
         ? `<tspan fill="${accent}">${escapeXml(p)}</tspan>`
         : escapeXml(p))).join('');
     }
-    const y = 300 + i * (size + 12);
-    return `<text text-anchor="middle" x="640" y="${y}" font-family="'Anton', 'Impact', 'Arial Black', sans-serif" font-size="${size}" fill="#000000" opacity="0.65" filter="url(#soft)" transform="translate(0,10)">${inner}</text>
-  <text text-anchor="middle" x="640" y="${y}" font-family="'Anton', 'Impact', 'Arial Black', sans-serif" font-size="${size}" fill="#FFFFFF">${inner}</text>`;
+    const y = startY + i * step;
+    return `<text text-anchor="middle" x="${cx}" y="${y}" font-family="'Anton', 'Impact', 'Arial Black', sans-serif" font-size="${size}" fill="#000000" opacity="0.65" filter="url(#soft)" transform="translate(0,10)">${inner}</text>
+  <text text-anchor="middle" x="${cx}" y="${y}" font-family="'Anton', 'Impact', 'Arial Black', sans-serif" font-size="${size}" fill="#FFFFFF">${inner}</text>`;
   }).join('\n  ');
 
-  const svg = `<svg xmlns="http://www.w3.org/2000/svg" width="1280" height="720" viewBox="0 0 1280 720">
+  return `<svg xmlns="http://www.w3.org/2000/svg" width="${W}" height="${H}" viewBox="0 0 ${W} ${H}">
   <defs><style>${EMBEDDED_FONTS_CSS}</style>
     <filter id="soft" x="-30%" y="-30%" width="160%" height="160%"><feGaussianBlur stdDeviation="12"/></filter>
     <linearGradient id="vg" x1="0" y1="0" x2="0" y2="1">
       <stop offset="0" stop-color="rgba(0,0,0,0.42)"/><stop offset="0.55" stop-color="rgba(0,0,0,0.62)"/><stop offset="1" stop-color="rgba(0,0,0,0.85)"/>
     </linearGradient>
   </defs>
-  <image href="data:image/jpeg;base64,${b64.toString('base64')}" x="0" y="0" width="1280" height="720" preserveAspectRatio="xMidYMid slice"/>
-  <rect width="1280" height="720" fill="url(#vg)"/>
-  <text text-anchor="middle" x="640" y="120" font-family="'Oswald', 'Arial Narrow', sans-serif" font-weight="600" font-size="34" letter-spacing="10" fill="${accent}">${escapeXml(eyebrow)}</text>
-  <rect x="560" y="150" width="160" height="7" rx="3.5" fill="${accent}"/>
+  <image href="data:image/jpeg;base64,${imageB64}" x="0" y="0" width="${W}" height="${H}" preserveAspectRatio="xMidYMid slice"/>
+  <rect width="${W}" height="${H}" fill="url(#vg)"/>
+  <text text-anchor="middle" x="${cx}" y="${eyeY}" font-family="'Oswald', 'Arial Narrow', sans-serif" font-weight="600" font-size="34" letter-spacing="10" fill="${accent}">${escapeXml(eyebrow)}</text>
+  <rect x="${cx - 80}" y="${barY}" width="160" height="7" rx="3.5" fill="${accent}"/>
   ${lineEls}
 </svg>`;
-  return sharp(Buffer.from(svg), { density: 150 }).resize(1280, 720).jpeg({ quality: 92 }).toBuffer();
+}
+
+export async function renderYouTubeThumbnail(headline, cleanFrameFile, opts = {}) {
+  const vertical = Boolean(opts.vertical);
+  const W = vertical ? 1080 : 1280;
+  const H = vertical ? 1920 : 720;
+  const b64 = await sharp(cleanFrameFile).resize(W, H, { fit: 'cover', position: 'attention' }).jpeg({ quality: 88 }).toBuffer();
+  const svg = buildThumbnailSvg(headline, b64.toString('base64'), opts);
+  return sharp(Buffer.from(svg), { density: 150 }).resize(W, H).jpeg({ quality: vertical ? 90 : 92 }).toBuffer();
 }
 
 // ---------------------------------------------------------------------------
@@ -760,7 +788,7 @@ export async function renderYouTubeScriptShort(page, script, musicOverride = nul
       if (extracted) break;
     }
     if (!extracted) throw new Error('no frame extracted from b-roll clip');
-    thumb = await renderYouTubeThumbnail(script.thumbHeadline || script.hook, frameFile, { accent: brand.accent, eyebrow: brand.eyebrow || `QUOTE QUARRY // ${brand.label}` });
+    thumb = await renderYouTubeThumbnail(script.thumbHeadline || script.hook, frameFile, { accent: brand.accent, eyebrow: brand.eyebrow || `QUOTE QUARRY // ${brand.label}`, vertical: true });
     fs.rmSync(frameFile, { force: true });
   } catch (e) { console.log(`      [YT Script] Thumbnail skipped (${String(e.message).slice(0, 80)})`); }
 
