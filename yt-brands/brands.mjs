@@ -36,7 +36,7 @@ export const BRANDS = [
     slots: ['22:35'], longSlot: '21:00', // longform off — enable via cadence docDays
     active: true,
     description: 'Daily motivation, stoic discipline and mental toughness in 60 seconds. Marcus Aurelius, Seneca, warrior ethos and modern mindset — one lesson every day to stoke the fire within. Subscribe and build unstoppable discipline.',
-    script: { targetSeconds: 32, points: 4, lineWords: '9-12', titleStyle: 'character-anchored authority hook', titleExamples: '"Marcus Aurelius\' Rule For Conquering Laziness", "How Samurai Crushed Instant Gratification", "Rise After Failure Like A Stoic", "The 5-Second Stoic Reframe For Failure"' }
+    script: { targetSeconds: 32, points: 4, lineWords: '9-12', titleStyle: 'character-anchored authority hook', titleExamples: '"Seneca\'s Cure For A Wandering Mind", "The Spartan Rule For Beating Procrastination", "Epictetus\' Answer To Anxiety", "Why Discipline Beats Motivation"' }
   },
   {
     slug: 'quotequarry',

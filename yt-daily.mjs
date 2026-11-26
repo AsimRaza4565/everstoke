@@ -249,6 +249,7 @@ if (RUN_SHORTS) {
     // Now each rejection cools the seed, rotates to an unused trend topic, and
     // retries — up to 3 scripts per slot before failing with a phone alert.
     let script = null;
+    const bannedTitles = []; // rejected titles — injected into the next attempt's prompt
     // 2026-11-23 GENERIC TITLE GUARD: "Do This Daily", "Rise Every Morning",
     // "Do This Every Morning" etc. consistently scored 13-53 views because they
     // lack a character/concept anchor for YouTube's audience matching. The model
@@ -260,19 +261,28 @@ if (RUN_SHORTS) {
       const candTitle = (cand.thumbHeadline || cand.hook || '').trim();
       if (GENERIC_TITLE.test(candTitle)) {
         console.log(`  TITLE-QUALITY (attempt ${attempt}/3): "${candTitle}" is generic — regenerating`);
+        bannedTitles.push(candTitle);
         continue;
       }
       const dup = findDup(candTitle, recentTitles, seenThisRun);
       if (!dup) { script = cand; break; }
-      console.log(`  GATE (attempt ${attempt}/3): "${candTitle}" ≈ "${dup}" — cooling seed, rotating topic`);
+      console.log(`  GATE (attempt ${attempt}/3): "${candTitle}" ≈ "${dup}" — cooling seed, rotating topic, banning title`);
+      bannedTitles.push(candTitle);
       if (themesToday[i]?.seed) rejectedSeeds.push(themesToday[i].seed);
       const waves2 = (page.trend?.videos || []);
       const alt = waves2.find((v) => v.title && !usedSeeds.includes(v.title) && !themesToday.some((x) => x.seed === v.title) && !rejectedSeeds.includes(v.title));
       if (!alt) { console.log('  no unused trend topics left — giving up this slot'); break; }
+      // 2026-11-26 ROOT-CAUSE FIX: all 3 attempts generated the SAME title
+      // ("RISE AFTER FAILURE") because (a) the titleExamples listed an already-
+      // published title and (b) the retry topic never told the model the
+      // rejected title was banned. The topic now carries the channel's existing
+      // titles + the per-run ban list explicitly.
+      const avoidList = [...new Set([...(recentTitles || []).slice(0, 10), ...bannedTitles])];
       themesToday[i] = {
         seed: alt.title,
         subNiche: themesToday[i].subNiche,
-        topic: `Sub-niche focus: "${themesToday[i].subNiche}" (Channel Niche: "${b.niche}"). Build today's video around the THEME of this proven viral video in this space right now: "${alt.title}" (${(alt.views || 0).toLocaleString('en-US')} views in the last 14 days). Reimagine it natively for ${b.label} — do NOT copy its title or wording; bring a fresh, original angle, and pick a title that does NOT repeat the words "stoic rule". Weave in what is currently working: ${(page.trend.hotKeywords.slice(0, 6)).join(', ')}.${page.viewerTerms?.length ? ` Your own viewers found this channel by searching: ${page.viewerTerms.slice(0, 8).join(' ')} — work the strongest of these real search words naturally into the hook and points.` : ''}`,
+        topic: `Sub-niche focus: "${themesToday[i].subNiche}" (Channel Niche: "${b.niche}"). Build today's video around the THEME of this proven viral video in this space right now: "${alt.title}" (${(alt.views || 0).toLocaleString('en-US')} views in the last 14 days). Reimagine it natively for ${b.label} — do NOT copy its title or wording; bring a fresh, original angle. Weave in what is currently working: ${(page.trend.hotKeywords.slice(0, 6)).join(', ')}.${page.viewerTerms?.length ? ` Your own viewers found this channel by searching: ${page.viewerTerms.slice(0, 8).join(' ')} — work the strongest of these real search words naturally into the hook and points.` : ''}
+EXISTING VIDEO TITLES on this channel — your thumb_headline MUST NOT duplicate, nearly-repeat, or reuse the key phrases of ANY of these: ${avoidList.join(' | ')}. Pick a genuinely different angle and wording.`,
       };
     }
     if (!script) {
@@ -423,7 +433,7 @@ if (RUN_SHORTS) {
       }),
       ...(TOPUP_N > 0 && anyUploaded ? { healedDate: today, healedCount: results.length } : {}),
       usedTrendSeeds: [...usedSeeds, ...themesToday.map(t => t.seed)].slice(-40),
-      cooldownSeeds: [...(state[slug]?.cooldownSeeds || []), ...rejectedSeeds].slice(-12),
+      cooldownSeeds: [...new Set([...(state[slug]?.cooldownSeeds || []), ...rejectedSeeds])].slice(-12),
       todayTopics: themesToday.map(t => ({ at: today, topic: t.seed })),
       // 10-05: durable title history — lastVideos alone only ever held the last
       // run, which is why cross-day duplicates went unnoticed for weeks
