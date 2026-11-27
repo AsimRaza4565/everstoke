@@ -31,6 +31,7 @@ export const BRANDS = [
     ],
     authority: 'Discipline & Stoicism',
     tags: ['motivation', 'discipline', 'stoicism', 'daily motivation', 'mindset', 'self improvement', 'mental toughness', 'consistency', 'habits', 'self mastery'],
+    brollQueries: ['dark misty mountains', 'lone warrior silhouette', 'dark ocean storm waves', 'foggy pine forest', 'dramatic night city rain', 'stoic statue dark'],
     musicFeels: ['epic', 'inspir', 'driving'],
     voice: 'am_adam',
     slots: ['22:35'], longSlot: '21:00', // longform off — enable via cadence docDays

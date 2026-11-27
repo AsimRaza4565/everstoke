@@ -168,6 +168,24 @@ if (RUN_SHORTS) {
     fallback: (state[slug]?.titleHistory || []).map((h) => h?.t).filter(Boolean),
   });
   const seenThisRun = [];
+  // 2026-11-26 TOPIC ROTATION: near-identical TITLES are gated, but concept
+  // reruns passed the gate — "Dopamine Detox" Nov 18 (33 views) then
+  // "Stoic Dopamine Detox" Nov 24, "Samurai Discipline Code" then
+  // "Samurai's Code" — and YouTube suppresses distribution of repeated
+  // subjects. Extract the distinctive subject words from recent uploads and
+  // forbid them in the generation prompt for 14 days' worth of uploads.
+  const TITLE_STOPWORDS = new Set(`the a an and or of for to in on with your you my our their his her its this that these those is are was were be been being do does did doing have has had how what why when where which who whom not no never stop start every day days week weeks month year today now here there new top best most more less than then so such very much many some each all any about after before again between through during without within over under out up down off from into onto against also just even still always already per another because while if then else as at by like from into | shorts short video videos marcus aurelius seneca epictetus stoic stoics stoicism discipline motivation mindset mental daily rule code secret hack wisdom philosophy keep going keepgoing`.split(/\s+/));
+  const extractSubjects = (titles) => {
+    const words = new Set();
+    for (const t of titles || []) {
+      const base = String(t).split('|')[0];
+      for (const w of base.toLowerCase().replace(/[^a-z\s]/g, ' ').split(/\s+/)) {
+        if (w.length > 3 && !TITLE_STOPWORDS.has(w)) words.add(w);
+      }
+    }
+    return [...words].slice(0, 24);
+  };
+  const coveredSubjects = extractSubjects(recentTitles);
   const rejectedSeeds = []; // dup-gate rejections cool their trend source (#91)
   const usedSeeds = Array.isArray(state[slug]?.usedTrendSeeds) ? state[slug].usedTrendSeeds : [];
   const dayIdx = Math.floor(Date.now() / 86400000);
@@ -218,7 +236,7 @@ if (RUN_SHORTS) {
       themesToday.push({
         seed: seed.title,
         subNiche: slotSubNiche,
-        topic: `Sub-niche focus: "${slotSubNiche}" (Channel Niche: "${b.niche}"). Build today's video around the THEME of this proven viral video in this space right now: "${seed.title}" (${seed.views.toLocaleString('en-US')} views in the last 14 days). Reimagine it natively for ${b.label} — do NOT copy its title or wording; bring a fresh, original angle. Weave in what is currently working: ${(page.trend.hotKeywords.slice(0, 6)).join(', ')}.${page.viewerTerms?.length ? ` Your own viewers found this channel by searching: ${page.viewerTerms.slice(0, 8).join(', ')} — work the strongest of these real search words naturally into the hook and points.` : ''}`
+        topic: `Sub-niche focus: "${slotSubNiche}" (Channel Niche: "${b.niche}"). Build today's video around the THEME of this proven viral video in this space right now: "${seed.title}" (${seed.views.toLocaleString('en-US')} views in the last 14 days). Reimagine it natively for ${b.label} — do NOT copy its title or wording; bring a fresh, original angle. Weave in what is currently working: ${(page.trend.hotKeywords.slice(0, 6)).join(', ')}.${page.viewerTerms?.length ? ` Your own viewers found this channel by searching: ${page.viewerTerms.slice(0, 8).join(', ')} — work the strongest of these real search words naturally into the hook and points.` : ''}${coveredSubjects.length ? `\nSUBJECTS ALREADY COVERED by recent videos on this channel — your video MUST be about a clearly DIFFERENT subject, not another angle on these: ${coveredSubjects.join(', ')}.` : ''}`
       });
     }
   }
@@ -281,7 +299,7 @@ if (RUN_SHORTS) {
       themesToday[i] = {
         seed: alt.title,
         subNiche: themesToday[i].subNiche,
-        topic: `Sub-niche focus: "${themesToday[i].subNiche}" (Channel Niche: "${b.niche}"). Build today's video around the THEME of this proven viral video in this space right now: "${alt.title}" (${(alt.views || 0).toLocaleString('en-US')} views in the last 14 days). Reimagine it natively for ${b.label} — do NOT copy its title or wording; bring a fresh, original angle. Weave in what is currently working: ${(page.trend.hotKeywords.slice(0, 6)).join(', ')}.${page.viewerTerms?.length ? ` Your own viewers found this channel by searching: ${page.viewerTerms.slice(0, 8).join(' ')} — work the strongest of these real search words naturally into the hook and points.` : ''}
+        topic: `Sub-niche focus: "${themesToday[i].subNiche}" (Channel Niche: "${b.niche}"). Build today's video around the THEME of this proven viral video in this space right now: "${alt.title}" (${(alt.views || 0).toLocaleString('en-US')} views in the last 14 days). Reimagine it natively for ${b.label} — do NOT copy its title or wording; bring a fresh, original angle. Weave in what is currently working: ${(page.trend.hotKeywords.slice(0, 6)).join(', ')}.${page.viewerTerms?.length ? ` Your own viewers found this channel by searching: ${page.viewerTerms.slice(0, 8).join(' ')} — work the strongest of these real search words naturally into the hook and points.` : ''}${coveredSubjects.length ? `\nSUBJECTS ALREADY COVERED by recent videos on this channel — your video MUST be about a clearly DIFFERENT subject, not another angle on these: ${coveredSubjects.join(', ')}.` : ''}
 EXISTING VIDEO TITLES on this channel — your thumb_headline MUST NOT duplicate, nearly-repeat, or reuse the key phrases of ANY of these: ${avoidList.join(' | ')}. Pick a genuinely different angle and wording.`,
       };
     }

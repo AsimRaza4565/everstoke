@@ -26,11 +26,23 @@ function brandQueries(kit) {
   return derived.length ? derived : GENERIC_QUERIES;
 }
 
+// 2026-11-27 QUALITY GUARD: exclude bright/food/gadget/cartoon Pixabay clips
+// that break visual immersion under Stoic Shorts text (e.g. chopped mushrooms,
+// kitchen scenes, cartoons, medical toys).
+const BAD_CLIP_TAGS = /\b(food|mushroom|mushrooms|cooking|kitchen|recipe|vegetable|vegetables|fruit|meat|bread|cake|salad|soup|breakfast|dinner|lunch|toy|cartoon|anime|animation|animated|dentist|hospital|medical|wedding|selfie|makeup|shopping)\b/i;
+
+export function isMoodCleanHit(hit) {
+  return !BAD_CLIP_TAGS.test(String(hit?.tags || ''));
+}
+
 async function geminiClipQuery(postData, brandQueryHint = 'stoic motivation') {
-  const prompt = `You choose b-roll footage search queries for a motivational video.
-Quote headline: "${postData?.headline || ''}"
-Quote text: "${(postData?.insight_body || '').slice(0, 160)}" (${brandQueryHint} theme)
-Reply with ONLY a JSON object: {"clip_query": "<2-3 word cinematic b-roll search phrase, concrete and visual, e.g. 'foggy mountain sunrise'>"}`;
+  const prompt = `You choose dark, moody, atmospheric cinematic b-roll search queries for a motivational video with white text overlays.
+Headline: "${postData?.headline || ''}"
+Context: "${(postData?.insight_body || '').slice(0, 160)}" (${brandQueryHint} theme)
+RULES:
+- Pick dark, dramatic, atmospheric scenery (e.g. misty mountain peak, dark storm clouds, ocean waves twilight, moody foggy forest, lone silhouette sunset, ancient stone statue, burning embers).
+- NEVER pick food, cooking, kitchen, chopping, bright apartment buildings, classrooms, office clutter, medical/science gadgets, cartoons, or text-heavy screens.
+Reply with ONLY a JSON object: {"clip_query": "<2-3 word dark cinematic b-roll search phrase>"}`;
 
   // 1. Try Groq (fastest)
   const groqKey = envOf('GROQ_API_KEY');
@@ -109,14 +121,17 @@ async function downloadAndReturnClip(hit, q, videoUrl, minDur, used) {
   return { file, start, maxDur: Math.min(25, (hit.duration || minDur) - start), query: q, id: hit.id, duration: hit.duration || 0 };
 }
 
-export async function getTopicClip(page, postData, minDur = 12, excludeIds = []) {
+export async function getTopicClip(page, postData, minDur = 12, excludeIds = [], opts = {}) {
   if (!KEY) throw new Error('PIXABAY_API_KEY missing');
   const brandQ = brandQueries(page?.ytBrand);
   const queries = [];
-  const geminiQ = await geminiClipQuery(postData, (brandQ[0] || '').split(' ')[0]);
-  if (geminiQ) queries.push(geminiQ);
-  queries.push(brandQ[Math.floor(Math.random() * brandQ.length)]);
-  for (const bq of brandQ) {
+  if (!opts.preferBrandQuery) {
+    const geminiQ = await geminiClipQuery(postData, (brandQ[0] || '').split(' ')[0]);
+    if (geminiQ) queries.push(geminiQ);
+  }
+  const offset = Math.floor(Math.random() * brandQ.length);
+  for (let i = 0; i < brandQ.length; i++) {
+    const bq = brandQ[(offset + i) % brandQ.length];
     if (!queries.includes(bq)) queries.push(bq);
   }
   for (const g of GENERIC_QUERIES) {
@@ -126,30 +141,33 @@ export async function getTopicClip(page, postData, minDur = 12, excludeIds = [])
   const used = loadUsed();
   const exclude = new Set((excludeIds || []).map(String));
 
-  // PASS 1: Search for UNUSED clips across all queries
+  // PASS 1: Search for UNUSED, mood-clean clips across all queries
   const allHits = [];
   for (const q of queries) {
     try {
       const res = await fetch(`https://pixabay.com/api/videos/?key=${KEY}&q=${encodeURIComponent(q)}&per_page=50&video_type=film`);
       const hits = (await res.json()).hits || [];
       if (!hits.length) continue;
-      allHits.push({ query: q, hits });
+      const cleanHits = hits.filter(isMoodCleanHit);
+      const pool = cleanHits.length ? cleanHits : hits;
+      allHits.push({ query: q, hits: pool });
 
       // Tier 1: 4K (width >= 3500), duration >= minDur, unused & not excluded
-      let cands = hits.filter((h) => h.videos?.large && h.videos.large.width >= 3500 && (h.duration || 0) >= minDur && !used.includes(h.id) && !exclude.has(String(h.id)));
+      let cands = pool.filter((h) => h.videos?.large && h.videos.large.width >= 3500 && (h.duration || 0) >= minDur && !used.includes(h.id) && !exclude.has(String(h.id)));
 
-      // Tier 2: 4K (width >= 3500), duration >= 15s (longest first), unused & not excluded
+      // Tier 2: 4K (width >= 3500), duration >= 15s, unused & not excluded
       if (!cands.length) {
-        cands = hits.filter((h) => h.videos?.large && h.videos.large.width >= 3500 && (h.duration || 0) >= 15 && !used.includes(h.id) && !exclude.has(String(h.id)));
+        cands = pool.filter((h) => h.videos?.large && h.videos.large.width >= 3500 && (h.duration || 0) >= 15 && !used.includes(h.id) && !exclude.has(String(h.id)));
       }
 
       // Tier 3: HD/4K, duration >= 10s, unused & not excluded
       if (!cands.length) {
-        cands = hits.filter((h) => (h.videos?.large?.url || h.videos?.medium?.url) && (h.duration || 0) >= 10 && !used.includes(h.id) && !exclude.has(String(h.id)));
+        cands = pool.filter((h) => (h.videos?.large?.url || h.videos?.medium?.url) && (h.duration || 0) >= 10 && !used.includes(h.id) && !exclude.has(String(h.id)));
       }
 
       if (cands.length) {
-        cands.sort((a, b) => ((b.duration || 0) - (a.duration || 0)) || ((b.downloads || 0) - (a.downloads || 0)));
+        // 2026-11-27: Rank eligible clips by downloads (cinematic quality) first, then duration.
+        cands.sort((a, b) => ((b.downloads || 0) - (a.downloads || 0)) || ((b.duration || 0) - (a.duration || 0)));
         const hit = cands[Math.floor(Math.random() * Math.min(3, cands.length))];
         const videoUrl = hit.videos?.large?.url || hit.videos?.medium?.url;
         if (videoUrl) {

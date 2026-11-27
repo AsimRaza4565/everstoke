@@ -115,3 +115,8 @@ skills-lock.json
 colab-schemas-v4.json
 colab-tools.json
 thumbnails/assets/
+
+# Agent/local temp artifacts (never commit)
+.tmp-runlog/
+.tmp-*.py
+.tmp-*.txt

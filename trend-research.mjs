@@ -17,9 +17,11 @@ const OFF_NICHE = new Set([
   // cooking / food
   'cooking', 'recipe', 'recipes', 'kimchi', 'korean', 'food', 'foodie', 'chef',
   'baking', 'mukbang', 'asmr', 'eating', 'kitchen', 'omelette',
-  // gaming / entertainment
+  // gaming / entertainment / animation noise
   'roblox', 'minecraft', 'fortnite', 'gaming', 'gamer', 'gameplay', 'xbox',
   'playstation', 'twitch', 'streaming', 'anime', 'manga', 'cosplay',
+  'animation', 'animated', 'cartoon', 'cartoons', 'stickman', 'meme', 'memes',
+  'status', 'whatsapp',
   // foreign-language / regional (mismatched audience)
   'telugu', 'malayalam', 'tamil', 'hindi', 'kannada', 'marathi', 'bengali',
   'bhakti', 'devotional', 'patalu', 'minutos', 'primeros', 'bitos',

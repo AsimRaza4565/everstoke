@@ -599,22 +599,36 @@ Return ONLY valid JSON:
   return { ...fallback, source: 'fallback' };
 }
 
-async function renderSectionCard(pageId, accent, section, handle, kwShort) {
+/**
+ * Build the SVG overlay for a YouTube Short section card.
+ * Progressively scales down font size on longer hooks so the final punchline word is never sliced off.
+ */
+export function buildSectionCardSvg(accent, section, handle, kwShort) {
   const anchor = 'text-anchor="middle" x="540"';
   const els = [];
   if (section.kicker) {
     els.push(`<text ${anchor} y="330" font-family="'Oswald', 'Arial Narrow', sans-serif" font-weight="600" font-size="38" letter-spacing="6" fill="${accent}">${escapeXml(section.kicker)}</text>`);
   }
-  // 2026-11-03 rebalance: with the sub line gone, number+title hugged the top
-  // edge and left a hole above the caption band (y≈1260) — the block now sits
-  // in the visual center; point titles cap at 3 lines to clear the band.
-  let y = section.kicker ? 640 : 560;
+  const upper = String(section.big || '').toUpperCase();
+  const maxLines = section.num ? 3 : 4;
+  let bigLines = wrapTextToLines(upper, 14);
+  let bSize = bigLines.some((l) => l.length > 11) ? 76 : 96;
+  if (bigLines.length > maxLines) {
+    const wide = wrapTextToLines(upper, 17);
+    if (wide.length <= maxLines) {
+      bigLines = wide;
+      bSize = 68;
+    } else {
+      bigLines = wrapTextToLines(upper, 20).slice(0, maxLines + 1);
+      bSize = 58;
+    }
+  }
+  // 2026-11-03 rebalance + 2026-11-27 overflow guard: block sits centered and
+  // clears the ASS caption band (y≈1260) even on 5-line hooks.
+  let y = section.num ? 740 : (section.kicker ? (bigLines.length > 4 ? 580 : 640) : 560);
   if (section.num) {
     els.push(`<text ${anchor} y="520" font-family="'Anton', 'Impact', 'Arial Black', sans-serif" font-size="200" fill="${accent}">${escapeXml(section.num)}</text>`);
-    y = 740;
   }
-  const bigLines = wrapTextToLines((section.big || '').toUpperCase(), 14).slice(0, section.num ? 3 : 4);
-  const bSize = bigLines.some((l) => l.length > 11) ? 76 : 96;
   bigLines.forEach((l, i) => els.push(
     `<text ${anchor} y="${y + i * (bSize + 12)}" font-family="'Anton', 'Impact', 'Arial Black', sans-serif" font-size="${bSize}" fill="#FFFFFF" stroke="#000000" stroke-width="8" stroke-linejoin="round" paint-order="stroke">${escapeXml(l)}</text>`));
   y += bigLines.length * (bSize + 12) + (bigLines.length ? 70 : 0);
@@ -624,10 +638,14 @@ async function renderSectionCard(pageId, accent, section, handle, kwShort) {
       `<text ${anchor} y="${y + i * 64}" font-family="'Oswald', 'Arial Narrow', sans-serif" font-size="46" fill="#E8E8E8">${escapeXml(l)}</text>`));
   }
   els.push(`<text ${anchor} y="1798" font-family="'Oswald', 'Arial Narrow', sans-serif" font-weight="500" font-size="30" letter-spacing="4" fill="#9A9A9A">${escapeXml(handle || '@quotequarry302')} • DAILY ${escapeXml((kwShort || 'WISDOM').toUpperCase())}</text>`);
-  const svg = `<svg xmlns="http://www.w3.org/2000/svg" width="1080" height="1920" viewBox="0 0 1080 1920">
+  return `<svg xmlns="http://www.w3.org/2000/svg" width="1080" height="1920" viewBox="0 0 1080 1920">
   <defs><style>${EMBEDDED_FONTS_CSS}</style></defs>
   ${els.join('\n  ')}
 </svg>`;
+}
+
+async function renderSectionCard(pageId, accent, section, handle, kwShort) {
+  const svg = buildSectionCardSvg(accent, section, handle, kwShort);
   const file = `${POOL_DIR}/yt-script-card-${Math.random().toString(36).slice(2, 7)}.png`;
   await sharp(Buffer.from(svg)).png().toFile(file);
   return file;
@@ -670,9 +688,11 @@ export function buildShortConcatFilter({ segmentCount, total }) {
     `[${i}:a]aresample=44100,aformat=sample_fmts=fltp:channel_layouts=stereo,asetpts=PTS-STARTPTS[sa${i}];`
   ).join('');
   const concatStreams = Array.from({ length: segmentCount }, (_, i) => `[sv${i}][sa${i}]`).join('');
+  // 2026-11-27: mono TTS upmixed via -ac 2 loses -3.01 dB under FFmpeg pan law;
+  // restore +3 dB (1.414x) on [ac] so narration matches pre-stereo -21 dB loudness.
   return `${normInputs}${concatStreams}concat=n=${segmentCount}:v=1:a=1[vc][ac];` +
     `[vc]format=yuv420p[v];[${segmentCount}:a]aresample=44100,aformat=sample_fmts=fltp:channel_layouts=stereo,volume=0.13,atrim=0:${total},afade=t=out:st=${Math.max(0, total - 1.2).toFixed(1)}:d=1.2[am];` +
-    `[ac][am]amix=inputs=2:duration=first:normalize=0[aout]`;
+    `[ac]volume=1.414[acg];[acg][am]amix=inputs=2:duration=first:normalize=0[aout]`;
 }
 
 export async function renderYouTubeScriptShort(page, script, musicOverride = null) {
@@ -702,23 +722,30 @@ export async function renderYouTubeScriptShort(page, script, musicOverride = nul
   const scrimFile = `${POOL_DIR}/yt-script-scrim-${page.id}.png`;
   await sharp(Buffer.from(scrimSvg)).png().toFile(scrimFile);
 
-  // 2026-11-11 VARIETY: one themed 4K clip per section (was: a single clip
-  // looped for the whole Short — monotonous, with visible loop restarts).
-  // PRIORITY CONTRACT (owner, 11-11): the clip that matches the VIDEO's topic
-  // (thumbHeadline) goes FIRST — it plays under the hook and feeds the
-  // thumbnail, so the backdrop always matches the video content. Each point
-  // then gets its own themed clip; failures fall back to the topic clip.
-  const baseClip = (await getTopicClip(page, { headline: script.thumbHeadline, insight_body: script.hook })) || await ensurePoolClip(page.id);
-  const sectionClips = [];
-  for (let i = 0; i < sections.length; i++) {
-    if (i === 0) { sectionClips.push(baseClip); continue; }
-    let c = null;
-    try { c = await getTopicClip(page, { headline: sections[i].big, insight_body: sections[i].text }) || null; }
-    catch (e) { console.log(`  [broll] section ${i + 1} fetch failed: ${String(e?.message || e).slice(0, 80)} — base clip`); }
-    if (c) console.log(`  [broll] section ${i + 1}/${sections.length}: themed clip ready (${c.file})`);
-    sectionClips.push(c || baseClip);
+  // 2026-11-27 COHESIVE B-ROLL (max 2 moody clips, zero random point chaos):
+  // Fetching 6 literal per-point queries pulled jarring off-mood footage (chopped
+  // mushrooms, gray apartments) that drove early swipes. Now:
+  //   1. First half (Hook + Points 1-2 + Thumbnail) uses the topic-matched clip.
+  //   2. Second half uses 1 complementary curated atmospheric clip (excluding baseClip).
+  const baseClip = (await getTopicClip(page, { headline: script.thumbHeadline, insight_body: script.hook }, 15)) || await ensurePoolClip(page.id);
+  let secondClip = baseClip;
+  try {
+    const alt = await getTopicClip(
+      page,
+      { headline: script.thumbHeadline, insight_body: brand.niche },
+      15,
+      baseClip?.id ? [baseClip.id] : [],
+      { preferBrandQuery: true },
+    );
+    if (alt) {
+      console.log(`  [broll] cohesive half-2 clip ready (${alt.file})`);
+      secondClip = alt;
+    }
+  } catch (e) {
+    console.log(`  [broll] half-2 fetch failed: ${String(e?.message || e).slice(0, 80)} — using base clip`);
   }
-  sectionClips.push(baseClip); // closing safety if sections grew mid-loop
+  const midSplit = Math.ceil(sections.length / 2);
+  const sectionClips = sections.map((_, i) => (i < midSplit ? baseClip : secondClip));
 
   const buildDir = `${POOL_DIR}/yt-script-build`;
   fs.rmSync(buildDir, { recursive: true, force: true });
@@ -817,7 +844,7 @@ export function buildScriptMeta(page, script, musicLabel = '') {
   // Trend keywords fill the remaining slots (up to 12) but are filtered for
   // off-niche contaminants that derailed audience matching (cooking, gaming,
   // foreign-language tags from scraped viral videos).
-  const OFF_NICHE_TAGS = /^(cooking|recipe|kimchi|korean|food|chef|baking|mukbang|asmr|roblox|minecraft|fortnite|gaming|gamer|anime|telugu|malayalam|tamil|hindi|kannada|bhakti|devotional|patalu|minutos|primeros|bitos|kasadara|shamani|karka|biblia|estoicismo|disciplina|dopamina|azmaik|bansuri|flute|songs?|singer|album|playlist|spotify|ambient|vlog|haul|grwm|unboxing|travel|quibi|airlines|kingfisher|nokia|upsc)$/i;
+  const OFF_NICHE_TAGS = /^(cooking|recipe|kimchi|korean|food|chef|baking|mukbang|asmr|roblox|minecraft|fortnite|gaming|gamer|anime|animation|animated|cartoon|cartoons|stickman|meme|memes|status|whatsapp|telugu|malayalam|tamil|hindi|kannada|bhakti|devotional|patalu|minutos|primeros|bitos|kasadara|shamani|karka|biblia|estoicismo|disciplina|dopamina|azmaik|bansuri|flute|songs?|singer|album|playlist|spotify|ambient|vlog|haul|grwm|unboxing|travel|quibi|airlines|kingfisher|nokia|upsc)$/i;
   const brandTags = (brand.tags || []).filter(Boolean);
   const trendTags = (page.trend?.hotKeywords || [])
     .filter(t => !OFF_NICHE_TAGS.test(t) && !brandTags.includes(t));

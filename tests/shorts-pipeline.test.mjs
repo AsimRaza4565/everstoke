@@ -1,6 +1,8 @@
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
-import { buildAssCaptions, buildScriptMeta, buildShortSegmentFilter, buildShortConcatFilter, buildThumbnailSvg } from '../youtube-engine.mjs';
+import { buildAssCaptions, buildScriptMeta, buildShortSegmentFilter, buildShortConcatFilter, buildThumbnailSvg, buildSectionCardSvg } from '../youtube-engine.mjs';
+import { isMoodCleanHit } from '../youtube-clips.mjs';
+import { resolveBrand } from '../lib/brand-resolve.mjs';
 
 test('buildScriptMeta formats title for mobile Shorts feed with hook first and #shorts', () => {
   const mockPage = { slug: 'stoic-habits', id: 'stoic-habits' };
@@ -63,6 +65,7 @@ test('buildShortConcatFilter normalizes all segment streams before concat', () =
   }
   assert.ok(concat.includes('[sv0][sa0][sv1][sa1][sv2][sa2][sv3][sa3][sv4][sa4][sv5][sa5]concat=n=6:v=1:a=1[vc][ac]'));
   assert.ok(concat.includes('[6:a]aresample=44100,aformat=sample_fmts=fltp:channel_layouts=stereo,volume=0.13,atrim=0:36.4,afade=t=out:st=35.2:d=1.2[am]'));
+  assert.ok(concat.includes('[ac]volume=1.414[acg];[acg][am]amix=inputs=2:duration=first:normalize=0[aout]'), 'restores +3 dB mono-to-stereo pan attenuation on voice');
 });
 
 test('buildThumbnailSvg builds 9:16 1080x1920 for Shorts and keeps 16:9 1280x720 for landscape', () => {
@@ -73,4 +76,28 @@ test('buildThumbnailSvg builds 9:16 1080x1920 for Shorts and keeps 16:9 1280x720
 
   const wideSvg = buildThumbnailSvg('MARCUS AURELIUS DAILY RULE', 'AAAA', { accent: '#FF6B1A', eyebrow: 'DAILY DISCIPLINE // EVERSTOKE' });
   assert.ok(wideSvg.includes('width="1280" height="720" viewBox="0 0 1280 720"'), 'Long-form thumbnail remains 16:9 1280x720');
+});
+
+test('buildSectionCardSvg scales down long hooks instead of slicing off the final punchline word', () => {
+  const svg1 = buildSectionCardSvg('#FF6B1A', { kicker: 'WATCH TILL THE END', big: 'What If Your Biggest Failure Is Actually Your Launchpad?' }, '@everstoke-a5h', 'motivation');
+  assert.ok(svg1.includes('LAUNCHPAD?'), 'long hook must retain final word instead of truncating at 4 lines');
+
+  const svg2 = buildSectionCardSvg('#FF6B1A', { kicker: 'WATCH TILL THE END', big: "What If A Samurai's Secret Could End Your Excuses?" }, '@everstoke-a5h', 'motivation');
+  assert.ok(svg2.includes('EXCUSES?'), 'Samurai hook must retain final word');
+});
+
+test('isMoodCleanHit rejects food/cooking/cartoon tags and everstoke exposes moody brollQueries', () => {
+  assert.equal(isMoodCleanHit({ tags: 'mushrooms, food, slicing, kitchen' }), false);
+  assert.equal(isMoodCleanHit({ tags: 'stickman, animation, cartoon' }), false);
+  assert.equal(isMoodCleanHit({ tags: 'misty mountain sunset dark silhouette' }), true);
+
+  const b = resolveBrand('everstoke');
+  assert.ok(Array.isArray(b.brollQueries) && b.brollQueries.length >= 4, 'everstoke brand exposes moody brollQueries');
+
+  const meta = buildScriptMeta({ id: 'everstoke', slug: 'everstoke', trend: { hotKeywords: ['animation', 'stickman', 'resilience'] } }, {
+    thumbHeadline: 'SENECA RULE', hook: 'Hold your tongue.', points: [{ title: 'Silence', line: 'Guard your peace.' }], closing: 'Act today.'
+  });
+  assert.equal(meta.tags.includes('animation'), false, 'filters off-niche animation tag');
+  assert.equal(meta.tags.includes('stickman'), false, 'filters off-niche stickman tag');
+  assert.ok(meta.tags.includes('stoicism'), 'preserves core brand stoicism tag');
 });
